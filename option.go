@@ -1,10 +1,10 @@
 package commander
 
+import "fmt"
+
 type Optional interface {
 	Name() string
-	IsRequired() bool
-	IsOptional() bool
-	IsValid() bool
+	String() string
 }
 
 type Option struct {
@@ -15,7 +15,18 @@ type Option struct {
 
 func newOption(flags, desc string) *Option {
 	return &Option{
-		desc:  desc,
 		Flags: *newFlag(flags),
+		desc:  desc,
 	}
+}
+
+func (o Option) String() string {
+	if len(o.desc) == 0 {
+		return o.Flags.String()
+	}
+	sf := o.Flags.String()
+	if len(sf) >= 12 {
+		return fmt.Sprintf("%s  %s", sf, o.desc)
+	}
+	return fmt.Sprintf("%-14s%s", sf, o.desc)
 }

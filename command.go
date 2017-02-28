@@ -1,20 +1,26 @@
 package commander
 
+import "fmt"
+
 type Command struct {
 	name     string
 	alias    string
 	desc     string
 	version  Version
 	usage    Usage
-	Commands []Command
-	Options  []Option
+	commands []Command
+	options  []Option
 	exec     Exec
+	errFunc  ErrFunc
 }
 
 func newCommand(name string) *Command {
 	return &Command{
 		name: name,
 		desc: "",
+		errFunc: func(err error, obj interface{}) {
+			fmt.Printf("  err: %v\n  object: %#v\n", err, obj)
+		},
 	}
 }
 
@@ -39,7 +45,11 @@ func (c *Command) Usage(usage string) Commander {
 
 func (c *Command) Command(name string) Commander {
 	cmd := newCommand(name)
-	c.Commands = append(c.Commands, *cmd)
+	if cmd.Valid() {
+		c.commands = append(c.commands, *cmd)
+	} else if c.errFunc != nil {
+		c.errFunc(ErrCommand, cmd)
+	}
 	return cmd
 }
 
@@ -49,7 +59,14 @@ func (c *Command) Alias(alias string) Commander {
 }
 
 func (c *Command) Option(flags, desc string) Commander {
-	opt := newOption(flags, desc)
-	c.Options = append(c.Options, *opt)
+	if opt := newOption(flags, desc); opt.Valid() {
+		c.options = append(c.options, *opt)
+	} else if c.errFunc != nil {
+		c.errFunc(ErrOption, opt)
+	}
 	return c
+}
+
+func (c Command) Valid() bool {
+	return len(c.name) != 0
 }
