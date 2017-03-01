@@ -7,6 +7,8 @@ type Commander interface {
 	Command(name string) Commander
 	Alias(alias string) Commander
 	Option(flags, desc string) Commander
+	UsageString() []string
+	OptionsString() []string
 }
 
 func NewCommander(name string) Commander {

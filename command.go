@@ -1,10 +1,14 @@
 package commander
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type Command struct {
 	name     string
-	alias    string
+	args     string
+	alias    []string
 	desc     string
 	version  Version
 	usage    Usage
@@ -14,14 +18,38 @@ type Command struct {
 	errFunc  ErrFunc
 }
 
-func newCommand(name string) *Command {
+func newCommand(cmd string) *Command {
 	return &Command{
-		name: name,
+		name: commandName(cmd),
+		args: commandArguments(cmd),
 		desc: "",
 		errFunc: func(err error, obj interface{}) {
 			fmt.Printf("  err: %v\n  object: %#v\n", err, obj)
 		},
 	}
+}
+
+func commandName(cmd string) string {
+	cmd = strings.TrimSpace(cmd)
+	if i := strings.Index(cmd, " "); i >= 0 {
+		cmd = cmd[:i]
+	}
+	return cmd
+}
+
+func commandArguments(cmd string) string {
+	cmd = strings.TrimSpace(cmd)
+	if i := strings.Index(cmd, " "); i >= 0 {
+		cmd = cmd[i+1:]
+	}
+	return cmd
+}
+
+func (c Command) Name() string {
+	if alias := strings.Join(c.alias, "|"); len(alias) != 0 {
+		return fmt.Sprintf("(%v|%v)", c.name, alias)
+	}
+	return c.name
 }
 
 func (c Command) hasExec() bool {
@@ -54,7 +82,9 @@ func (c *Command) Command(name string) Commander {
 }
 
 func (c *Command) Alias(alias string) Commander {
-	c.alias = alias
+	if alias = commandName(alias); len(alias) != 0 {
+		c.alias = append(c.alias, alias)
+	}
 	return c
 }
 
@@ -69,4 +99,30 @@ func (c *Command) Option(flags, desc string) Commander {
 
 func (c Command) Valid() bool {
 	return len(c.name) != 0
+}
+
+func (c Command) UsageString() (r []string) {
+	if !c.Valid() {
+		return
+	}
+	r = append(r, fmt.Sprintf("%v %v", c.Name(), c.args))
+	// TODO: Not finish
+	r = append(r,
+		fmt.Sprintf("%v -h | --help", c.Name()),
+		fmt.Sprintf("%v --version", c.Name()),
+	)
+	return
+}
+
+func (c Command) OptionsString() (r []string) {
+	if !c.Valid() {
+		return
+	}
+	for _, opt := range c.options {
+		r = append(r, opt.OptionString())
+	}
+	for _, cmd := range c.commands {
+		r = append(r, cmd.OptionsString()...)
+	}
+	return
 }
