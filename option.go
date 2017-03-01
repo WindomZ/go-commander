@@ -4,7 +4,7 @@ import "fmt"
 
 type Optional interface {
 	Name() string
-	String() string
+	OptionString() string
 }
 
 type Option struct {
@@ -20,7 +20,7 @@ func newOption(flags, desc string) *Option {
 	}
 }
 
-func (o Option) String() string {
+func (o Option) OptionString() string {
 	if len(o.desc) == 0 {
 		return o.Flags.String()
 	}
