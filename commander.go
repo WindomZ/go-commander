@@ -9,8 +9,9 @@ type Commander interface {
 	Option(flags, desc string) Commander
 	UsageString() []string
 	OptionsString() []string
+	GetUsage() string
 }
 
 func NewCommander(name string) Commander {
-	return newCommand(name)
+	return newCommand(name, true)
 }

@@ -12,3 +12,7 @@ func (u *Usage) Set(usage string) *Usage {
 func (u Usage) Get() string {
 	return u.usage
 }
+
+func (u Usage) Valid() bool {
+	return len(u.usage) != 0
+}

@@ -12,13 +12,14 @@ type Command struct {
 	desc     string
 	version  Version
 	usage    Usage
-	commands []Command
-	options  []Option
+	commands []*Command
+	options  []*Option
 	exec     Exec
 	errFunc  ErrFunc
+	root     bool
 }
 
-func newCommand(cmd string) *Command {
+func newCommand(cmd string, root bool) *Command {
 	return &Command{
 		name: commandName(cmd),
 		args: commandArguments(cmd),
@@ -26,6 +27,7 @@ func newCommand(cmd string) *Command {
 		errFunc: func(err error, obj interface{}) {
 			fmt.Printf("  err: %v\n  object: %#v\n", err, obj)
 		},
+		root: root,
 	}
 }
 
@@ -41,8 +43,9 @@ func commandArguments(cmd string) string {
 	cmd = strings.TrimSpace(cmd)
 	if i := strings.Index(cmd, " "); i >= 0 {
 		cmd = cmd[i+1:]
+		return cmd
 	}
-	return cmd
+	return ""
 }
 
 func (c Command) Name() string {
@@ -72,9 +75,9 @@ func (c *Command) Usage(usage string) Commander {
 }
 
 func (c *Command) Command(name string) Commander {
-	cmd := newCommand(name)
+	cmd := newCommand(name, false)
 	if cmd.Valid() {
-		c.commands = append(c.commands, *cmd)
+		c.commands = append(c.commands, cmd)
 	} else if c.errFunc != nil {
 		c.errFunc(ErrCommand, cmd)
 	}
@@ -90,7 +93,7 @@ func (c *Command) Alias(alias string) Commander {
 
 func (c *Command) Option(flags, desc string) Commander {
 	if opt := newOption(flags, desc); opt.Valid() {
-		c.options = append(c.options, *opt)
+		c.options = append(c.options, opt)
 	} else if c.errFunc != nil {
 		c.errFunc(ErrOption, opt)
 	}
@@ -105,12 +108,23 @@ func (c Command) UsageString() (r []string) {
 	if !c.Valid() {
 		return
 	}
-	r = append(r, fmt.Sprintf("%v %v", c.Name(), c.args))
-	// TODO: Not finish
-	r = append(r,
-		fmt.Sprintf("%v -h | --help", c.Name()),
-		fmt.Sprintf("%v --version", c.Name()),
-	)
+	if len(c.args) != 0 {
+		r = append(r, fmt.Sprintf("%v %v", c.Name(), c.args))
+	} else {
+		r = append(r, c.Name())
+	}
+	for _, cmd := range c.commands {
+		usages := cmd.UsageString()
+		for _, str := range usages {
+			r = append(r, fmt.Sprintf("%v %v", c.Name(), str))
+		}
+	}
+	if c.root || c.usage.Valid() {
+		r = append(r, fmt.Sprintf("%v -h | --help", c.Name()))
+	}
+	if c.root || c.version.Valid() {
+		r = append(r, fmt.Sprintf("%v --version", c.Name()))
+	}
 	return
 }
 
@@ -125,4 +139,8 @@ func (c Command) OptionsString() (r []string) {
 		r = append(r, cmd.OptionsString()...)
 	}
 	return
+}
+
+func (c Command) GetUsage() string {
+	return ""
 }

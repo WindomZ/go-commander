@@ -12,3 +12,7 @@ func (v *Version) Set(ver string) *Version {
 func (v Version) Get() string {
 	return v.version
 }
+
+func (v Version) Valid() bool {
+	return len(v.version) != 0
+}
