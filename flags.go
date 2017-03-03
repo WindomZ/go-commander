@@ -1,6 +1,10 @@
 package commander
 
-import "strings"
+import (
+	"fmt"
+	"regexp"
+	"strings"
+)
 
 type Flags struct {
 	name string
@@ -9,13 +13,21 @@ type Flags struct {
 
 func newFlag(flag string) *Flags {
 	return &Flags{
-		flag: packFlags(flag),
+		flag: strings.TrimSpace(flag),
 	}
+}
+
+func (f Flags) regexpFlags() []string {
+	return regexp.MustCompile(`-{1,2}[A-Za-z0-9_]+`).FindAllString(f.flag, -1)
+}
+
+func (f Flags) regexpArguments() []string {
+	return regexp.MustCompile(`(?i:<|\[)[A-Za-z0-9_\[\]<>]+(?i:>|])`).FindAllString(f.flag, -1)
 }
 
 func (f *Flags) Name() string {
 	if len(f.name) == 0 && len(f.flag) != 0 {
-		flags := parseFlags(f.flag)
+		flags := f.regexpFlags()
 		for _, flag := range flags {
 			if len(flag) > len(f.name) {
 				f.name = flag
@@ -25,8 +37,28 @@ func (f *Flags) Name() string {
 	return f.name
 }
 
-func (f Flags) String() string {
-	return f.flag
+func (f Flags) UsageString() (s string) {
+	if len(f.Name()) == 0 {
+		return
+	}
+	s = f.Name()
+	if args := f.regexpArguments(); len(args) != 0 {
+		if len(args) == 1 {
+			s += fmt.Sprintf("=%s", args[0])
+		} else if f.IsRequired() {
+			s += fmt.Sprintf("=(%s)", strings.Join(args, "|"))
+		} else {
+			s += fmt.Sprintf("=[%s]", strings.Join(args, "|"))
+		}
+	}
+	return
+}
+
+func (f Flags) OptionString() string {
+	if flags := f.regexpFlags(); len(flags) != 0 {
+		return strings.Join(flags, ", ")
+	}
+	return ""
 }
 
 func (f Flags) IsRequired() bool {
@@ -38,38 +70,5 @@ func (f Flags) IsOptional() bool {
 }
 
 func (f Flags) Valid() bool {
-	return len(f.Name()) != 0 && len(f.flag) != 0
-}
-
-func packFlags(flag string) string {
-	if flag = strings.TrimSpace(flag); len(flag) != 0 {
-		flag = strings.Replace(flag, ",-", ", -", -1)
-		flag = strings.Replace(flag, "| -", " | -", -1)
-		flag = strings.Replace(flag, "|-", " | -", -1)
-		for strings.Contains(flag, "  ") {
-			flag = strings.Replace(flag, "  ", " ", -1)
-		}
-	}
-	return flag
-}
-
-func parseFlags(flag string) (flags []string) {
-	if strings.Contains(flag, ",") {
-		flags = strings.Split(flag, ",")
-	} else if strings.Contains(flag, "|") {
-		flags = strings.Split(flag, "|")
-	} else if strings.Contains(flag, " ") {
-		flags = strings.Split(flag, " ")
-	} else {
-		flags = []string{flag}
-	}
-	for i, f := range flags {
-		if i := strings.Index(f, "<"); i >= 0 {
-			f = f[:i]
-		} else if i := strings.Index(f, "["); i >= 0 {
-			f = f[:i]
-		}
-		flags[i] = strings.TrimSpace(f)
-	}
-	return flags
+	return len(f.Name()) != 0
 }

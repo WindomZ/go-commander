@@ -4,6 +4,7 @@ import "fmt"
 
 type Optional interface {
 	Name() string
+	UsageString() string
 	OptionString() string
 }
 
@@ -22,9 +23,9 @@ func newOption(flags, desc string) *Option {
 
 func (o Option) OptionString() string {
 	if len(o.desc) == 0 {
-		return o.Flags.String()
+		return o.Flags.OptionString()
 	}
-	sf := o.Flags.String()
+	sf := o.Flags.OptionString()
 	if len(sf) >= 12 {
 		return fmt.Sprintf("%s  %s", sf, o.desc)
 	}
