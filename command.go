@@ -108,22 +108,25 @@ func (c Command) UsageString() (r []string) {
 	if !c.Valid() {
 		return
 	}
+	str := c.Name()
 	if len(c.args) != 0 {
-		r = append(r, fmt.Sprintf("%v %v", c.Name(), c.args))
-	} else {
-		r = append(r, c.Name())
+		str = fmt.Sprintf("%s %s", str, c.args)
 	}
+	if len(c.options) != 0 {
+		// TODO: 未完成
+	}
+	r = append(r, str)
 	for _, cmd := range c.commands {
 		usages := cmd.UsageString()
 		for _, str := range usages {
-			r = append(r, fmt.Sprintf("%v %v", c.Name(), str))
+			r = append(r, fmt.Sprintf("%s %s", c.Name(), str))
 		}
 	}
 	if c.root || c.usage.Valid() {
-		r = append(r, fmt.Sprintf("%v -h | --help", c.Name()))
+		r = append(r, fmt.Sprintf("%s -h | --help", c.Name()))
 	}
 	if c.root || c.version.Valid() {
-		r = append(r, fmt.Sprintf("%v --version", c.Name()))
+		r = append(r, fmt.Sprintf("%s --version", c.Name()))
 	}
 	return
 }
