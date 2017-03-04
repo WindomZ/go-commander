@@ -102,7 +102,7 @@ func (c Command) Valid() bool {
 	return len(c.name) != 0
 }
 
-func (c Command) UsageString() (r []string) {
+func (c Command) UsagesString() (r []string) {
 	if !c.Valid() {
 		return
 	}
@@ -115,7 +115,7 @@ func (c Command) UsageString() (r []string) {
 	}
 	r = append(r, str)
 	for _, cmd := range c.commands {
-		usages := cmd.UsageString()
+		usages := cmd.UsagesString()
 		for _, str := range usages {
 			r = append(r, fmt.Sprintf("%s %s", c.Name(), str))
 		}

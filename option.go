@@ -10,8 +10,9 @@ type Optional interface {
 
 type Option struct {
 	Flags
-	desc string
-	exec Exec
+	desc     string
+	exec     Exec
+	required bool
 }
 
 func newOption(flags, desc string) *Option {
@@ -30,4 +31,17 @@ func (o Option) OptionString() string {
 		return fmt.Sprintf("%s  %s", sf, o.desc)
 	}
 	return fmt.Sprintf("%-14s%s", sf, o.desc)
+}
+
+func (o *Option) Required() *Option {
+	o.required = true
+	return o
+}
+
+func (o Option) IsRequired() bool {
+	return o.required
+}
+
+func (o Option) IsOptional() bool {
+	return !o.IsRequired()
 }

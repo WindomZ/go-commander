@@ -17,7 +17,7 @@ func TestCommand_1(t *testing.T) {
 		Option("-b, --bold=<kn>", "cmd3 bold description").
 		Option("-c, --count", "cmd3 count description")
 
-	usageStrs := c.UsageString()
+	usageStrs := c.UsagesString()
 	for _, str := range usageStrs {
 		t.Logf("Usage: %s", str)
 	}
