@@ -2,55 +2,52 @@ package commander
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 )
 
 type Command struct {
+	cmd      string
 	name     string
 	args     string
 	alias    []string
 	desc     string
 	version  Version
 	usage    Usage
-	commands []*Command
-	options  []*Option
+	commands Commands
+	options  Options
 	exec     Exec
 	errFunc  ErrFunc
 	root     bool
 }
 
 func newCommand(cmd string, root bool) *Command {
-	return &Command{
-		name: commandName(cmd),
-		args: commandArguments(cmd),
+	c := &Command{
+		cmd:  strings.TrimSpace(cmd),
 		desc: "",
 		errFunc: func(err error, obj interface{}) {
 			fmt.Printf("  err: %v\n  object: %#v\n", err, obj)
 		},
 		root: root,
 	}
+	return c.initCommand()
 }
 
-func commandName(cmd string) string {
-	cmd = strings.TrimSpace(cmd)
-	if i := strings.Index(cmd, " "); i >= 0 {
-		cmd = cmd[:i]
+func (c *Command) initCommand() *Command {
+	if strs := regexp.MustCompile(`^[A-Za-z0-9_-]+`).
+		FindAllString(c.cmd, -1); len(strs) != 0 {
+		c.name = strs[0]
 	}
-	return cmd
-}
-
-func commandArguments(cmd string) string {
-	cmd = strings.TrimSpace(cmd)
-	if i := strings.Index(cmd, " "); i >= 0 {
-		cmd = cmd[i+1:]
-		return cmd
+	if strs := regexp.MustCompile(`(?i:<|\[)[A-Za-z0-9_\[\]<>-]+(?i:>|])`).
+		FindAllString(c.cmd, -1); len(strs) != 0 {
+		c.args = strings.Join(strs, " ")
 	}
-	return ""
+	return c
 }
 
 func (c Command) Name() string {
 	if alias := strings.Join(c.alias, "|"); len(alias) != 0 {
-		return fmt.Sprintf("(%v|%v)", c.name, alias)
+		return fmt.Sprintf("(%s|%s)", c.name, alias)
 	}
 	return c.name
 }
@@ -85,8 +82,9 @@ func (c *Command) Command(name string) Commander {
 }
 
 func (c *Command) Alias(alias string) Commander {
-	if alias = commandName(alias); len(alias) != 0 {
-		c.alias = append(c.alias, alias)
+	if strs := regexp.MustCompile(`^[A-Za-z0-9_-]+`).
+		FindAllString(strings.TrimSpace(alias), -1); len(strs) != 0 {
+		c.alias = append(c.alias, strs[0])
 	}
 	return c
 }

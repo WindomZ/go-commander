@@ -18,11 +18,11 @@ func newFlag(flag string) *Flags {
 }
 
 func (f Flags) regexpFlags() []string {
-	return regexp.MustCompile(`-{1,2}[A-Za-z0-9_]+`).FindAllString(f.flag, -1)
+	return regexp.MustCompile(`-{1,2}[A-Za-z0-9_-]+`).FindAllString(f.flag, -1)
 }
 
 func (f Flags) regexpArguments() []string {
-	return regexp.MustCompile(`(?i:<|\[)[A-Za-z0-9_\[\]<>]+(?i:>|])`).FindAllString(f.flag, -1)
+	return regexp.MustCompile(`(?i:<|\[)[A-Za-z0-9_\[\]<>-]+(?i:>|])`).FindAllString(f.flag, -1)
 }
 
 func (f *Flags) longestFlag() (s string) {
