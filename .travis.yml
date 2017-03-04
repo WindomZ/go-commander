@@ -10,7 +10,7 @@ go:
   - master
 
 before_install:
-  - go get github.com/stretchr/testify/assert
+  - go get github.com/WindomZ/testify/assert
 
 script:
   - go test -v ./...

@@ -1,7 +1,7 @@
 package commander
 
 import (
-	"github.com/stretchr/testify/assert"
+	"github.com/WindomZ/testify/assert"
 	"testing"
 )
 
@@ -21,7 +21,7 @@ func TestFlags_2(t *testing.T) {
 	assert.Equal(t, f.Name(), "--config")
 	assert.Equal(t, f.IsRequired(), false)
 	assert.Equal(t, f.IsOptional(), false)
-	assert.Equal(t, f.UsageString(), "--config")
+	assert.Equal(t, f.UsageString(), "(-c|--config)")
 }
 
 func TestFlags_3(t *testing.T) {
@@ -30,7 +30,7 @@ func TestFlags_3(t *testing.T) {
 	assert.Equal(t, f.Name(), "--config")
 	assert.Equal(t, f.IsRequired(), true)
 	assert.Equal(t, f.IsOptional(), false)
-	assert.Equal(t, f.UsageString(), "--config=<path>")
+	assert.Equal(t, f.UsageString(), "(-c|--config)=<path>")
 }
 
 func TestFlags_4(t *testing.T) {
@@ -39,7 +39,7 @@ func TestFlags_4(t *testing.T) {
 	assert.Equal(t, f.Name(), "--config")
 	assert.Equal(t, f.IsRequired(), false)
 	assert.Equal(t, f.IsOptional(), true)
-	assert.Equal(t, f.UsageString(), "--config=[type]")
+	assert.Equal(t, f.UsageString(), "(--config|-c)=[type]")
 }
 
 func TestFlags_5(t *testing.T) {
@@ -48,7 +48,7 @@ func TestFlags_5(t *testing.T) {
 	assert.Equal(t, f.Name(), "--config")
 	assert.Equal(t, f.IsRequired(), false)
 	assert.Equal(t, f.IsOptional(), true)
-	assert.Equal(t, f.UsageString(), "--config=[type]")
+	assert.Equal(t, f.UsageString(), "(--config|-c)=[type]")
 }
 
 func TestFlags_6(t *testing.T) {
@@ -57,7 +57,7 @@ func TestFlags_6(t *testing.T) {
 	assert.Equal(t, f.Name(), "--config")
 	assert.Equal(t, f.IsRequired(), false)
 	assert.Equal(t, f.IsOptional(), true)
-	assert.Equal(t, f.UsageString(), "--config=[type]")
+	assert.Equal(t, f.UsageString(), "(--config|-c)=[type]")
 }
 
 func TestFlags_7(t *testing.T) {

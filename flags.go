@@ -25,23 +25,44 @@ func (f Flags) regexpArguments() []string {
 	return regexp.MustCompile(`(?i:<|\[)[A-Za-z0-9_\[\]<>]+(?i:>|])`).FindAllString(f.flag, -1)
 }
 
-func (f *Flags) Name() string {
-	if len(f.name) == 0 && len(f.flag) != 0 {
-		flags := f.regexpFlags()
+func (f *Flags) longestFlag() (s string) {
+	if flags := f.regexpFlags(); len(flags) != 0 {
 		for _, flag := range flags {
-			if len(flag) > len(f.name) {
-				f.name = flag
+			if len(flag) > len(s) {
+				s = flag
 			}
 		}
+	}
+	return
+}
+
+func (f *Flags) shortestFlag() (s string) {
+	if flags := f.regexpFlags(); len(flags) != 0 {
+		s = flags[0]
+		for _, flag := range flags {
+			if len(flag) < len(s) {
+				s = flag
+			}
+		}
+	}
+	return
+}
+
+func (f *Flags) Name() string {
+	if len(f.name) == 0 && len(f.flag) != 0 {
+		f.name = f.longestFlag()
 	}
 	return f.name
 }
 
 func (f Flags) UsageString() (s string) {
-	if len(f.Name()) == 0 {
-		return
+	if flags := f.regexpFlags(); len(flags) != 0 {
+		if len(flags) == 1 {
+			s = flags[0]
+		} else {
+			s = fmt.Sprintf("(%s)", strings.Join(flags, "|"))
+		}
 	}
-	s = f.Name()
 	if args := f.regexpArguments(); len(args) != 0 {
 		if len(args) == 1 {
 			s += fmt.Sprintf("=%s", args[0])
