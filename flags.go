@@ -56,15 +56,20 @@ func (f *Flags) Name() string {
 }
 
 func (f Flags) UsageString() (s string) {
-	if flags := f.regexpFlags(); len(flags) != 0 {
+	flags := f.regexpFlags()
+	if len(flags) != 0 {
 		if len(flags) == 1 {
 			s = flags[0]
 		} else {
 			s = strings.Join(flags, "|")
 		}
+	} else {
+		return
 	}
 	if args := f.regexpArguments(); len(args) != 0 {
-		s = fmt.Sprintf("(%s)", s)
+		if len(flags) != 1 {
+			s = fmt.Sprintf("(%s)", s)
+		}
 		if len(args) == 1 {
 			s += fmt.Sprintf("=%s", args[0])
 		} else if f.IsRequired() {
@@ -76,11 +81,34 @@ func (f Flags) UsageString() (s string) {
 	return
 }
 
-func (f Flags) OptionString() string {
-	if flags := f.regexpFlags(); len(flags) != 0 {
-		return strings.Join(flags, ", ")
+func (f Flags) OptionString() (s string) {
+	flags := f.regexpFlags()
+	if len(flags) == 0 {
+		return
 	}
-	return ""
+	if args := f.regexpArguments(); len(args) != 0 {
+		if len(args) == 1 {
+			s = fmt.Sprintf("%s", args[0])
+		} else if f.IsRequired() {
+			s = fmt.Sprintf("(%s)", strings.Join(args, "|"))
+		} else {
+			s = fmt.Sprintf("[%s]", strings.Join(args, "|"))
+		}
+		var strs []string
+		for _, flag := range flags {
+			if strings.Count(flag, "-") == 1 {
+				strs = append(strs,
+					fmt.Sprintf("%s %s", flag, s))
+			} else {
+				strs = append(strs,
+					fmt.Sprintf("%s=%s", flag, s))
+			}
+		}
+		s = strings.Join(strs, ", ")
+	} else {
+		s = strings.Join(flags, ", ")
+	}
+	return
 }
 
 func (f Flags) IsRequired() bool {
