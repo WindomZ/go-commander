@@ -32,7 +32,7 @@ func TestFlags_3(t *testing.T) {
 	assert.Equal(t, f.IsRequired(), true)
 	assert.Equal(t, f.IsOptional(), false)
 	assert.Equal(t, f.UsageString(), "(-c|--config)=<path>")
-	assert.Equal(t, f.OptionString(), "-c <path>, --config=<path>")
+	assert.Equal(t, f.OptionString(), "-c <path>, --config <path>")
 }
 
 func TestFlags_4(t *testing.T) {
@@ -42,7 +42,7 @@ func TestFlags_4(t *testing.T) {
 	assert.Equal(t, f.IsRequired(), false)
 	assert.Equal(t, f.IsOptional(), true)
 	assert.Equal(t, f.UsageString(), "(--config|-c)=[type]")
-	assert.Equal(t, f.OptionString(), "--config=[type], -c [type]")
+	assert.Equal(t, f.OptionString(), "--config [type], -c [type]")
 }
 
 func TestFlags_5(t *testing.T) {
@@ -52,7 +52,7 @@ func TestFlags_5(t *testing.T) {
 	assert.Equal(t, f.IsRequired(), false)
 	assert.Equal(t, f.IsOptional(), true)
 	assert.Equal(t, f.UsageString(), "(--config|-c)=[type]")
-	assert.Equal(t, f.OptionString(), "--config=[type], -c [type]")
+	assert.Equal(t, f.OptionString(), "--config [type], -c [type]")
 }
 
 func TestFlags_6(t *testing.T) {
@@ -62,7 +62,7 @@ func TestFlags_6(t *testing.T) {
 	assert.Equal(t, f.IsRequired(), false)
 	assert.Equal(t, f.IsOptional(), true)
 	assert.Equal(t, f.UsageString(), "(--config|-c)=[type]")
-	assert.Equal(t, f.OptionString(), "--config=[type], -c [type]")
+	assert.Equal(t, f.OptionString(), "--config [type], -c [type]")
 }
 
 func TestFlags_7(t *testing.T) {

@@ -96,13 +96,7 @@ func (f Flags) OptionString() (s string) {
 		}
 		var strs []string
 		for _, flag := range flags {
-			if strings.Count(flag, "-") == 1 {
-				strs = append(strs,
-					fmt.Sprintf("%s %s", flag, s))
-			} else {
-				strs = append(strs,
-					fmt.Sprintf("%s=%s", flag, s))
-			}
+			strs = append(strs, fmt.Sprintf("%s %s", flag, s))
 		}
 		s = strings.Join(strs, ", ")
 	} else {
