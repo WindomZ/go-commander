@@ -72,8 +72,11 @@ func (c *Command) Usage(usage string) Commander {
 	return c
 }
 
-func (c *Command) Command(name string) Commander {
-	cmd := newCommand(name, false)
+func (c *Command) Command(usage string, args ...interface{}) Commander {
+	cmd := newCommand(usage, false)
+	if len(args) >= 1 {
+		// TODO: action
+	}
 	if cmd.Valid() {
 		c.commands = append(c.commands, cmd)
 	} else if c.errFunc != nil {
@@ -90,8 +93,22 @@ func (c *Command) Alias(alias string) Commander {
 	return c
 }
 
-func (c *Command) Option(flags, desc string) Commander {
-	if opt := newOption(flags, desc); opt.Valid() {
+func (c *Command) Option(flags string, args ...interface{}) Commander {
+	var desc string
+	if len(args) >= 1 {
+		desc, _ = args[0].(string)
+	}
+	if len(args) >= 2 {
+		// TODO: action
+	}
+	if len(args) >= 3 {
+		descDef := make([]string, 0, len(args)-2)
+		for _, d := range args[2:] {
+			descDef = append(descDef, fmt.Sprintf("%v", d))
+		}
+		desc += fmt.Sprintf(" [default: %s]", strings.Join(descDef, ","))
+	}
+	if opt := newOption(strings.TrimSpace(flags), strings.TrimSpace(desc)); opt.Valid() {
 		c.options = append(c.options, opt)
 	} else if c.errFunc != nil {
 		c.errFunc(ErrOption, opt)
@@ -127,7 +144,7 @@ func (c Command) UsagesString() (r []string) {
 	if c.root || c.usage.Valid() {
 		r = append(r, fmt.Sprintf("%s -h | --help", c.Name()))
 	}
-	if c.root || c.version.Valid() {
+	if c.root && c.version.Valid() {
 		r = append(r, fmt.Sprintf("%s --version", c.Name()))
 	}
 	return
@@ -143,20 +160,33 @@ func (c Command) OptionsString() (r []string) {
 }
 
 func (c Command) GetUsage() string {
+	if c.usage.Valid() {
+		return c.usage.Get()
+	}
 	var bb bytes.Buffer
+
 	if len(c.desc) != 0 {
 		bb.WriteString(c.desc + "\n\n")
 	}
-	bb.WriteString("Usage:\n")
-	strs := c.UsagesString()
-	for _, str := range strs {
-		bb.WriteString(fmt.Sprintf("  %s\n", str))
+
+	if strs := c.UsagesString(); len(strs) != 0 {
+		bb.WriteString("Usage:\n")
+		for _, str := range strs {
+			bb.WriteString(fmt.Sprintf("  %s\n", str))
+		}
 	}
-	bb.WriteString("\nOptions:\n")
-	strs = c.OptionsString()
-	for _, str := range strs {
-		bb.WriteString(fmt.Sprintf("  %s\n", str))
+
+	if strs := c.OptionsString(); len(strs) != 0 {
+		bb.WriteString("\nOptions:\n")
+		strs = c.OptionsString()
+		for _, str := range strs {
+			bb.WriteString(fmt.Sprintf("  %s\n", str))
+		}
 	}
-	bb.WriteString("\n")
+
 	return bb.String()
+}
+
+func (c Command) Parse() (map[string]interface{}, error) {
+	return Parse(c.GetUsage(), nil, true, c.version.Get(), false)
 }

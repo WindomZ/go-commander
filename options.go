@@ -19,7 +19,9 @@ func (o Options) UsagesString() (r []string) {
 
 func (o Options) OptionsString() (r []string) {
 	for _, opt := range o {
-		r = append(r, opt.OptionString())
+		if s := opt.OptionString(); len(s) != 0 {
+			r = append(r, s)
+		}
 	}
 	return
 }

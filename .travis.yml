@@ -11,6 +11,7 @@ go:
 
 before_install:
   - go get github.com/WindomZ/testify/assert
+  - go get github.com/docopt/docopt-go
 
 script:
   - go test -v ./...

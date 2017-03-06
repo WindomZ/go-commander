@@ -47,6 +47,5 @@ Usage:
 Options:
   -c, --config  config description
   -d, --drop    drop description
-
 `)
 }

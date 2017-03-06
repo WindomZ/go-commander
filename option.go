@@ -24,7 +24,7 @@ func newOption(flags, desc string) *Option {
 
 func (o Option) OptionString() string {
 	if len(o.desc) == 0 {
-		return o.Flags.OptionString()
+		return ""
 	}
 	sf := o.Flags.OptionString()
 	if len(sf) >= 12 {

@@ -22,7 +22,10 @@ func (f Flags) regexpFlags() []string {
 }
 
 func (f Flags) regexpArguments() []string {
-	return regexp.MustCompile(`(?i:<|\[)[A-Za-z0-9_\[\]<>-]+(?i:>|])`).FindAllString(f.flag, -1)
+	return append(
+		regexp.MustCompile(`(?i:<|\[)[A-Za-z0-9_\[\]<>-]+(?i:>|])`).FindAllString(f.flag, -1),
+		regexp.MustCompile(`[A-Z0-9]+`).FindAllString(f.flag, -1)...,
+	)
 }
 
 func (f *Flags) longestFlag() (s string) {
@@ -74,8 +77,10 @@ func (f Flags) UsageString() (s string) {
 			s += fmt.Sprintf("=%s", args[0])
 		} else if f.IsRequired() {
 			s += fmt.Sprintf("=(%s)", strings.Join(args, "|"))
-		} else {
+		} else if f.IsOptional() {
 			s += fmt.Sprintf("=[%s]", strings.Join(args, "|"))
+		} else {
+			s += fmt.Sprintf("=%s", strings.Join(args, "|"))
 		}
 	}
 	return
@@ -91,14 +96,22 @@ func (f Flags) OptionString() (s string) {
 			s = fmt.Sprintf("%s", args[0])
 		} else if f.IsRequired() {
 			s = fmt.Sprintf("(%s)", strings.Join(args, "|"))
-		} else {
+		} else if f.IsOptional() {
 			s = fmt.Sprintf("[%s]", strings.Join(args, "|"))
+		} else {
+			s = fmt.Sprintf("%s", strings.Join(args, "|"))
 		}
 		var strs []string
 		for _, flag := range flags {
-			strs = append(strs, fmt.Sprintf("%s %s", flag, s))
+			if strings.Count(flag, "-") == 1 {
+				strs = append(strs,
+					fmt.Sprintf("%s %s", flag, s))
+			} else {
+				strs = append(strs,
+					fmt.Sprintf("%s=%s", flag, s))
+			}
 		}
-		s = strings.Join(strs, ", ")
+		s = strings.Join(strs, " ")
 	} else {
 		s = strings.Join(flags, ", ")
 	}

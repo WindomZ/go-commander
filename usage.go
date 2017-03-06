@@ -14,5 +14,5 @@ func (u Usage) Get() string {
 }
 
 func (u Usage) Valid() bool {
-	return len(u.usage) != 0
+	return len(u.Get()) != 0
 }

@@ -10,9 +10,12 @@ func (v *Version) Set(ver string) *Version {
 }
 
 func (v Version) Get() string {
-	return v.version
+	if len(v.version) != 0 {
+		return v.version
+	}
+	return "v0.0.0"
 }
 
 func (v Version) Valid() bool {
-	return len(v.version) != 0
+	return len(v.Get()) != 0
 }
