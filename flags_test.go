@@ -21,7 +21,7 @@ func TestFlags_2(t *testing.T) {
 	assert.Equal(t, f.Name(), "--config")
 	assert.Equal(t, f.IsRequired(), false)
 	assert.Equal(t, f.IsOptional(), false)
-	assert.Equal(t, f.UsageString(), "(-c|--config)")
+	assert.Equal(t, f.UsageString(), "-c|--config")
 	assert.Equal(t, f.OptionString(), "-c, --config")
 }
 

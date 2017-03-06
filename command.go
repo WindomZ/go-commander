@@ -111,13 +111,16 @@ func (c Command) UsagesString() (r []string) {
 		str = fmt.Sprintf("%s %s", str, c.args)
 	}
 	if len(c.options) != 0 {
-		// TODO: 未完成
+		uStrs := c.options.UsagesString()
+		for _, uStr := range uStrs {
+			str = fmt.Sprintf("%s %s", str, uStr)
+		}
 	}
 	r = append(r, str)
 	for _, cmd := range c.commands {
-		usages := cmd.UsagesString()
-		for _, str := range usages {
-			r = append(r, fmt.Sprintf("%s %s", c.Name(), str))
+		uStrs := cmd.UsagesString()
+		for _, uStr := range uStrs {
+			r = append(r, fmt.Sprintf("%s %s", c.Name(), uStr))
 		}
 	}
 	if c.root || c.usage.Valid() {
@@ -133,12 +136,8 @@ func (c Command) OptionsString() (r []string) {
 	if !c.Valid() {
 		return
 	}
-	for _, opt := range c.options {
-		r = append(r, opt.OptionString())
-	}
-	for _, cmd := range c.commands {
-		r = append(r, cmd.OptionsString()...)
-	}
+	r = append(r, c.options.OptionsString()...)
+	r = append(r, c.commands.OptionsString()...)
 	return
 }
 

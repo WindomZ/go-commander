@@ -60,10 +60,11 @@ func (f Flags) UsageString() (s string) {
 		if len(flags) == 1 {
 			s = flags[0]
 		} else {
-			s = fmt.Sprintf("(%s)", strings.Join(flags, "|"))
+			s = strings.Join(flags, "|")
 		}
 	}
 	if args := f.regexpArguments(); len(args) != 0 {
+		s = fmt.Sprintf("(%s)", s)
 		if len(args) == 1 {
 			s += fmt.Sprintf("=%s", args[0])
 		} else if f.IsRequired() {
