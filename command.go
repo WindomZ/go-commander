@@ -1,6 +1,7 @@
 package commander
 
 import (
+	"bytes"
 	"fmt"
 	"regexp"
 	"strings"
@@ -137,10 +138,25 @@ func (c Command) OptionsString() (r []string) {
 		return
 	}
 	r = append(r, c.options.OptionsString()...)
-	r = append(r, c.commands.OptionsString()...)
+	//r = append(r, c.commands.OptionsString()...)
 	return
 }
 
 func (c Command) GetUsage() string {
-	return ""
+	var bb bytes.Buffer
+	if len(c.desc) != 0 {
+		bb.WriteString(c.desc + "\n\n")
+	}
+	bb.WriteString("Usage:\n")
+	strs := c.UsagesString()
+	for _, str := range strs {
+		bb.WriteString(fmt.Sprintf("  %s\n", str))
+	}
+	bb.WriteString("\nOptions:\n")
+	strs = c.OptionsString()
+	for _, str := range strs {
+		bb.WriteString(fmt.Sprintf("  %s\n", str))
+	}
+	bb.WriteString("\n")
+	return bb.String()
 }

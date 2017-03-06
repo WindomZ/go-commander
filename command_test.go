@@ -1,6 +1,9 @@
 package commander
 
-import "testing"
+import (
+	"github.com/WindomZ/testify/assert"
+	"testing"
+)
 
 func TestCommand_1(t *testing.T) {
 	c := newCommand("cmd <x>", true).
@@ -17,15 +20,33 @@ func TestCommand_1(t *testing.T) {
 		Option("-b, --bold=<kn>", "cmd3 bold description").
 		Option("-c, --count", "cmd3 count description")
 
-	usageStrs := c.UsagesString()
-	for _, str := range usageStrs {
-		t.Logf("Usage: %s", str)
-	}
+	assert.Equal(t, c.UsagesString(),
+		[]string([]string{
+			"cmd <x> [-c|--config] [-d|--drop]",
+			"cmd cmd2 [-a|--about] [-t|--test]",
+			"cmd cmd3 [y] [(-b|--bold)=<kn>] [-c|--count]",
+			"cmd -h | --help",
+			"cmd --version",
+		}))
+	assert.Equal(t, c.OptionsString(),
+		[]string([]string{
+			"-c, --config  config description",
+			"-d, --drop    drop description",
+		}))
 
-	optStrs := c.OptionsString()
-	for _, str := range optStrs {
-		t.Logf("Options: %s", str)
-	}
+	assert.Equal(t, c.GetUsage(),
+		`this is description
 
-	t.Log(c.GetUsage())
+Usage:
+  cmd <x> [-c|--config] [-d|--drop]
+  cmd cmd2 [-a|--about] [-t|--test]
+  cmd cmd3 [y] [(-b|--bold)=<kn>] [-c|--count]
+  cmd -h | --help
+  cmd --version
+
+Options:
+  -c, --config  config description
+  -d, --drop    drop description
+
+`)
 }
