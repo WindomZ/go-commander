@@ -7,76 +7,84 @@ import (
 	"strings"
 )
 
-type Command struct {
-	cmd      string
-	name     string
-	args     string
-	alias    []string
-	desc     string
-	version  Version
-	usage    Usage
-	commands Commands
-	options  Options
-	exec     ExecFunc
-	errFunc  ErrFunc
-	root     bool
+type ICommand interface {
+	Names() []string
+	Description(desc string) ICommand
+	Command(usage string, args ...interface{}) ICommand
+	Option(flags string, args ...interface{}) ICommand
+	UsagesString() []string
+	OptionsString() []string
+	GetHelpMessage() string
 }
 
-func newCommand(cmd string, root bool) *Command {
+type Command struct {
+	usage     string
+	names     []string
+	root      bool
+	desc      string
+	arguments Arguments
+	commands  Commands
+	options   Options
+	execFunc  ExecFunc
+	errFunc   ErrFunc
+}
+
+func newCommand(usage string, args ...interface{}) *Command {
 	c := &Command{
-		cmd:  strings.TrimSpace(cmd),
-		desc: "",
+		usage: strings.TrimSpace(usage),
 		errFunc: func(err error, obj interface{}) {
 			fmt.Printf("  err: %v\n  object: %#v\n", err, obj)
 		},
-		root: root,
 	}
-	return c.initCommand()
-}
-
-func (c *Command) initCommand() *Command {
-	if strs := regexp.MustCompile(`^[A-Za-z0-9_-]+`).
-		FindAllString(c.cmd, -1); len(strs) != 0 {
-		c.name = strs[0]
+	c.regexpNames()
+	c.regexpArguments()
+	if len(args) >= 1 {
+		c.root, _ = args[0].(bool)
 	}
-	if strs := regexp.MustCompile(`(?i:<|\[)[A-Za-z0-9_\[\]<>-]+(?i:>|])`).
-		FindAllString(c.cmd, -1); len(strs) != 0 {
-		c.args = strings.Join(strs, " ")
+	if len(args) >= 2 {
+		c.desc, _ = args[1].(string)
+	}
+	if len(args) >= 3 {
+		c.execFunc, _ = args[2].(ExecFunc)
+	}
+	if len(args) >= 4 {
+		c.errFunc, _ = args[3].(ErrFunc)
 	}
 	return c
+}
+
+func (c *Command) regexpNames() {
+	c.names = regexp.MustCompile(`[A-Za-z0-9_-]+`).FindAllString(
+		regexp.MustCompile(`^[A-Za-z0-9_|\(\)\s-]+`).FindString(c.usage), -1)
+}
+
+func (c *Command) regexpArguments() {
+	c.arguments.Set(c.usage)
+}
+
+func (c Command) Valid() bool {
+	return len(c.names) != 0 && len(c.usage) != 0
+}
+
+func (c Command) Names() []string {
+	return c.names
 }
 
 func (c Command) Name() string {
-	if alias := strings.Join(c.alias, "|"); len(alias) != 0 {
-		return fmt.Sprintf("(%s|%s)", c.name, alias)
+	name := c.names[0]
+	if len(c.names) > 1 {
+		name = fmt.Sprintf("(%s)", strings.Join(c.names, "|"))
 	}
-	return c.name
+	return name
 }
 
-func (c Command) hasExec() bool {
-	return c.exec != nil
-}
-
-func (c *Command) Version(ver string, flags ...string) Commander {
-	c.version.Set(ver)
-	return c
-}
-
-func (c *Command) Description(desc string) Commander {
+func (c *Command) Description(desc string) ICommand {
 	c.desc = desc
 	return c
 }
 
-func (c *Command) Usage(usage string) Commander {
-	c.usage.Set(usage)
-	return c
-}
-
-func (c *Command) Command(usage string, args ...interface{}) Commander {
-	cmd := newCommand(usage, false)
-	if len(args) >= 1 {
-		// TODO: action
-	}
+func (c *Command) Command(usage string, args ...interface{}) ICommand {
+	cmd := newCommand(usage, args...)
 	if cmd.Valid() {
 		c.commands = append(c.commands, cmd)
 	} else if c.errFunc != nil {
@@ -85,30 +93,8 @@ func (c *Command) Command(usage string, args ...interface{}) Commander {
 	return cmd
 }
 
-func (c *Command) Alias(alias string) Commander {
-	if strs := regexp.MustCompile(`^[A-Za-z0-9_-]+`).
-		FindAllString(strings.TrimSpace(alias), -1); len(strs) != 0 {
-		c.alias = append(c.alias, strs[0])
-	}
-	return c
-}
-
-func (c *Command) Option(flags string, args ...interface{}) Commander {
-	var desc string
-	if len(args) >= 1 {
-		desc, _ = args[0].(string)
-	}
-	if len(args) >= 2 {
-		// TODO: action
-	}
-	if len(args) >= 3 {
-		descDef := make([]string, 0, len(args)-2)
-		for _, d := range args[2:] {
-			descDef = append(descDef, fmt.Sprintf("%v", d))
-		}
-		desc += fmt.Sprintf(" [default: %s]", strings.Join(descDef, ","))
-	}
-	if opt := newOption(strings.TrimSpace(flags), strings.TrimSpace(desc)); opt.Valid() {
+func (c *Command) Option(usage string, args ...interface{}) ICommand {
+	if opt := newOption(usage, args...); opt.Valid() {
 		c.options = append(c.options, opt)
 	} else if c.errFunc != nil {
 		c.errFunc(ErrOption, opt)
@@ -116,17 +102,16 @@ func (c *Command) Option(flags string, args ...interface{}) Commander {
 	return c
 }
 
-func (c Command) Valid() bool {
-	return len(c.name) != 0
-}
-
 func (c Command) UsagesString() (r []string) {
 	if !c.Valid() {
 		return
 	}
 	str := c.Name()
-	if len(c.args) != 0 {
-		str = fmt.Sprintf("%s %s", str, c.args)
+	if len(c.arguments) != 0 {
+		uStrs := c.arguments.UsagesString()
+		for _, uStr := range uStrs {
+			str = fmt.Sprintf("%s %s", str, uStr)
+		}
 	}
 	if len(c.options) != 0 {
 		uStrs := c.options.UsagesString()
@@ -180,8 +165,4 @@ func (c Command) GetHelpMessage() string {
 	}
 
 	return bb.String()
-}
-
-func (c Command) Parse() (map[string]interface{}, error) {
-	return Parse(c.GetHelpMessage(), nil, true, c.version.Get(), false)
 }

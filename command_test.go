@@ -6,9 +6,7 @@ import (
 )
 
 func TestCommand_1(t *testing.T) {
-	c := newCommand("cmd <x>", true).
-		Version("v1.0.1").
-		Description("this is description").
+	c := newCommand("cmd <x>", true, "this is description").
 		Option("-c, --config", "config description").
 		Option("-d, --drop", "drop description")
 
@@ -17,22 +15,22 @@ func TestCommand_1(t *testing.T) {
 		Option("-t, --test", "cmd2 test description")
 
 	c.Command("cmd3 [y]").
-		Option("-b, --bold=<kn>", "cmd3 bold description").
+		Option("-b=<kn>, --bold=<kn>", "cmd3 bold description").
 		Option("-c, --count", "cmd3 count description")
 
 	assert.Equal(t, c.UsagesString(),
-		[]string([]string{
+		[]string{
 			"cmd <x> [-c|--config] [-d|--drop]",
 			"cmd cmd2 [-a|--about] [-t|--test]",
-			"cmd cmd3 [y] [(-b|--bold)=<kn>] [-c|--count]",
+			"cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]",
 			"cmd -h | --help",
 			"cmd --version",
-		}))
+		})
 	assert.Equal(t, c.OptionsString(),
-		[]string([]string{
-			"-c, --config  config description",
-			"-d, --drop    drop description",
-		}))
+		[]string{
+			"-c --config   config description",
+			"-d --drop     drop description",
+		})
 
 	assert.Equal(t, c.GetHelpMessage(),
 		`this is description
@@ -40,12 +38,12 @@ func TestCommand_1(t *testing.T) {
 Usage:
   cmd <x> [-c|--config] [-d|--drop]
   cmd cmd2 [-a|--about] [-t|--test]
-  cmd cmd3 [y] [(-b|--bold)=<kn>] [-c|--count]
+  cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]
   cmd -h | --help
   cmd --version
 
 Options:
-  -c, --config  config description
-  -d, --drop    drop description
+  -c --config   config description
+  -d --drop     drop description
 `)
 }

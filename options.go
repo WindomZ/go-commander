@@ -1,18 +1,10 @@
 package commander
 
-import "fmt"
-
 type Options []*Option
 
 func (o Options) UsagesString() (r []string) {
 	for _, opt := range o {
-		if opt.IsOptionRequired() {
-			r = append(r, fmt.Sprintf("(%s)",
-				opt.UsageString()))
-		} else {
-			r = append(r, fmt.Sprintf("[%s]",
-				opt.UsageString()))
-		}
+		r = append(r, opt.UsageString())
 	}
 	return
 }
