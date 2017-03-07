@@ -1,4 +1,3 @@
 package commander
 
-type Exec interface {
-}
+type ExecFunc func(args map[string]interface{}, exit ...bool)

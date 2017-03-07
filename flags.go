@@ -75,9 +75,9 @@ func (f Flags) UsageString() (s string) {
 		}
 		if len(args) == 1 {
 			s += fmt.Sprintf("=%s", args[0])
-		} else if f.IsRequired() {
+		} else if f.IsArgumentsRequired() {
 			s += fmt.Sprintf("=(%s)", strings.Join(args, "|"))
-		} else if f.IsOptional() {
+		} else if f.IsArgumentsOptional() {
 			s += fmt.Sprintf("=[%s]", strings.Join(args, "|"))
 		} else {
 			s += fmt.Sprintf("=%s", strings.Join(args, "|"))
@@ -94,9 +94,9 @@ func (f Flags) OptionString() (s string) {
 	if args := f.regexpArguments(); len(args) != 0 {
 		if len(args) == 1 {
 			s = fmt.Sprintf("%s", args[0])
-		} else if f.IsRequired() {
+		} else if f.IsArgumentsRequired() {
 			s = fmt.Sprintf("(%s)", strings.Join(args, "|"))
-		} else if f.IsOptional() {
+		} else if f.IsArgumentsOptional() {
 			s = fmt.Sprintf("[%s]", strings.Join(args, "|"))
 		} else {
 			s = fmt.Sprintf("%s", strings.Join(args, "|"))
@@ -118,11 +118,11 @@ func (f Flags) OptionString() (s string) {
 	return
 }
 
-func (f Flags) IsRequired() bool {
+func (f Flags) IsArgumentsRequired() bool {
 	return strings.Contains(f.flag, "<")
 }
 
-func (f Flags) IsOptional() bool {
+func (f Flags) IsArgumentsOptional() bool {
 	return strings.Contains(f.flag, "[")
 }
 

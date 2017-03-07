@@ -34,7 +34,7 @@ func TestCommand_1(t *testing.T) {
 			"-d, --drop    drop description",
 		}))
 
-	assert.Equal(t, c.GetUsage(),
+	assert.Equal(t, c.GetHelpMessage(),
 		`this is description
 
 Usage:

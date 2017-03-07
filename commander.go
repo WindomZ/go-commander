@@ -11,7 +11,7 @@ type Commander interface {
 	Option(flags string, args ...interface{}) Commander
 	UsagesString() []string
 	OptionsString() []string
-	GetUsage() string
+	GetHelpMessage() string
 	Parse() (map[string]interface{}, error)
 }
 

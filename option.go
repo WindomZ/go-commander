@@ -2,16 +2,10 @@ package commander
 
 import "fmt"
 
-type Optional interface {
-	Name() string
-	UsageString() string
-	OptionString() string
-}
-
 type Option struct {
 	Flags
 	desc     string
-	exec     Exec
+	exec     ExecFunc
 	required bool
 }
 
@@ -38,10 +32,10 @@ func (o *Option) Required() *Option {
 	return o
 }
 
-func (o Option) IsRequired() bool {
+func (o Option) IsOptionRequired() bool {
 	return o.required
 }
 
-func (o Option) IsOptional() bool {
-	return !o.IsRequired()
+func (o Option) IsOptionOptional() bool {
+	return !o.IsOptionRequired()
 }

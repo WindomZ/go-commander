@@ -17,7 +17,7 @@ type Command struct {
 	usage    Usage
 	commands Commands
 	options  Options
-	exec     Exec
+	exec     ExecFunc
 	errFunc  ErrFunc
 	root     bool
 }
@@ -141,10 +141,8 @@ func (c Command) UsagesString() (r []string) {
 			r = append(r, fmt.Sprintf("%s %s", c.Name(), uStr))
 		}
 	}
-	if c.root || c.usage.Valid() {
+	if c.root {
 		r = append(r, fmt.Sprintf("%s -h | --help", c.Name()))
-	}
-	if c.root && c.version.Valid() {
 		r = append(r, fmt.Sprintf("%s --version", c.Name()))
 	}
 	return
@@ -159,10 +157,7 @@ func (c Command) OptionsString() (r []string) {
 	return
 }
 
-func (c Command) GetUsage() string {
-	if c.usage.Valid() {
-		return c.usage.Get()
-	}
+func (c Command) GetHelpMessage() string {
 	var bb bytes.Buffer
 
 	if len(c.desc) != 0 {
@@ -188,5 +183,5 @@ func (c Command) GetUsage() string {
 }
 
 func (c Command) Parse() (map[string]interface{}, error) {
-	return Parse(c.GetUsage(), nil, true, c.version.Get(), false)
+	return Parse(c.GetHelpMessage(), nil, true, c.version.Get(), false)
 }

@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 go install
-quick tcp host port
+quick_example tcp host port
