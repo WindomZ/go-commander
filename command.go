@@ -8,19 +8,21 @@ import (
 )
 
 type ICommand interface {
-	Names() []string
+	Version(ver string) ICommand
 	Description(desc string) ICommand
 	Command(usage string, args ...interface{}) ICommand
 	Option(flags string, args ...interface{}) ICommand
 	UsagesString() []string
 	OptionsString() []string
 	GetHelpMessage() string
+	Parse() (DocoptMap, error)
 }
 
 type Command struct {
 	usage     string
 	names     []string
 	root      bool
+	version   string
 	desc      string
 	arguments Arguments
 	commands  Commands
@@ -29,9 +31,10 @@ type Command struct {
 	errFunc   ErrFunc
 }
 
-func newCommand(usage string, args ...interface{}) *Command {
+func newCommand(usage string, root bool, args ...interface{}) *Command {
 	c := &Command{
 		usage: strings.TrimSpace(usage),
+		root:  root,
 		errFunc: func(err error, obj interface{}) {
 			fmt.Printf("  err: %v\n  object: %#v\n", err, obj)
 		},
@@ -39,16 +42,13 @@ func newCommand(usage string, args ...interface{}) *Command {
 	c.regexpNames()
 	c.regexpArguments()
 	if len(args) >= 1 {
-		c.root, _ = args[0].(bool)
+		c.desc, _ = args[0].(string)
 	}
 	if len(args) >= 2 {
-		c.desc, _ = args[1].(string)
+		c.execFunc, _ = args[1].(ExecFunc)
 	}
 	if len(args) >= 3 {
-		c.execFunc, _ = args[2].(ExecFunc)
-	}
-	if len(args) >= 4 {
-		c.errFunc, _ = args[3].(ErrFunc)
+		c.errFunc, _ = args[2].(ErrFunc)
 	}
 	return c
 }
@@ -78,13 +78,18 @@ func (c Command) Name() string {
 	return name
 }
 
+func (c *Command) Version(ver string) ICommand {
+	c.version = ver
+	return c
+}
+
 func (c *Command) Description(desc string) ICommand {
 	c.desc = desc
 	return c
 }
 
 func (c *Command) Command(usage string, args ...interface{}) ICommand {
-	cmd := newCommand(usage, args...)
+	cmd := newCommand(usage, false, args...)
 	if cmd.Valid() {
 		c.commands = append(c.commands, cmd)
 	} else if c.errFunc != nil {
@@ -165,4 +170,8 @@ func (c Command) GetHelpMessage() string {
 	}
 
 	return bb.String()
+}
+
+func (c Command) Parse() (DocoptMap, error) {
+	return Parse(c.GetHelpMessage(), nil, true, c.version, false)
 }
