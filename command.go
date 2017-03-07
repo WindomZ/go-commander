@@ -7,27 +7,15 @@ import (
 	"strings"
 )
 
-type ICommand interface {
-	Version(ver string) ICommand
-	Description(desc string) ICommand
-	Command(usage string, args ...interface{}) ICommand
-	Option(flags string, args ...interface{}) ICommand
-	UsagesString() []string
-	OptionsString() []string
-	GetHelpMessage() string
-	Parse(argv ...[]string) (DocoptMap, error)
-}
-
 type Command struct {
+	actor
 	usage     string
-	names     []string
 	root      bool
 	version   string
 	desc      string
 	arguments Arguments
 	commands  Commands
 	options   Options
-	execFunc  ExecFunc
 	errFunc   ErrFunc
 }
 
@@ -45,7 +33,7 @@ func newCommand(usage string, root bool, args ...interface{}) *Command {
 		c.desc, _ = args[0].(string)
 	}
 	if len(args) >= 2 {
-		c.execFunc, _ = args[1].(ExecFunc)
+		c.action, _ = args[1].(Action)
 	}
 	if len(args) >= 3 {
 		c.errFunc, _ = args[2].(ErrFunc)
@@ -78,17 +66,22 @@ func (c Command) Name() string {
 	return name
 }
 
-func (c *Command) Version(ver string) ICommand {
+func (c *Command) Version(ver string) Commander {
 	c.version = ver
 	return c
 }
 
-func (c *Command) Description(desc string) ICommand {
+func (c *Command) Description(desc string) Commander {
 	c.desc = desc
 	return c
 }
 
-func (c *Command) Command(usage string, args ...interface{}) ICommand {
+func (c *Command) Action(action Action) Commander {
+	c.actor.Action(action)
+	return c
+}
+
+func (c *Command) Command(usage string, args ...interface{}) Commander {
 	cmd := newCommand(usage, false, args...)
 	if cmd.Valid() {
 		c.commands = append(c.commands, cmd)
@@ -98,7 +91,7 @@ func (c *Command) Command(usage string, args ...interface{}) ICommand {
 	return cmd
 }
 
-func (c *Command) Option(usage string, args ...interface{}) ICommand {
+func (c *Command) Option(usage string, args ...interface{}) Commander {
 	if opt := newOption(usage, args...); opt.Valid() {
 		c.options = append(c.options, opt)
 	} else if c.errFunc != nil {
@@ -172,10 +165,41 @@ func (c Command) GetHelpMessage() string {
 	return bb.String()
 }
 
-func (c Command) Parse(argv ...[]string) (DocoptMap, error) {
+func (c Command) ShowHelpMessage() string {
+	s := c.GetHelpMessage()
+	fmt.Println(s)
+	return s
+}
+
+func (c Command) Parse(argv ...[]string) (d DocoptMap, err error) {
 	if len(argv) != 0 {
-		return Parse(c.GetHelpMessage(),
+		d, err = Parse(c.GetHelpMessage(),
 			argv[0], true, c.version, false)
+	} else {
+		d, err = Parse(c.GetHelpMessage(), nil, true, c.version, false)
 	}
-	return Parse(c.GetHelpMessage(), nil, true, c.version, false)
+	if err != nil {
+		return
+	} else if r := c.run(d); r != nil {
+		if r.Break() {
+			err = r.Error()
+			return
+		}
+	} else {
+		// TODO: Should be print help message, but docopt auto impl
+	}
+	return
+}
+
+func (c Command) run(d DocoptMap) Result {
+	if c.root || c.allow(d) {
+		if r := c.options.run(d); r != nil && r.Break() {
+			return r
+		}
+		if r := c.actor.run(d); r != nil && r.Break() {
+			return r
+		}
+		return c.commands.run(d)
+	}
+	return nil
 }

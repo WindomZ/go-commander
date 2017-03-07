@@ -7,13 +7,12 @@ import (
 )
 
 type Option struct {
+	actor               // actor
 	usage     string    // usage
-	names     []string  // names
 	required  bool      // option required
 	desc      string    // desc
-	arguments Arguments // arguments
-	execFunc  ExecFunc  // exec function
 	show      bool      // show on options
+	arguments Arguments // arguments
 }
 
 func newOption(usage string, args ...interface{}) *Option {
@@ -25,22 +24,25 @@ func newOption(usage string, args ...interface{}) *Option {
 	o.regexpRequired()
 	if len(args) >= 1 {
 		o.desc, _ = args[0].(string)
+		o.show = len(o.desc) != 0
 	}
 	if len(args) >= 2 {
-		o.execFunc, _ = args[1].(ExecFunc)
+		o.action, _ = args[1].(Action)
+		if o.action == nil {
+			o.action, _ = args[1].(func(args DocoptMap) Result)
+		}
 	}
 	if len(args) >= 3 {
-		def := fmt.Sprintf("[default: %v]", args[2])
+		defs := make([]string, 0, len(args)-2)
+		for _, arg := range args[2:] {
+			defs = append(defs, fmt.Sprintf("%v", arg))
+		}
+		def := fmt.Sprintf("[default: %v]", strings.Join(defs, ","))
 		if len(o.desc) != 0 {
-			o.desc += fmt.Sprintf(" %s", def)
+			o.desc += " " + def
 		} else {
 			o.desc = def
 		}
-	}
-	if len(args) >= 4 {
-		o.show, _ = args[3].(bool)
-	} else {
-		o.show = len(o.desc) != 0
 	}
 	return o
 }
@@ -56,7 +58,7 @@ func (o *Option) regexpArguments() {
 }
 
 func (o *Option) regexpRequired() {
-	if strings.Contains(o.usage, "(") {
+	if strings.HasPrefix(o.usage, "(") {
 		o.required = true
 	}
 }
@@ -107,4 +109,8 @@ func (o Option) OptionString() (s string) {
 		s = fmt.Sprintf("%-14s%s", s, o.desc)
 	}
 	return
+}
+
+func (o Option) run(d DocoptMap) Result {
+	return o.actor.run(d)
 }

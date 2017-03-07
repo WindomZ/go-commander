@@ -17,3 +17,12 @@ func (o Options) OptionsString() (r []string) {
 	}
 	return
 }
+
+func (o Options) run(d DocoptMap) Result {
+	for _, opt := range o {
+		if r := opt.run(d); r != nil && r.Break() {
+			return r
+		}
+	}
+	return ResultPass
+}

@@ -8,3 +8,12 @@ func (c Commands) OptionsString() (r []string) {
 	}
 	return
 }
+
+func (c Commands) run(d DocoptMap) Result {
+	for _, cmd := range c {
+		if r := cmd.run(d); r != nil && r.Break() {
+			return r
+		}
+	}
+	return ResultPass
+}

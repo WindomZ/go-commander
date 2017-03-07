@@ -3,7 +3,16 @@ package commander
 import "github.com/docopt/docopt-go"
 
 type Commander interface {
-	ICommand
+	Version(ver string) Commander
+	Description(desc string) Commander
+	Action(action Action) Commander
+	Command(usage string, args ...interface{}) Commander
+	Option(usage string, args ...interface{}) Commander
+	UsagesString() []string
+	OptionsString() []string
+	GetHelpMessage() string
+	ShowHelpMessage() string
+	Parse(argv ...[]string) (DocoptMap, error)
 }
 
 func NewCommander(usage string, args ...interface{}) Commander {
@@ -12,6 +21,9 @@ func NewCommander(usage string, args ...interface{}) Commander {
 
 func Parse(doc string, argv []string, help bool, version string,
 	optionsFirst bool, exit ...bool) (DocoptMap, error) {
+	if argv != nil && len(argv) > 1 {
+		argv = argv[1:]
+	}
 	m, err := docopt.Parse(doc, argv, help, version, optionsFirst, exit...)
 	return DocoptMap(m), err
 }
