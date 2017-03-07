@@ -15,7 +15,7 @@ type ICommand interface {
 	UsagesString() []string
 	OptionsString() []string
 	GetHelpMessage() string
-	Parse() (DocoptMap, error)
+	Parse(argv ...[]string) (DocoptMap, error)
 }
 
 type Command struct {
@@ -172,6 +172,10 @@ func (c Command) GetHelpMessage() string {
 	return bb.String()
 }
 
-func (c Command) Parse() (DocoptMap, error) {
+func (c Command) Parse(argv ...[]string) (DocoptMap, error) {
+	if len(argv) != 0 {
+		return Parse(c.GetHelpMessage(),
+			argv[0], true, c.version, false)
+	}
 	return Parse(c.GetHelpMessage(), nil, true, c.version, false)
 }
