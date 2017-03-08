@@ -171,35 +171,35 @@ func (c Command) ShowHelpMessage() string {
 	return s
 }
 
-func (c Command) Parse(argv ...[]string) (d DocoptMap, err error) {
-	if len(argv) != 0 {
-		d, err = Parse(c.GetHelpMessage(),
-			argv[0], true, c.version, false)
-	} else {
-		d, err = Parse(c.GetHelpMessage(), nil, true, c.version, false)
+func (c Command) Parse(args ...[]string) (*Context, error) {
+	var argv []string = nil
+	if len(args) != 0 {
+		argv = args[0]
 	}
+	d, err := Parse(c.GetHelpMessage(), argv, true, c.version, false)
 	if err != nil {
-		return
-	} else if r := c.run(d); r != nil {
+		return nil, err
+	}
+	context := newContext(d)
+	if r := c.run(context); r != nil {
 		if r.Break() {
-			err = r.Error()
-			return
+			return context, r.Error()
 		}
 	} else {
 		// TODO: Should be print help message, but docopt auto impl
 	}
-	return
+	return context, nil
 }
 
-func (c Command) run(d DocoptMap) Result {
-	if c.root || c.allow(d) {
-		if r := c.options.run(d); r != nil && r.Break() {
+func (c Command) run(context *Context) Result {
+	if c.root || c.allow(context) {
+		if r := c.options.run(context); r != nil && r.Break() {
 			return r
 		}
-		if r := c.actor.run(d); r != nil && r.Break() {
+		if r := c.actor.run(context); r != nil && r.Break() {
 			return r
 		}
-		return c.commands.run(d)
+		return c.commands.run(context)
 	}
 	return nil
 }

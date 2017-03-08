@@ -1,3 +1,3 @@
 package commander
 
-type Action func(args DocoptMap) Result
+type Action func(c *Context) Result

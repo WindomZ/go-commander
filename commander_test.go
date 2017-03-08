@@ -28,9 +28,9 @@ func TestCommander_1(t *testing.T) {
 		//)
 	cmd.Command("add <x> <y>").
 		Description("addition operation").
-		Action(func(args DocoptMap) Result {
-			x, _ := args.GetInt("<x>")
-			y, _ := args.GetInt("<y>")
+		Action(func(c *Context) Result {
+			x, _ := c.Doc.GetInt("<x>")
+			y, _ := c.Doc.GetInt("<y>")
 
 			t.Log("x =", x)
 			t.Log("y =", y)
@@ -40,8 +40,8 @@ func TestCommander_1(t *testing.T) {
 			return nil
 		})
 	cmd.Command("ping <host>").
-		Action(func(args DocoptMap) Result {
-			host := args.GetString("<host>")
+		Action(func(c *Context) Result {
+			host := c.Doc.GetString("<host>")
 
 			t.Log("host =", host)
 
@@ -50,8 +50,8 @@ func TestCommander_1(t *testing.T) {
 		}).
 		Option("--timeout=<seconds>",
 			"",
-			func(args DocoptMap) Result {
-				seconds := args.GetString("<seconds>")
+			func(c *Context) Result {
+				seconds := c.Doc.GetString("<seconds>")
 
 				t.Log("seconds =", seconds)
 

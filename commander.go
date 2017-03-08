@@ -12,7 +12,7 @@ type Commander interface {
 	OptionsString() []string
 	GetHelpMessage() string
 	ShowHelpMessage() string
-	Parse(argv ...[]string) (DocoptMap, error)
+	Parse(argv ...[]string) (*Context, error)
 }
 
 func NewCommander(usage string, args ...interface{}) Commander {

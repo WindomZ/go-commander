@@ -29,7 +29,7 @@ func newOption(usage string, args ...interface{}) *Option {
 	if len(args) >= 2 {
 		o.action, _ = args[1].(Action)
 		if o.action == nil {
-			o.action, _ = args[1].(func(args DocoptMap) Result)
+			o.action, _ = args[1].(func(c *Context) Result)
 		}
 	}
 	if len(args) >= 3 {
@@ -111,6 +111,6 @@ func (o Option) OptionString() (s string) {
 	return
 }
 
-func (o Option) run(d DocoptMap) Result {
-	return o.actor.run(d)
+func (o Option) run(c *Context) Result {
+	return o.actor.run(c)
 }

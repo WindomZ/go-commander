@@ -18,9 +18,9 @@ func (o Options) OptionsString() (r []string) {
 	return
 }
 
-func (o Options) run(d DocoptMap) Result {
+func (o Options) run(c *Context) Result {
 	for _, opt := range o {
-		if r := opt.run(d); r != nil && r.Break() {
+		if r := opt.run(c); r != nil && r.Break() {
 			return r
 		}
 	}

@@ -9,16 +9,16 @@ func (a *actor) Action(action Action) {
 	a.action = action
 }
 
-func (a actor) allow(d DocoptMap) (b bool) {
+func (a actor) allow(c *Context) (b bool) {
 	for _, key := range a.names {
-		b, _ = d.GetBool(key)
+		b, _ = c.Doc.GetBool(key)
 	}
 	return
 }
 
-func (a actor) run(d DocoptMap) Result {
-	if !a.allow(d) || a.action == nil {
-	} else if r := a.action(d); r != nil {
+func (a actor) run(c *Context) Result {
+	if !a.allow(c) || a.action == nil {
+	} else if r := a.action(c); r != nil {
 		return r
 	}
 	return ResultPass
