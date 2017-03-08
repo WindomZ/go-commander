@@ -14,6 +14,11 @@ func (d DocoptMap) Get(key string) interface{} {
 	return nil
 }
 
+func (d DocoptMap) Contain(key string) bool {
+	_, ok := d[key]
+	return ok
+}
+
 func (d DocoptMap) GetString(key string) string {
 	if v := d.Get(key); v != nil {
 		if s, ok := v.(string); ok {
@@ -47,4 +52,8 @@ func (d DocoptMap) GetFloat64(key string) (float64, bool) {
 func (d DocoptMap) GetFloat(key string) (float32, bool) {
 	f, err := strconv.ParseFloat(d.GetString(key), 32)
 	return float32(f), err == nil
+}
+
+func (d DocoptMap) String() string {
+	return fmt.Sprintf("%#v", d)
 }

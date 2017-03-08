@@ -1,7 +1,6 @@
 package commander
 
 import (
-	"fmt"
 	"github.com/WindomZ/testify/assert"
 	"testing"
 )
@@ -12,41 +11,49 @@ func TestNewCommander(t *testing.T) {
 }
 
 func TestCommander_1(t *testing.T) {
-	cmd := NewCommander("test [text]").
+	cmd := NewCommander("test [data]").
 		Version("0.0.1").
-		Description("This is a test cli.").
-		Option(
-			"[(-a|--add) <x> <y>]",
-			"addition operation",
-			func(args DocoptMap) Result {
-				x, _ := args.GetInt("<x>")
-				y, _ := args.GetInt("<y>")
+		Description("This is a test cli.")
+		//Option("--info=<info>",
+		//	"info operation",
+		//	func(args DocoptMap) Result {
+		//		info := args.GetString("<info>")
+		//
+		//		t.Log("info =", info)
+		//
+		//		assert.Equal(t, info, 30)
+		//		return nil
+		//	},
+		//	"defalut",
+		//)
+	cmd.Command("add <x> <y>").
+		Description("addition operation").
+		Action(func(args DocoptMap) Result {
+			x, _ := args.GetInt("<x>")
+			y, _ := args.GetInt("<y>")
 
-				//fmt.Println("x =", x)
-				//fmt.Println("y =", y)
-				//fmt.Println("x + y =", x+y)
+			t.Log("x =", x)
+			t.Log("y =", y)
+			t.Log("add x + y =", x+y)
 
-				assert.Equal(t, x+y, 30)
-				return nil
-			},
-			1, 2,
-		)
+			assert.Equal(t, x+y, 30)
+			return nil
+		})
 	cmd.Command("ping <host>").
 		Action(func(args DocoptMap) Result {
 			host := args.GetString("<host>")
 
-			fmt.Println("host =", host)
+			t.Log("host =", host)
 
 			assert.Equal(t, host, "127.0.0.1")
 			return nil
 		}).
-		Option(
-			"--timeout=<seconds>",
+		Option("--timeout=<seconds>",
 			"",
 			func(args DocoptMap) Result {
 				seconds := args.GetString("<seconds>")
 
-				fmt.Println("seconds =", seconds)
+				t.Log("seconds =", seconds)
 
 				assert.Equal(t, seconds, 0)
 				return nil
@@ -54,10 +61,13 @@ func TestCommander_1(t *testing.T) {
 		)
 	cmd.ShowHelpMessage() // only print help message
 
-	if _, err := cmd.Parse([]string{"test", "-a", "10", "20"}); err != nil {
+	//if d, err := cmd.Parse([]string{"test", "--info", "hello", "world"}); err != nil {
+	//	t.Logf("1: %s", d.String())
+	//	t.Fatal(err)
+	//}
+	if _, err := cmd.Parse([]string{"test", "add", "10", "20"}); err != nil {
 		t.Fatal(err)
 	}
-
 	if _, err := cmd.Parse([]string{"test", "ping", "127.0.0.1"}); err != nil {
 		t.Fatal(err)
 	}
