@@ -11,6 +11,7 @@ type Command struct {
 	actor
 	usage     string
 	root      bool
+	clone     bool
 	version   string
 	desc      string
 	arguments Arguments
@@ -48,6 +49,11 @@ func (c *Command) regexpNames() {
 
 func (c *Command) regexpArguments() {
 	c.arguments.Set(c.usage)
+}
+
+func (c *Command) Clone() *Command {
+	c.clone = true
+	return c
 }
 
 func (c Command) Valid() bool {
@@ -100,33 +106,59 @@ func (c *Command) Option(usage string, args ...interface{}) Commander {
 	return c
 }
 
+func (c *Command) line(usage string, args ...interface{}) *Command {
+	return newCommand(usage, c.root, args...).Clone()
+}
+
+func (c *Command) LineArgument(usage string, args ...interface{}) Commander {
+	usage = c.Name() + " " + usage
+	cmd := c.line(usage, args...)
+	if cmd.arguments.IsEmpty() {
+		return cmd
+	}
+	c.commands = append(c.commands, cmd)
+	return cmd
+}
+
+func (c *Command) LineOption(usage string, args ...interface{}) Commander {
+	cmd := c.line(c.usage, args...)
+	cmd.Option(usage, args...)
+	if cmd.options.IsEmpty() {
+		return cmd
+	}
+	c.commands = append(c.commands, cmd)
+	return cmd
+}
+
 func (c Command) UsagesString() (r []string) {
 	if !c.Valid() {
 		return
 	}
-	str := c.Name()
-	if len(c.arguments) != 0 {
-		uStrs := c.arguments.UsagesString()
-		for _, uStr := range uStrs {
-			str = fmt.Sprintf("%s %s", str, uStr)
-		}
-	}
+	str := c.usage
 	if len(c.options) != 0 {
-		uStrs := c.options.UsagesString()
+		uStrs := c.options.UsagesString(c.clone || c.arguments.IsEmpty())
 		for _, uStr := range uStrs {
-			str = fmt.Sprintf("%s %s", str, uStr)
+			str += " " + uStr
 		}
 	}
-	r = append(r, str)
+	name := c.Name()
+	if str != name {
+		r = append(r, str)
+	}
+	name += " "
 	for _, cmd := range c.commands {
 		uStrs := cmd.UsagesString()
 		for _, uStr := range uStrs {
-			r = append(r, fmt.Sprintf("%s %s", c.Name(), uStr))
+			if strings.HasPrefix(uStr, name) {
+				r = append(r, uStr)
+			} else {
+				r = append(r, name+uStr)
+			}
 		}
 	}
-	if c.root {
-		r = append(r, fmt.Sprintf("%s -h | --help", c.Name()))
-		r = append(r, fmt.Sprintf("%s --version", c.Name()))
+	if c.root && !c.clone {
+		r = append(r, fmt.Sprintf("%s-h | --help", name))
+		r = append(r, fmt.Sprintf("%s--version", name))
 	}
 	return
 }
@@ -186,7 +218,7 @@ func (c Command) Parse(args ...[]string) (*Context, error) {
 			return context, r.Error()
 		}
 	} else {
-		// TODO: Should be print help message, but docopt auto impl
+		// TODO: Should be print help message, but docopt auto to do this.
 	}
 	return context, nil
 }

@@ -79,8 +79,10 @@ func (o Option) IsOptional() bool {
 	return !o.IsRequired()
 }
 
-func (o Option) UsageString() (s string) {
+func (o Option) UsageString(ones ...bool) (s string) {
 	if ok, _ := regexp.MatchString(`^[\[(].+[)\]]$`, o.usage); ok {
+		s = o.usage
+	} else if len(ones) != 0 && ones[0] {
 		s = o.usage
 	} else if o.IsRequired() {
 		s = fmt.Sprintf("(%s)", o.usage)

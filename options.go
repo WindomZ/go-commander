@@ -2,9 +2,17 @@ package commander
 
 type Options []*Option
 
-func (o Options) UsagesString() (r []string) {
+func (o Options) IsEmpty() bool {
+	return len(o) == 0
+}
+
+func (o Options) UsagesString(ones ...bool) (r []string) {
+	var one bool
+	if len(o) == 1 && len(ones) != 0 {
+		one = ones[0]
+	}
 	for _, opt := range o {
-		r = append(r, opt.UsageString())
+		r = append(r, opt.UsageString(one))
 	}
 	return
 }

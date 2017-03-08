@@ -8,6 +8,8 @@ type Commander interface {
 	Action(action Action) Commander
 	Command(usage string, args ...interface{}) Commander
 	Option(usage string, args ...interface{}) Commander
+	LineArgument(usage string, args ...interface{}) Commander
+	LineOption(usage string, args ...interface{}) Commander
 	UsagesString() []string
 	OptionsString() []string
 	GetHelpMessage() string
