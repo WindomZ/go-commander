@@ -17,7 +17,7 @@ func main() {
 	//fmt.Println(cmd.GetHelpMessage())
 	fmt.Println(arguments2.Doc)
 
-	fmt.Println("------------------------------")
+	fmt.Println("-------------")
 
 	// ----------- docopt-go -----------
 	usage := `Usage: counted_example --help
