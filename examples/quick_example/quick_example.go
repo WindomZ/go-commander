@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	// go-commander
+	// ----------- go-commander -----------
 	cmd := commander.NewCommander("quick_example").
 		Version("0.1.1rc")
 	cmd.Command("tcp <host> <port>").
@@ -17,19 +17,20 @@ func main() {
 	arguments2, _ := cmd.Parse()
 
 	fmt.Println(cmd.GetHelpMessage())
-	fmt.Println(arguments2)
+	fmt.Println(arguments2.Doc)
 
-	fmt.Println()
+	fmt.Println("------------------------------")
 
+	// ----------- docopt-go -----------
 	usage := `Usage:
   quick_example tcp <host> <port> [--timeout=<seconds>]
   quick_example serial <port> [--baud=9600] [--timeout=<seconds>]
   quick_example -h | --help | --version`
 
-	// docopt-go
 	arguments, _ := commander.Parse(usage, nil, true, "0.1.1rc", false)
 
 	fmt.Println(usage)
 	fmt.Println(arguments)
 
+	fmt.Println("===============================")
 }
