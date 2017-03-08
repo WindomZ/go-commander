@@ -13,6 +13,9 @@ func main() {
 		Description("simple calculator example")
 	cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
 		Action(func(c *commander.Context) commander.Result {
+			if c.Contain("<function>") {
+				return nil
+			}
 			var result int
 			values := c.Doc.GetStrings("<value>")
 			for index, value := range values {
@@ -20,12 +23,12 @@ func main() {
 				} else if index == 0 {
 					result = i
 				} else {
-					switch c.Args.Get(index * 2) {
+					switch c.Args.Get(index*2 - 1) {
 					case "+":
 						result += i
 					case "-":
 						result -= i
-					case "'*'":
+					case "*":
 						result *= i
 					case "/":
 						result /= i
@@ -35,7 +38,21 @@ func main() {
 			fmt.Println(result)
 			return nil
 		})
-	cmd.LineArgument("<function> <value> [( , <value> )]...")
+	cmd.LineArgument("<function> <value> [( , <value> )]...").
+		Action(func(c *commander.Context) commander.Result {
+			var result int
+			switch c.Doc.GetString("<function>") {
+			case "sum":
+				values := c.Doc.GetStrings("<value>")
+				for _, value := range values {
+					if i, err := strconv.Atoi(value); err == nil {
+						result += i
+					}
+				}
+			}
+			fmt.Println(result)
+			return nil
+		})
 	cmd.Annotation("Examples", []string{
 		"calculator_example 1 + 2 + 3 + 4 + 5",
 		"calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
