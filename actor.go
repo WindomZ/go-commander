@@ -27,9 +27,9 @@ func (a actor) allow(c *Context) (b bool) {
 	}
 	for _, key := range a.keys {
 		if b, _ = c.Doc.GetBool(key); b {
-			return
 		} else if b = c.Doc.Contain(key); b {
-			return
+		} else {
+			break
 		}
 	}
 	return
