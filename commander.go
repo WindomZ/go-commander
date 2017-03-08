@@ -5,6 +5,7 @@ import "github.com/docopt/docopt-go"
 type Commander interface {
 	Version(ver string) Commander
 	Description(desc string) Commander
+	Annotation(title string, contents []string) Commander
 	Action(action Action) Commander
 	Command(usage string, args ...interface{}) Commander
 	Option(usage string, args ...interface{}) Commander

@@ -9,15 +9,16 @@ import (
 
 type Command struct {
 	actor
-	usage     string
-	root      bool
-	clone     bool
-	version   string
-	desc      string
-	arguments Arguments
-	commands  Commands
-	options   Options
-	errFunc   ErrFunc
+	usage      string
+	root       bool
+	clone      bool
+	version    string
+	desc       string
+	annotation map[string][]string
+	arguments  Arguments
+	commands   Commands
+	options    Options
+	errFunc    ErrFunc
 }
 
 func newCommand(usage string, root bool, args ...interface{}) *Command {
@@ -79,6 +80,14 @@ func (c *Command) Version(ver string) Commander {
 
 func (c *Command) Description(desc string) Commander {
 	c.desc = desc
+	return c
+}
+
+func (c *Command) Annotation(title string, contents []string) Commander {
+	if c.annotation == nil {
+		c.annotation = make(map[string][]string)
+	}
+	c.annotation[title] = contents
 	return c
 }
 
@@ -191,6 +200,15 @@ func (c Command) GetHelpMessage() string {
 		strs = c.OptionsString()
 		for _, str := range strs {
 			bb.WriteString(fmt.Sprintf("  %s\n", str))
+		}
+	}
+
+	if c.annotation != nil {
+		for title, contents := range c.annotation {
+			bb.WriteString(fmt.Sprintf("\n%s:\n", title))
+			for _, content := range contents {
+				bb.WriteString(fmt.Sprintf("  %s\n", content))
+			}
 		}
 	}
 

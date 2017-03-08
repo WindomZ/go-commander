@@ -10,9 +10,14 @@ func main() {
 	cmd := commander.NewCommander("calculator_example")
 	cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...")
 	cmd.LineArgument("<function> <value> [( , <value> )]...")
+	cmd.Annotation("Examples", []string{
+		"calculator_example 1 + 2 + 3 + 4 + 5",
+		"calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
+		"calculator_example sum 10 , 20 , 30 , 40",
+	})
 	arguments2, _ := cmd.Parse()
 
-	//fmt.Println(cmd.GetHelpMessage())
+	fmt.Println(cmd.GetHelpMessage())
 	fmt.Println(arguments2.Doc)
 
 	fmt.Println("-------------")
@@ -35,7 +40,7 @@ Options:
 `
 	arguments, _ := commander.Parse(usage, nil, true, "", false)
 
-	//fmt.Println(usage)
+	fmt.Println(usage)
 	fmt.Println(arguments)
 
 	fmt.Println("===============================")
