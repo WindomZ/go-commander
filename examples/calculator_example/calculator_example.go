@@ -3,12 +3,38 @@ package main
 import (
 	"fmt"
 	"github.com/WindomZ/go-commander"
+	"strconv"
 )
 
 func main() {
 	// ----------- go-commander -----------
-	cmd := commander.NewCommander("calculator_example")
-	cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...")
+	cmd := commander.NewCommander("calculator_example").
+		Version("0.0.1").
+		Description("simple calculator example")
+	cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
+		Action(func(c *commander.Context) commander.Result {
+			var result int
+			values := c.Doc.GetStrings("<value>")
+			for index, value := range values {
+				if i, err := strconv.Atoi(value); err != nil {
+				} else if index == 0 {
+					result = i
+				} else {
+					switch c.Args.Get(index * 2) {
+					case "+":
+						result += i
+					case "-":
+						result -= i
+					case "'*'":
+						result *= i
+					case "/":
+						result /= i
+					}
+				}
+			}
+			fmt.Println(result)
+			return nil
+		})
 	cmd.LineArgument("<function> <value> [( , <value> )]...")
 	cmd.Annotation("Examples", []string{
 		"calculator_example 1 + 2 + 3 + 4 + 5",
@@ -40,7 +66,7 @@ Options:
 `
 	arguments, _ := commander.Parse(usage, nil, true, "", false)
 
-	fmt.Println(usage)
+	//fmt.Println(usage)
 	fmt.Println(arguments)
 
 	fmt.Println("===============================")
