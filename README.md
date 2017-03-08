@@ -39,12 +39,13 @@ To coding with `go-commander` just like this:
 ```go
 import "github.com/WindomZ/go-commander"
 
-cmd := commander.NewCommander("quick_example").Version("0.1.1rc")
+cmd := commander.NewCommander("quick_example").
+    Version("0.1.1rc")
 cmd.Command("tcp <host> <port>").
-Option("--timeout=<seconds>")
+    Option("--timeout=<seconds>")
 cmd.Command("serial <port>").
-Option("--baud=9600").
-Option("--timeout=<seconds>")
+    Option("--baud=9600").
+    Option("--timeout=<seconds>")
 ```
 
 ### Counted example
@@ -98,55 +99,55 @@ To coding with `go-commander` just like this:
 import "github.com/WindomZ/go-commander"
 
 cmd := commander.NewCommander("calculator_example").
-		Version("0.0.1").
-		Description("simple calculator example")
-	cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
-		Action(func(c *commander.Context) commander.Result {
-			if c.Contain("<function>") {
-				return nil
-			}
-			var result int
-			values := c.Doc.GetStrings("<value>")
-			for index, value := range values {
-				if i, err := strconv.Atoi(value); err != nil {
-				} else if index == 0 {
-					result = i
-				} else {
-					switch c.Args.Get(index*2 - 1) {
-					case "+":
-						result += i
-					case "-":
-						result -= i
-					case "*":
-						result *= i
-					case "/":
-						result /= i
-					}
-				}
-			}
-			fmt.Println(result)
-			return nil
-		})
-	cmd.LineArgument("<function> <value> [( , <value> )]...").
-		Action(func(c *commander.Context) commander.Result {
-			var result int
-			switch c.Doc.GetString("<function>") {
-			case "sum":
-				values := c.Doc.GetStrings("<value>")
-				for _, value := range values {
-					if i, err := strconv.Atoi(value); err == nil {
-						result += i
-					}
-				}
-			}
-			fmt.Println(result)
-			return nil
-		})
-	cmd.Annotation("Examples", []string{
-		"calculator_example 1 + 2 + 3 + 4 + 5",
-		"calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
-		"calculator_example sum 10 , 20 , 30 , 40",
-	})
+    Version("0.0.1").
+    Description("simple calculator example")
+cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
+    Action(func(c *commander.Context) commander.Result {
+        if c.Contain("<function>") {
+            return nil
+        }
+        var result int
+        values := c.Doc.GetStrings("<value>")
+        for index, value := range values {
+            if i, err := strconv.Atoi(value); err != nil {
+            } else if index == 0 {
+                result = i
+            } else {
+                switch c.Args.Get(index*2 - 1) {
+                case "+":
+                    result += i
+                case "-":
+                    result -= i
+                case "*":
+                    result *= i
+                case "/":
+                    result /= i
+                }
+            }
+        }
+        fmt.Println(result)
+        return nil
+    })
+cmd.LineArgument("<function> <value> [( , <value> )]...").
+    Action(func(c *commander.Context) commander.Result {
+        var result int
+        switch c.Doc.GetString("<function>") {
+        case "sum":
+            values := c.Doc.GetStrings("<value>")
+            for _, value := range values {
+                if i, err := strconv.Atoi(value); err == nil {
+                    result += i
+                }
+            }
+        }
+        fmt.Println(result)
+        return nil
+    })
+cmd.Annotation("Examples", []string{
+    "calculator_example 1 + 2 + 3 + 4 + 5",
+    "calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
+    "calculator_example sum 10 , 20 , 30 , 40",
+})
 ```
 
 Get the terminal output:
