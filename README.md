@@ -20,9 +20,9 @@ To install commander according to your `$GOPATH`:
 go get github.com/WindomZ/go-commander
 ```
 
-## Example
+## Examples
 
-### Quick example
+### [Quick example](https://github.com/WindomZ/go-commander/blob/master/examples/quick_example/quick_example.go)
 
 Such as the following help message
 
@@ -48,7 +48,7 @@ cmd.Command("serial <port>").
     Option("--timeout=<seconds>")
 ```
 
-### Counted example
+### [Counted example](https://github.com/WindomZ/go-commander/blob/master/examples/counted_example/counted_example.go)
 
 Such as the following help message
 
@@ -74,7 +74,7 @@ cmd.LineOption("(--path=<path>)...")
 cmd.LineArgument("<file> <file>")
 ```
 
-### Calculator example
+### [Calculator example](https://github.com/WindomZ/go-commander/blob/master/examples/calculator_example/calculator_example.go)
 
 Such as the following help message
 
