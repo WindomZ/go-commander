@@ -16,7 +16,7 @@ func main() {
 		Option("--timeout=<seconds>")
 	arguments2, _ := cmd.Parse()
 
-	fmt.Println(cmd.GetHelpMessage())
+	fmt.Println(cmd.GetHelpMessage()) // print help messages
 	fmt.Println(arguments2.Doc)
 
 	fmt.Println("-------------")

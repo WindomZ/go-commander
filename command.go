@@ -35,7 +35,7 @@ func newCommand(usage string, root bool, args ...interface{}) *Command {
 		c.desc, _ = args[0].(string)
 	}
 	if len(args) >= 2 {
-		c.action, _ = args[1].(Action)
+		c.setAction(args[1])
 	}
 	if len(args) >= 3 {
 		c.errFunc, _ = args[2].(ErrFunc)

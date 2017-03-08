@@ -27,10 +27,7 @@ func newOption(usage string, args ...interface{}) *Option {
 		o.show = len(o.desc) != 0
 	}
 	if len(args) >= 2 {
-		o.action, _ = args[1].(Action)
-		if o.action == nil {
-			o.action, _ = args[1].(func(c *Context) Result)
-		}
+		o.setAction(args[1])
 	}
 	if len(args) >= 3 {
 		defs := make([]string, 0, len(args)-2)

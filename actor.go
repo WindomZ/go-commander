@@ -6,6 +6,14 @@ type actor struct {
 	keys   []string
 }
 
+func (a *actor) setAction(arg interface{}) {
+	if action, ok := arg.(Action); ok {
+		a.action = action
+	} else if action, ok := arg.(func(c *Context) Result); ok {
+		a.action = action
+	}
+}
+
 func (a *actor) addKeys(keys []string) {
 	if keys != nil && len(keys) != 0 {
 		a.keys = append(a.keys, keys...)
