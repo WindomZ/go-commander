@@ -17,7 +17,7 @@ func main() {
 	})
 	arguments2, _ := cmd.Parse()
 
-	fmt.Println(cmd.GetHelpMessage())
+	//fmt.Println(cmd.GetHelpMessage())
 	fmt.Println(arguments2.Doc)
 
 	fmt.Println("-------------")

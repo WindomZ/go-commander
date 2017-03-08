@@ -30,6 +30,10 @@ func TestCommand_1(t *testing.T) {
 		[]string{
 			"-c --config   config description",
 			"-d --drop     drop description",
+			"-a --about    cmd2 about description",
+			"-t --test     cmd2 test description",
+			"-b=<kn> --bold=<kn>  cmd3 bold description",
+			"-c --count    cmd3 count description",
 		})
 
 	assert.Equal(t, c.GetHelpMessage(),
@@ -45,5 +49,9 @@ Usage:
 Options:
   -c --config   config description
   -d --drop     drop description
+  -a --about    cmd2 about description
+  -t --test     cmd2 test description
+  -b=<kn> --bold=<kn>  cmd3 bold description
+  -c --count    cmd3 count description
 `)
 }

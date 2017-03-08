@@ -97,6 +97,12 @@ func (c *Command) Action(action Action) Commander {
 }
 
 func (c *Command) Command(usage string, args ...interface{}) Commander {
+	if c.clone {
+		c.usage += " " + usage
+		c.regexpNames()
+		c.regexpArguments()
+		return c
+	}
 	cmd := newCommand(usage, false, args...)
 	if cmd.Valid() {
 		c.commands = append(c.commands, cmd)
@@ -145,7 +151,7 @@ func (c Command) UsagesString() (r []string) {
 	}
 	str := c.usage
 	if len(c.options) != 0 {
-		uStrs := c.options.UsagesString(c.clone || c.arguments.IsEmpty())
+		uStrs := c.options.UsagesString(c.clone && c.arguments.IsEmpty())
 		for _, uStr := range uStrs {
 			str += " " + uStr
 		}
@@ -177,7 +183,7 @@ func (c Command) OptionsString() (r []string) {
 		return
 	}
 	r = append(r, c.options.OptionsString()...)
-	//r = append(r, c.commands.OptionsString()...)
+	r = append(r, c.commands.OptionsString()...)
 	return
 }
 

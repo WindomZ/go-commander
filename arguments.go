@@ -9,6 +9,7 @@ func (a Arguments) IsEmpty() bool {
 }
 
 func (a *Arguments) Set(usage string) {
+	*a = (*a)[:0]
 	if strs := regexp.MustCompile(`(?i:<|\[)[A-Za-z0-9_\[\]<>-]+(?i:>|])`).
 		FindAllString(usage, -1); len(strs) != 0 {
 		for _, str := range strs {
