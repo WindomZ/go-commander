@@ -3,7 +3,7 @@ package commander
 import (
 	"bytes"
 	"fmt"
-	"regexp"
+	"os"
 	"strings"
 )
 
@@ -44,8 +44,7 @@ func newCommand(usage string, root bool, args ...interface{}) *Command {
 }
 
 func (c *Command) regexpNames() {
-	c.names = regexp.MustCompile(`[A-Za-z0-9_-]+`).FindAllString(
-		regexp.MustCompile(`^[A-Za-z0-9_|\(\)\s-]+`).FindString(c.usage), -1)
+	c.names = RegexpCommand(c.usage)
 }
 
 func (c *Command) regexpArguments() {
@@ -91,8 +90,8 @@ func (c *Command) Annotation(title string, contents []string) Commander {
 	return c
 }
 
-func (c *Command) Action(action Action) Commander {
-	c.actor.Action(action)
+func (c *Command) Action(action Action, keys ...[]string) Commander {
+	c.actor.Action(action, keys...)
 	return c
 }
 
@@ -131,6 +130,7 @@ func (c *Command) LineArgument(usage string, args ...interface{}) Commander {
 	if cmd.arguments.IsEmpty() {
 		return cmd
 	}
+	cmd.addKeys(cmd.arguments.Get())
 	c.commands = append(c.commands, cmd)
 	return cmd
 }
@@ -232,11 +232,14 @@ func (c Command) Parse(args ...[]string) (*Context, error) {
 	if len(args) != 0 {
 		argv = args[0]
 	}
+	if argv == nil && len(os.Args) > 1 {
+		argv = os.Args
+	}
 	d, err := Parse(c.GetHelpMessage(), argv, true, c.version, false)
 	if err != nil {
 		return nil, err
 	}
-	context := newContext(d)
+	context := newContext(argv, d)
 	if r := c.run(context); r != nil {
 		if r.Break() {
 			return context, r.Error()
@@ -252,10 +255,10 @@ func (c Command) run(context *Context) Result {
 		if r := c.options.run(context); r != nil && r.Break() {
 			return r
 		}
-		if r := c.actor.run(context); r != nil && r.Break() {
+		if r := c.commands.run(context); r != nil && r.Break() {
 			return r
 		}
-		return c.commands.run(context)
+		return c.actor.run(context)
 	}
 	return nil
 }

@@ -48,9 +48,7 @@ func newOption(usage string, args ...interface{}) *Option {
 }
 
 func (o *Option) regexpNames() {
-	o.names = regexp.MustCompile(`-{1,2}[A-Za-z0-9_-]+\b`).
-		FindAllString(regexp.MustCompile(`(<|\[)[A-Za-z0-9_\[\]<>-]+\b(>|])`).
-			ReplaceAllString(o.usage, ""), -1)
+	o.names = RegexpOption(o.usage)
 }
 
 func (o *Option) regexpArguments() {

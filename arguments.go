@@ -1,7 +1,5 @@
 package commander
 
-import "regexp"
-
 type Arguments []*Argument
 
 func (a Arguments) IsEmpty() bool {
@@ -10,12 +8,18 @@ func (a Arguments) IsEmpty() bool {
 
 func (a *Arguments) Set(usage string) {
 	*a = (*a)[:0]
-	if strs := regexp.MustCompile(`(?i:<|\[)[A-Za-z0-9_\[\]<>-]+(?i:>|])`).
-		FindAllString(usage, -1); len(strs) != 0 {
+	if strs := RegexpArgument(usage); len(strs) != 0 {
 		for _, str := range strs {
 			*a = append(*a, newArgument(str))
 		}
 	}
+}
+
+func (a Arguments) Get() (r []string) {
+	for _, arg := range a {
+		r = append(r, arg.name)
+	}
+	return
 }
 
 func (a Arguments) UsagesString() (r []string) {

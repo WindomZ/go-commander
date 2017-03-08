@@ -1,11 +1,19 @@
 package commander
 
+import "fmt"
+
 type Context struct {
-	Doc DocoptMap
+	Args ContextArgs
+	Doc  DocoptMap
 }
 
-func newContext(d DocoptMap) *Context {
+func newContext(args []string, d DocoptMap) *Context {
 	return &Context{
-		Doc: d,
+		Args: ContextArgs(args),
+		Doc:  d,
 	}
+}
+
+func (c Context) String() string {
+	return fmt.Sprintf("%#v", c)
 }

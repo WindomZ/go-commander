@@ -15,8 +15,8 @@ func (d DocoptMap) Get(key string) interface{} {
 }
 
 func (d DocoptMap) Contain(key string) bool {
-	_, ok := d[key]
-	return ok
+	v, ok := d[key]
+	return ok && v != nil
 }
 
 func (d DocoptMap) GetString(key string) string {
@@ -27,6 +27,15 @@ func (d DocoptMap) GetString(key string) string {
 		return fmt.Sprintf("%v", v)
 	}
 	return ""
+}
+
+func (d DocoptMap) GetStrings(key string) []string {
+	if v := d.Get(key); v != nil {
+		if s, ok := v.([]string); ok {
+			return s
+		}
+	}
+	return []string{}
 }
 
 func (d DocoptMap) GetBool(key string) (bool, bool) {
