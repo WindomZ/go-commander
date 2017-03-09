@@ -1,6 +1,7 @@
 # go-commander
 [![Build Status](https://travis-ci.org/WindomZ/go-commander.svg?branch=master)](https://travis-ci.org/WindomZ/go-commander)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
 
 The solution for Go command-line interfaces, 
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
