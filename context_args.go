@@ -29,5 +29,5 @@ func (c ContextArgs) String(offsets ...int) string {
 	if offset < 0 {
 		offset = 0
 	}
-	return strings.Join(c[offset:], "")
+	return strings.Join(c[offset:], " | ")
 }

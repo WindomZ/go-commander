@@ -2,6 +2,7 @@ package commander
 
 import (
 	"github.com/WindomZ/testify/assert"
+	"strconv"
 	"testing"
 )
 
@@ -51,4 +52,69 @@ func TestCommander_1(t *testing.T) {
 
 	assert.Equal(t, sum, 30)
 	assert.Equal(t, host, "127.0.0.1")
+}
+
+func TestCommander_calculator(t *testing.T) {
+	var result int
+
+	cmd := NewCommander("calculator_example").
+		Version("0.0.1").
+		Description("simple calculator example")
+	cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
+		Action(func(c *Context) Result {
+			if c.Contain("<function>") {
+				return nil
+			}
+			values := c.Doc.GetStrings("<value>")
+			for index, value := range values {
+				if i, err := strconv.Atoi(value); err != nil {
+				} else if index == 0 {
+					result = i
+				} else {
+					switch c.Args.Get(index*2 - 1) {
+					case "+":
+						result += i
+					case "-":
+						result -= i
+					case "*":
+						result *= i
+					case "/":
+						result /= i
+					}
+				}
+			}
+			return nil
+		})
+	cmd.LineArgument("<function> <value> [( , <value> )]...").
+		Action(func(c *Context) Result {
+			result = 0
+			switch c.Doc.GetString("<function>") {
+			case "sum":
+				values := c.Doc.GetStrings("<value>")
+				for _, value := range values {
+					if i, err := strconv.Atoi(value); err == nil {
+						result += i
+					}
+				}
+			}
+			return nil
+		})
+
+	if _, err := cmd.Parse([]string{"calculator_example",
+		"1", "+", "2", "+", "3", "+", "4", "+", "5"}); err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, result, 15)
+
+	if _, err := cmd.Parse([]string{"calculator_example",
+		"1", "+", "2", "*", "3", "/", "4", "-", "5"}); err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, result, -3)
+
+	if _, err := cmd.Parse([]string{"calculator_example",
+		"sum", "10", ",", "20", ",", "30", ",", "40"}); err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, result, 100)
 }
