@@ -71,12 +71,16 @@ import "github.com/WindomZ/go-commander"
 
 // new counted_example
 cmd := commander.NewCommander("counted_example")
+
 // counted_example -v...
 cmd.Option("-v...")
+
 // counted_example go [go]
 cmd.Command("go [go]")
+
 // counted_example (--path=<path>)...
 cmd.LineOption("(--path=<path>)...")
+
 // counted_example <file> <file>
 cmd.LineArgument("<file> <file>")
 ```
