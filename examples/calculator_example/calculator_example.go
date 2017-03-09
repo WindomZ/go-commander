@@ -8,9 +8,12 @@ import (
 
 func main() {
 	// ----------- go-commander -----------
+	// new calculator_example
 	cmd := commander.NewCommander("calculator_example").
 		Version("0.0.1").
 		Description("simple calculator example")
+
+	// calculator_example <value> ( ( + | - | * | / ) <value> )...
 	cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
 		Action(func(c *commander.Context) error {
 			if c.Contain("<function>") {
@@ -38,6 +41,8 @@ func main() {
 			fmt.Println(result)
 			return nil
 		})
+
+	// calculator_example <function> <value> [( , <value> )]...
 	cmd.LineArgument("<function> <value> [( , <value> )]...").
 		Action(func(c *commander.Context) error {
 			var result int
@@ -53,11 +58,14 @@ func main() {
 			fmt.Println(result)
 			return nil
 		})
+
+	// Examples: ...
 	cmd.Annotation("Examples", []string{
 		"calculator_example 1 + 2 + 3 + 4 + 5",
 		"calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
 		"calculator_example sum 10 , 20 , 30 , 40",
 	})
+
 	arguments2, _ := cmd.Parse()
 
 	//fmt.Println(cmd.GetHelpMessage())
