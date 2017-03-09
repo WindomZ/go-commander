@@ -40,13 +40,14 @@ To coding with `go-commander` just like this:
 ```go
 import "github.com/WindomZ/go-commander"
 
-cmd := commander.NewCommander("quick_example").
-    Version("0.1.1rc")
-cmd.Command("tcp <host> <port>").
-    Option("--timeout=<seconds>")
-cmd.Command("serial <port>").
-    Option("--baud=9600").
-    Option("--timeout=<seconds>")
+// new quick_example
+cmd := commander.NewCommander("quick_example").Version("0.1.1rc")
+
+// quick_example tcp <host> <port> [--timeout=<seconds>]
+cmd.Command("tcp <host> <port>").Option("--timeout=<seconds>")
+
+// quick_example serial <port> [--baud=9600] [--timeout=<seconds>]
+cmd.Command("serial <port>").Option("--baud=9600").Option("--timeout=<seconds>")
 ```
 
 ### [Counted example](https://github.com/WindomZ/go-commander/blob/master/examples/counted_example/counted_example.go)
@@ -68,10 +69,15 @@ To coding with `go-commander` just like this:
 ```go
 import "github.com/WindomZ/go-commander"
 
+// new counted_example
 cmd := commander.NewCommander("counted_example")
+// counted_example -v...
 cmd.Option("-v...")
+// counted_example go [go]
 cmd.Command("go [go]")
+// counted_example (--path=<path>)...
 cmd.LineOption("(--path=<path>)...")
+// counted_example <file> <file>
 cmd.LineArgument("<file> <file>")
 ```
 
@@ -99,9 +105,12 @@ To coding with `go-commander` just like this:
 ```go
 import "github.com/WindomZ/go-commander"
 
+// new calculator_example
 cmd := commander.NewCommander("calculator_example").
     Version("0.0.1").
     Description("simple calculator example")
+
+// calculator_example <value> ( ( + | - | * | / ) <value> )...
 cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
     Action(func(c *commander.Context) error {
         if c.Contain("<function>") {
@@ -129,6 +138,8 @@ cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
         fmt.Println(result)
         return nil
     })
+
+// calculator_example <function> <value> [( , <value> )]...
 cmd.LineArgument("<function> <value> [( , <value> )]...").
     Action(func(c *commander.Context) error {
         var result int
@@ -144,6 +155,8 @@ cmd.LineArgument("<function> <value> [( , <value> )]...").
         fmt.Println(result)
         return nil
     })
+
+// Examples: ...
 cmd.Annotation("Examples", []string{
     "calculator_example 1 + 2 + 3 + 4 + 5",
     "calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
