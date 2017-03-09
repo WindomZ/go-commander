@@ -90,7 +90,7 @@ func (c *Command) Annotation(title string, contents []string) Commander {
 	return c
 }
 
-func (c *Command) Action(action Action, keys ...[]string) Commander {
+func (c *Command) Action(action interface{}, keys ...[]string) Commander {
 	c.actor.Action(action, keys...)
 	return c
 }

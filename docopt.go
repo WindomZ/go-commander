@@ -11,6 +11,10 @@ func newDocoptMap(m map[string]interface{}) DocoptMap {
 	return DocoptMap(m)
 }
 
+func (d DocoptMap) Map() map[string]interface{} {
+	return map[string]interface{}(d)
+}
+
 func (d DocoptMap) Get(key string) interface{} {
 	if v, ok := d[key]; ok {
 		return v

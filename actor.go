@@ -11,6 +11,25 @@ func (a *actor) setAction(arg interface{}) {
 		a.action = action
 	} else if action, ok := arg.(func(c *Context) Result); ok {
 		a.action = action
+	} else if action, ok := arg.(func(c *Context) error); ok {
+		a.action = func(c *Context) Result {
+			if err := action(c); err != nil {
+				return NewResultError(err)
+			}
+			return ResultPass
+		}
+	} else if action, ok := arg.(func(c *Context)); ok {
+		a.action = func(c *Context) Result {
+			action(c)
+			return ResultPass
+		}
+	} else if action, ok := arg.(func(m map[string]interface{}) error); ok {
+		a.action = func(c *Context) Result {
+			if err := action(c.Doc.Map()); err != nil {
+				return NewResultError(err)
+			}
+			return ResultPass
+		}
 	}
 }
 
@@ -20,8 +39,8 @@ func (a *actor) addKeys(keys []string) {
 	}
 }
 
-func (a *actor) Action(action Action, keys ...[]string) {
-	a.action = action
+func (a *actor) Action(action interface{}, keys ...[]string) {
+	a.setAction(action)
 	if len(keys) != 0 {
 		a.addKeys(keys[0])
 	}
