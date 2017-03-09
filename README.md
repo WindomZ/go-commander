@@ -3,6 +3,9 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
 
+![v0.5.1](https://img.shields.io/badge/version-v0.5.1-orange.svg)
+![status](https://img.shields.io/badge/status-beta-yellow.svg)
+
 The solution for Go command-line interfaces, 
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander](https://github.com/tj/commander.js)>
