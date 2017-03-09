@@ -51,6 +51,11 @@ func (d DocoptMap) GetBool(key string) (bool, bool) {
 	return b, err == nil
 }
 
+func (d DocoptMap) GetMustBool(key string) bool {
+	b, ok := d.GetBool(key)
+	return b && ok
+}
+
 func (d DocoptMap) GetInt64(key string) (int64, bool) {
 	i, err := strconv.ParseInt(d.GetString(key), 10, 64)
 	return i, err == nil

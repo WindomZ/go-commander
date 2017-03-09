@@ -53,9 +53,11 @@ func (a actor) allow(c *Context) (b bool) {
 		}
 	}
 	for _, key := range a.keys {
-		if b, _ = c.Doc.GetBool(key); b {
-		} else if b = c.Doc.Contain(key); b {
+		if b = c.Doc.GetMustBool(key); b {
+		} else if b = c.Doc.Contain(key); b &&
+			ContainArgument(key) {
 		} else {
+			b = false
 			break
 		}
 	}
