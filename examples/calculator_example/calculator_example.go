@@ -12,7 +12,7 @@ func main() {
 		Version("0.0.1").
 		Description("simple calculator example")
 	cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
-		Action(func(c *commander.Context) commander.Result {
+		Action(func(c *commander.Context) error {
 			if c.Contain("<function>") {
 				return nil
 			}
@@ -39,7 +39,7 @@ func main() {
 			return nil
 		})
 	cmd.LineArgument("<function> <value> [( , <value> )]...").
-		Action(func(c *commander.Context) commander.Result {
+		Action(func(c *commander.Context) error {
 			var result int
 			switch c.Doc.GetString("<function>") {
 			case "sum":

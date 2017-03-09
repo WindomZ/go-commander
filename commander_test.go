@@ -20,20 +20,20 @@ func TestCommander_1(t *testing.T) {
 		Description("This is a test cli.")
 	cmd.Command("add <x> <y>").
 		Description("addition operation").
-		Action(func(c *Context) Result {
+		Action(func(c *Context) error {
 			x, _ := c.Doc.GetInt("<x>")
 			y, _ := c.Doc.GetInt("<y>")
 			sum = x + y
 			return nil
 		})
 	cmd.Command("ping <host>").
-		Action(func(c *Context) Result {
+		Action(func(c *Context) error {
 			host = c.Doc.GetString("<host>")
 			return nil
 		}).
 		Option("--timeout=<seconds>",
 			"",
-			func(c *Context) Result {
+			func(c *Context) error {
 				seconds := c.Doc.GetString("<seconds>")
 
 				t.Log("seconds =", seconds)
@@ -61,7 +61,7 @@ func TestCommander_calculator(t *testing.T) {
 		Version("0.0.1").
 		Description("simple calculator example")
 	cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
-		Action(func(c *Context) Result {
+		Action(func(c *Context) error {
 			if c.Contain("<function>") {
 				return nil
 			}
@@ -86,7 +86,7 @@ func TestCommander_calculator(t *testing.T) {
 			return nil
 		})
 	cmd.LineArgument("<function> <value> [( , <value> )]...").
-		Action(func(c *Context) Result {
+		Action(func(c *Context) error {
 			result = 0
 			switch c.Doc.GetString("<function>") {
 			case "sum":
