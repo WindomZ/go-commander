@@ -7,6 +7,10 @@ import (
 
 type DocoptMap map[string]interface{}
 
+func newDocoptMap(m map[string]interface{}) DocoptMap {
+	return DocoptMap(m)
+}
+
 func (d DocoptMap) Get(key string) interface{} {
 	if v, ok := d[key]; ok {
 		return v

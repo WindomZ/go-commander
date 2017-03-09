@@ -28,5 +28,5 @@ func Parse(doc string, argv []string, help bool, version string,
 		argv = argv[1:]
 	}
 	m, err := docopt.Parse(doc, argv, help, version, optionsFirst, exit...)
-	return DocoptMap(m), err
+	return newDocoptMap(m), err
 }
