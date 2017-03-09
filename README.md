@@ -102,7 +102,7 @@ cmd := commander.NewCommander("calculator_example").
     Version("0.0.1").
     Description("simple calculator example")
 cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
-    Action(func(c *commander.Context) commander.Result {
+    Action(func(c *commander.Context) error {
         if c.Contain("<function>") {
             return nil
         }
@@ -129,7 +129,7 @@ cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
         return nil
     })
 cmd.LineArgument("<function> <value> [( , <value> )]...").
-    Action(func(c *commander.Context) commander.Result {
+    Action(func(c *commander.Context) error {
         var result int
         switch c.Doc.GetString("<function>") {
         case "sum":
