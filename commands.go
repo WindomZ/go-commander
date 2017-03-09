@@ -1,5 +1,6 @@
 package commander
 
+// Commands Command line commands implementation
 type Commands []*Command
 
 func (c Commands) OptionsString() (r []string) {

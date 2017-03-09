@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// Option
 type Option struct {
 	actor               // actor
 	usage     string    // usage

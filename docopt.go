@@ -5,6 +5,7 @@ import (
 	"strconv"
 )
 
+// DocoptMap docopt returns a map of option names to the values
 type DocoptMap map[string]interface{}
 
 func newDocoptMap(m map[string]interface{}) DocoptMap {

@@ -2,6 +2,7 @@ package commander
 
 import "strings"
 
+// Argument Implementation of command line parameter
 type Argument struct {
 	name string
 }

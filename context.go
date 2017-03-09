@@ -2,6 +2,7 @@ package commander
 
 import "fmt"
 
+// Context
 type Context struct {
 	Args ContextArgs
 	Doc  DocoptMap

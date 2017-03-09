@@ -7,18 +7,19 @@ import (
 	"strings"
 )
 
+// Command Command line command implementation
 type Command struct {
 	actor
-	usage      string
-	root       bool
-	clone      bool
-	version    string
-	desc       string
-	annotation map[string][]string
-	arguments  Arguments
-	commands   Commands
-	options    Options
-	errFunc    ErrFunc
+	usage      string              // api set usage
+	root       bool                // root command
+	clone      bool                // clone command
+	version    string              // version if root command
+	desc       string              // description
+	annotation map[string][]string // annotation, like 'try', 'examples', etc.
+	arguments  Arguments           // parse arguments from usage
+	commands   Commands            // api set subcommands
+	options    Options             // api set options
+	errFunc    ErrFunc             // error function // TODO: not finish this
 }
 
 func newCommand(usage string, root bool, args ...interface{}) *Command {
@@ -130,7 +131,7 @@ func (c *Command) LineArgument(usage string, args ...interface{}) Commander {
 	if cmd.arguments.IsEmpty() {
 		return cmd
 	}
-	cmd.addKeys(cmd.arguments.Get())
+	cmd.addMustKeys(cmd.arguments.Get())
 	c.commands = append(c.commands, cmd)
 	return cmd
 }

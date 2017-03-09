@@ -1,5 +1,6 @@
 package commander
 
+// Arguments Implementation of command line parameters
 type Arguments []*Argument
 
 func (a Arguments) IsEmpty() bool {
