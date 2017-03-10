@@ -3,7 +3,7 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
 
-![v0.6.0](https://img.shields.io/badge/version-v0.6.0-orange.svg)
+![v0.7.0](https://img.shields.io/badge/version-v0.7.0-orange.svg)
 ![status](https://img.shields.io/badge/status-beta-yellow.svg)
 
 The solution for Go command-line interfaces, 
@@ -102,7 +102,7 @@ commander.Program.
 Such as the following help message
 
 ```markdown
-simple calculator example
+Simple calculator example
 
 Usage:
   calculator_example <value> ( ( + | - | * | / ) <value> )...
@@ -125,7 +125,7 @@ import "github.com/WindomZ/go-commander"
 commander.Program.
 	Command("calculator_example").
 	Version("0.0.1").
-	Description("simple calculator example")
+	Description("Simple calculator example")
 
 // calculator_example <value> ( ( + | - | * | / ) <value> )...
 commander.Program.
