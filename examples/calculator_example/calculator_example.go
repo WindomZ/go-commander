@@ -8,13 +8,15 @@ import (
 
 func main() {
 	// ----------- go-commander -----------
-	// new calculator_example
-	cmd := commander.NewCommander("calculator_example").
+	// calculator_example
+	commander.Program.
+		Command("calculator_example").
 		Version("0.0.1").
 		Description("simple calculator example")
 
 	// calculator_example <value> ( ( + | - | * | / ) <value> )...
-	cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
+	commander.Program.
+		LineArgument("<value> ( ( + | - | * | / ) <value> )...").
 		Action(func(c *commander.Context) error {
 			if c.Contain("<function>") {
 				return nil
@@ -38,12 +40,13 @@ func main() {
 					}
 				}
 			}
-			fmt.Println(result)
+			fmt.Println(c.Args.String(), "=", result)
 			return nil
 		})
 
 	// calculator_example <function> <value> [( , <value> )]...
-	cmd.LineArgument("<function> <value> [( , <value> )]...").
+	commander.Program.
+		LineArgument("<function> <value> [( , <value> )]...").
 		Action(func(c *commander.Context) error {
 			var result int
 			switch c.Doc.GetString("<function>") {
@@ -55,21 +58,25 @@ func main() {
 					}
 				}
 			}
-			fmt.Println(result)
+			fmt.Println(c.Args.String(), "=", result)
 			return nil
 		})
 
 	// Examples: ...
-	cmd.Annotation("Examples", []string{
-		"calculator_example 1 + 2 + 3 + 4 + 5",
-		"calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
-		"calculator_example sum 10 , 20 , 30 , 40",
-	})
+	commander.Program.
+		Annotation(
+			"Examples",
+			[]string{
+				"calculator_example 1 + 2 + 3 + 4 + 5",
+				"calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
+				"calculator_example sum 10 , 20 , 30 , 40",
+			},
+		)
 
-	arguments2, _ := cmd.Parse()
+	context, _ := commander.Program.Parse()
 
-	//fmt.Println(cmd.GetHelpMessage())
-	fmt.Println(arguments2.Doc)
+	//fmt.Println(cmd.GetHelpMessage()) // print help messages
+	fmt.Println(context.String())
 
 	fmt.Println("-------------")
 
@@ -91,8 +98,9 @@ Options:
 `
 	arguments, _ := commander.Parse(usage, nil, true, "", false)
 
-	//fmt.Println(usage)
+	//fmt.Println(usage) // print help messages
 	fmt.Println(arguments)
 
 	fmt.Println("===============================")
+	fmt.Println()
 }

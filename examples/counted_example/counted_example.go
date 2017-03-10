@@ -7,25 +7,27 @@ import (
 
 func main() {
 	// ----------- go-commander -----------
-	// new counted_example
-	cmd := commander.NewCommander("counted_example")
-
 	// counted_example -v...
-	cmd.Option("-v...")
+	commander.Program.
+		Command("counted_example").
+		Option("-v...")
 
 	// counted_example go [go]
-	cmd.Command("go [go]")
+	commander.Program.
+		Command("go [go]")
 
 	// counted_example (--path=<path>)...
-	cmd.LineOption("(--path=<path>)...")
+	commander.Program.
+		LineOption("(--path=<path>)...")
 
 	// counted_example <file> <file>
-	cmd.LineArgument("<file> <file>")
+	commander.Program.
+		LineArgument("<file> <file>")
 
-	arguments2, _ := cmd.Parse()
+	context, _ := commander.Program.Parse()
 
-	//fmt.Println(cmd.GetHelpMessage())
-	fmt.Println(arguments2.Doc)
+	//fmt.Println(cmd.GetHelpMessage()) // print help messages
+	fmt.Println(context.String())
 
 	fmt.Println("-------------")
 
@@ -43,7 +45,7 @@ Try: counted_example -vvvvvvvvvv
 
 	arguments, _ := commander.Parse(usage, nil, true, "", false)
 
-	//fmt.Println(usage)
+	//fmt.Println(usage) // print help messages
 	fmt.Println(arguments)
 
 	fmt.Println("===============================")

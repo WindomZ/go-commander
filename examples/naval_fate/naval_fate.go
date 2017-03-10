@@ -7,24 +7,27 @@ import (
 
 func main() {
 	// ----------- go-commander -----------
-	cmd := commander.NewCommander("naval_fate").
+	commander.Program.
+		Command("naval_fate").
 		Description("Naval Fate.")
 
-	ship := cmd.Command("ship")
+	ship := commander.Program.
+		Command("ship")
 	ship.Command("new <name>...")
 	ship.LineArgument("<name>").
 		Command("move <x> <y>").
 		Option("--speed=<kn>", "Speed in knots", nil, 10)
 	ship.Command("shoot <x> <y>")
 
-	mine := cmd.Command("mine")
+	mine := commander.Program.
+		Command("mine")
 	mine.Command("(set|remove) <x> <y>").
 		Option("--moored|--drifting")
 
-	arguments2, _ := cmd.Parse()
+	context, _ := commander.Program.Parse()
 
-	//fmt.Println(cmd.GetHelpMessage())
-	fmt.Println(arguments2.Doc)
+	//fmt.Println(cmd.GetHelpMessage()) // print help messages
+	fmt.Println(context.String())
 
 	fmt.Println("-------------")
 
@@ -47,7 +50,7 @@ Options:
   --drifting    Drifting mine.`
 
 	arguments, _ := commander.Parse(usage, nil, true, "Naval Fate 2.0", false)
-	//fmt.Println(usage)
+	//fmt.Println(usage) // print help messages
 	fmt.Println(arguments)
 
 	fmt.Println("===============================")

@@ -8,18 +8,25 @@ import (
 func main() {
 	// ----------- go-commander -----------
 	// new quick_example
-	cmd := commander.NewCommander("quick_example").Version("0.1.1rc")
+	commander.Program.
+		Command("quick_example").
+		Version("0.1.1rc")
 
 	// quick_example tcp <host> <port> [--timeout=<seconds>]
-	cmd.Command("tcp <host> <port>").Option("--timeout=<seconds>")
+	commander.Program.
+		Command("tcp <host> <port>").
+		Option("--timeout=<seconds>")
 
 	// quick_example serial <port> [--baud=9600] [--timeout=<seconds>]
-	cmd.Command("serial <port>").Option("--baud=9600").Option("--timeout=<seconds>")
+	commander.Program.
+		Command("serial <port>").
+		Option("--baud=9600").
+		Option("--timeout=<seconds>")
 
-	arguments2, _ := cmd.Parse()
+	context, _ := commander.Program.Parse()
 
-	fmt.Println(cmd.GetHelpMessage()) // print help messages
-	fmt.Println(arguments2.Doc)
+	//fmt.Println(commander.Program.GetHelpMessage()) // print help messages
+	fmt.Println(context.String())
 
 	fmt.Println("-------------")
 
@@ -31,7 +38,7 @@ func main() {
 
 	arguments, _ := commander.Parse(usage, nil, true, "0.1.1rc", false)
 
-	fmt.Println(usage)
+	//fmt.Println(usage) // print help messages
 	fmt.Println(arguments)
 
 	fmt.Println("===============================")
