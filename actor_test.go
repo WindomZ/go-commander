@@ -8,12 +8,12 @@ import (
 func TestActor_Action(t *testing.T) {
 	var result bool
 	var a actor
-	a.Action(func(c *Context) {
+	a.Action(func(c Context) {
 		result = true
-		assert.Equal(t, c.Doc.GetMustBool("a"), true)
-		assert.Equal(t, c.Doc.GetMustBool("b"), true)
-		assert.Equal(t, c.Doc.GetMustBool("c"), true)
-		assert.Equal(t, c.Doc.GetMustBool("d"), false)
+		assert.Equal(t, c.GetBool("a"), true)
+		assert.Equal(t, c.GetBool("b"), true)
+		assert.Equal(t, c.GetBool("c"), true)
+		assert.Equal(t, c.GetBool("d"), false)
 	}, []string{"a", "b", "c"})
 
 	a.run(newContext(nil, newDocoptMap(

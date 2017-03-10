@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestCommander_Ping(t *testing.T) {
+func TestProgram_Ping(t *testing.T) {
 	var sum int
 	var host string
 
@@ -16,22 +16,22 @@ func TestCommander_Ping(t *testing.T) {
 
 	Program.Command("add <x> <y>").
 		Description("addition operation").
-		Action(func(c *Context) error {
-			x, _ := c.Doc.GetInt("<x>")
-			y, _ := c.Doc.GetInt("<y>")
+		Action(func() error {
+			x, _ := Program.GetInt("<x>")
+			y, _ := Program.GetInt("<y>")
 			sum = x + y
 			return nil
 		})
 
 	Program.Command("ping <host>").
-		Action(func(c *Context) error {
-			host = c.Doc.GetString("<host>")
+		Action(func() error {
+			host = Program.GetString("<host>")
 			return nil
 		}).
 		Option("--timeout=<seconds>",
 			"",
-			func(c *Context) error {
-				seconds := c.Doc.GetString("<seconds>")
+			func() error {
+				seconds := Program.GetString("<seconds>")
 
 				t.Log("seconds =", seconds)
 
@@ -51,7 +51,7 @@ func TestCommander_Ping(t *testing.T) {
 	assert.Equal(t, host, "127.0.0.1")
 }
 
-func TestCommander_Calculator(t *testing.T) {
+func TestProgram_Calculator(t *testing.T) {
 	var result int
 
 	Program.Command("calculator_example").
@@ -59,17 +59,17 @@ func TestCommander_Calculator(t *testing.T) {
 		Description("Simple calculator example")
 
 	Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
-		Action(func(c *Context) error {
-			if c.Contain("<function>") {
+		Action(func() error {
+			if Program.Contain("<function>") {
 				return nil
 			}
-			values := c.Doc.GetStrings("<value>")
+			values := Program.GetStrings("<value>")
 			for index, value := range values {
 				if i, err := strconv.Atoi(value); err != nil {
 				} else if index == 0 {
 					result = i
 				} else {
-					switch c.Args.Get(index*2 - 1) {
+					switch Program.GetArg(index*2 - 1) {
 					case "+":
 						result += i
 					case "-":
@@ -85,11 +85,11 @@ func TestCommander_Calculator(t *testing.T) {
 		})
 
 	Program.LineArgument("<function> <value> [( , <value> )]...").
-		Action(func(c *Context) error {
+		Action(func() error {
 			result = 0
-			switch c.Doc.GetString("<function>") {
+			switch Program.GetString("<function>") {
 			case "sum":
-				values := c.Doc.GetStrings("<value>")
+				values := Program.GetStrings("<value>")
 				for _, value := range values {
 					if i, err := strconv.Atoi(value); err == nil {
 						result += i

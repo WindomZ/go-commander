@@ -47,14 +47,9 @@ func (d DocoptMap) GetStrings(key string) []string {
 	return []string{}
 }
 
-func (d DocoptMap) GetBool(key string) (bool, bool) {
+func (d DocoptMap) GetBool(key string) bool {
 	b, err := strconv.ParseBool(d.GetString(key))
-	return b, err == nil
-}
-
-func (d DocoptMap) GetMustBool(key string) bool {
-	b, ok := d.GetBool(key)
-	return b && ok
+	return b && err == nil
 }
 
 func (d DocoptMap) GetInt64(key string) (int64, bool) {

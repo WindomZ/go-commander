@@ -10,7 +10,7 @@ func (c _Commands) OptionsString() (r []string) {
 	return
 }
 
-func (c _Commands) run(context *Context) Result {
+func (c _Commands) run(context Context) Result {
 	for _, cmd := range c {
 		if r := cmd.run(context); r != nil && r.Break() {
 			return r

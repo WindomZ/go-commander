@@ -130,7 +130,7 @@ commander.Program.
 // calculator_example <value> ( ( + | - | * | / ) <value> )...
 commander.Program.
 	LineArgument("<value> ( ( + | - | * | / ) <value> )...").
-	Action(func(c *commander.Context) error {
+	Action(func(c commander.Context) error {
 		if c.Contain("<function>") {
 			return nil
 		}
@@ -160,7 +160,7 @@ commander.Program.
 // calculator_example <function> <value> [( , <value> )]...
 commander.Program.
 	LineArgument("<function> <value> [( , <value> )]...").
-	Action(func(c *commander.Context) error {
+	Action(func(c commander.Context) error {
 		var result int
 		switch c.Doc.GetString("<function>") {
 		case "sum":

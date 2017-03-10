@@ -3,7 +3,6 @@ package commander
 import (
 	"bytes"
 	"fmt"
-	"os"
 	"strings"
 )
 
@@ -13,7 +12,6 @@ type _Command struct {
 	usage      string              // api set usage
 	root       bool                // root command
 	clone      bool                // clone command for new help message line
-	version    string              // version if root command
 	desc       string              // description
 	annotation map[string][]string // annotation, like 'try', 'examples', etc.
 	arguments  _Arguments          // parse arguments from usage
@@ -73,7 +71,6 @@ func (c _Command) Name() string {
 }
 
 func (c *_Command) Version(ver string) Commander {
-	c.version = ver
 	return c
 }
 
@@ -230,30 +227,11 @@ func (c _Command) ShowHelpMessage() string {
 	return s
 }
 
-func (c _Command) Parse(args ...[]string) (*Context, error) {
-	var argv []string = nil
-	if len(args) != 0 {
-		argv = args[0]
-	}
-	if argv == nil && len(os.Args) > 1 {
-		argv = os.Args
-	}
-	d, err := Parse(c.HelpMessage(), argv, true, c.version, false)
-	if err != nil {
-		return nil, err
-	}
-	context := newContext(argv, d)
-	if r := c.run(context); r != nil {
-		if r.Break() {
-			return context, r.Error()
-		}
-	} else {
-		// TODO: Should be print help message, but docopt auto to do this.
-	}
-	return context, nil
+func (c _Command) Parse(args ...[]string) (Context, error) {
+	return nil, nil
 }
 
-func (c _Command) run(context *Context) Result {
+func (c _Command) run(context Context) Result {
 	if c.root || c.allow(context) {
 		if r := c.options.run(context); r != nil && r.Break() {
 			return r

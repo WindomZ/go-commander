@@ -17,18 +17,18 @@ func main() {
 	// calculator_example <value> ( ( + | - | * | / ) <value> )...
 	commander.Program.
 		LineArgument("<value> ( ( + | - | * | / ) <value> )...").
-		Action(func(c *commander.Context) error {
+		Action(func(c commander.Context) error {
 			if c.Contain("<function>") {
 				return nil
 			}
 			var result int
-			values := c.Doc.GetStrings("<value>")
+			values := c.GetStrings("<value>")
 			for index, value := range values {
 				if i, err := strconv.Atoi(value); err != nil {
 				} else if index == 0 {
 					result = i
 				} else {
-					switch c.Args.Get(index*2 - 1) {
+					switch c.GetArg(index*2 - 1) {
 					case "+":
 						result += i
 					case "-":
@@ -40,25 +40,25 @@ func main() {
 					}
 				}
 			}
-			fmt.Println(c.Args.String(), "=", result)
+			fmt.Println(c.ArgsString(), "=", result)
 			return nil
 		})
 
 	// calculator_example <function> <value> [( , <value> )]...
 	commander.Program.
 		LineArgument("<function> <value> [( , <value> )]...").
-		Action(func(c *commander.Context) error {
+		Action(func(c commander.Context) error {
 			var result int
-			switch c.Doc.GetString("<function>") {
+			switch c.GetString("<function>") {
 			case "sum":
-				values := c.Doc.GetStrings("<value>")
+				values := c.GetStrings("<value>")
 				for _, value := range values {
 					if i, err := strconv.Atoi(value); err == nil {
 						result += i
 					}
 				}
 			}
-			fmt.Println(c.Args.String(), "=", result)
+			fmt.Println(c.ArgsString(), "=", result)
 			return nil
 		})
 

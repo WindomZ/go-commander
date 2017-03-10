@@ -16,11 +16,7 @@ type Commander interface {
 	OptionsString() []string
 	HelpMessage() string
 	ShowHelpMessage() string
-	Parse(argv ...[]string) (*Context, error)
-}
-
-func newCommander() Commander {
-	return newCommand(true)
+	Parse(argv ...[]string) (Context, error)
 }
 
 func Parse(doc string, argv []string, help bool, version string,
