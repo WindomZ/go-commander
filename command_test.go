@@ -6,7 +6,8 @@ import (
 )
 
 func TestCommand_1(t *testing.T) {
-	c := newCommand("cmd <x>", true, "this is description").
+	c := newCommand(true).
+		Usage("cmd <x>", "this is description").
 		Option("-c, --config", "config description").
 		Option("-d, --drop", "drop description")
 

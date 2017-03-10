@@ -12,7 +12,7 @@ type Command struct {
 	actor
 	usage      string              // api set usage
 	root       bool                // root command
-	clone      bool                // clone command
+	clone      bool                // clone command for new help message line
 	version    string              // version if root command
 	desc       string              // description
 	annotation map[string][]string // annotation, like 'try', 'examples', etc.
@@ -22,14 +22,18 @@ type Command struct {
 	errFunc    ErrFunc             // error function // TODO: not finish this
 }
 
-func newCommand(usage string, root bool, args ...interface{}) *Command {
+func newCommand(root bool) *Command {
 	c := &Command{
-		usage: strings.TrimSpace(usage),
-		root:  root,
+		root: root,
 		errFunc: func(err error, obj interface{}) {
 			fmt.Printf("  err: %v\n  object: %#v\n", err, obj)
 		},
 	}
+	return c
+}
+
+func (c *Command) Usage(usage string, args ...interface{}) Commander {
+	c.usage = strings.TrimSpace(usage)
 	c.regexpNames()
 	c.regexpArguments()
 	if len(args) >= 1 {
@@ -50,11 +54,6 @@ func (c *Command) regexpNames() {
 
 func (c *Command) regexpArguments() {
 	c.arguments.Set(c.usage)
-}
-
-func (c *Command) Clone() *Command {
-	c.clone = true
-	return c
 }
 
 func (c Command) Valid() bool {
@@ -98,18 +97,18 @@ func (c *Command) Action(action interface{}, keys ...[]string) Commander {
 
 func (c *Command) Command(usage string, args ...interface{}) Commander {
 	if c.clone {
-		c.usage += " " + usage
-		c.regexpNames()
-		c.regexpArguments()
-		return c
+		usage = c.usage + " " + usage
+	} else if c.Valid() {
+		cmd := newCommand(false)
+		cmd.Usage(usage, args...)
+		if cmd.Valid() {
+			c.commands = append(c.commands, cmd)
+		} else if c.errFunc != nil {
+			c.errFunc(ErrCommand, cmd)
+		}
+		return cmd
 	}
-	cmd := newCommand(usage, false, args...)
-	if cmd.Valid() {
-		c.commands = append(c.commands, cmd)
-	} else if c.errFunc != nil {
-		c.errFunc(ErrCommand, cmd)
-	}
-	return cmd
+	return c.Usage(usage, args...)
 }
 
 func (c *Command) Option(usage string, args ...interface{}) Commander {
@@ -121,13 +120,16 @@ func (c *Command) Option(usage string, args ...interface{}) Commander {
 	return c
 }
 
-func (c *Command) line(usage string, args ...interface{}) *Command {
-	return newCommand(usage, c.root, args...).Clone()
+func (c *Command) Line(usage string, args ...interface{}) *Command {
+	cmd := newCommand(c.root)
+	cmd.Usage(usage, args...)
+	cmd.clone = true
+	return cmd
 }
 
 func (c *Command) LineArgument(usage string, args ...interface{}) Commander {
 	usage = c.Name() + " " + usage
-	cmd := c.line(usage, args...)
+	cmd := c.Line(usage, args...)
 	if cmd.arguments.IsEmpty() {
 		return cmd
 	}
@@ -137,7 +139,7 @@ func (c *Command) LineArgument(usage string, args ...interface{}) Commander {
 }
 
 func (c *Command) LineOption(usage string, args ...interface{}) Commander {
-	cmd := c.line(c.usage, args...)
+	cmd := c.Line(c.usage, args...)
 	cmd.Option(usage, args...)
 	if cmd.options.IsEmpty() {
 		return cmd

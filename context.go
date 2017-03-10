@@ -1,11 +1,9 @@
 package commander
 
-import "fmt"
-
 // Context
 type Context struct {
-	Args ContextArgs
-	Doc  DocoptMap
+	Args ContextArgs `json:"arguments"`
+	Doc  DocoptMap   `json:"docopt"`
 }
 
 func newContext(args []string, d DocoptMap) *Context {
@@ -16,7 +14,7 @@ func newContext(args []string, d DocoptMap) *Context {
 }
 
 func (c Context) String() string {
-	return fmt.Sprintf("%#v", c)
+	return c.Doc.String()
 }
 
 func (c Context) Contain(key string) bool {

@@ -6,19 +6,15 @@ import (
 	"testing"
 )
 
-func TestNewCommander(t *testing.T) {
-	c := NewCommander("hello")
-	assert.NotEmpty(t, c)
-}
-
-func TestCommander_1(t *testing.T) {
+func TestCommander_Ping(t *testing.T) {
 	var sum int
 	var host string
 
-	cmd := NewCommander("test").
+	Program.Command("test").
 		Version("0.0.1").
 		Description("This is a test cli.")
-	cmd.Command("add <x> <y>").
+
+	Program.Command("add <x> <y>").
 		Description("addition operation").
 		Action(func(c *Context) error {
 			x, _ := c.Doc.GetInt("<x>")
@@ -26,7 +22,8 @@ func TestCommander_1(t *testing.T) {
 			sum = x + y
 			return nil
 		})
-	cmd.Command("ping <host>").
+
+	Program.Command("ping <host>").
 		Action(func(c *Context) error {
 			host = c.Doc.GetString("<host>")
 			return nil
@@ -43,10 +40,10 @@ func TestCommander_1(t *testing.T) {
 			},
 		)
 
-	if _, err := cmd.Parse([]string{"test", "add", "10", "20"}); err != nil {
+	if _, err := Program.Parse([]string{"test", "add", "10", "20"}); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := cmd.Parse([]string{"test", "ping", "127.0.0.1"}); err != nil {
+	if _, err := Program.Parse([]string{"test", "ping", "127.0.0.1"}); err != nil {
 		t.Fatal(err)
 	}
 
@@ -54,13 +51,14 @@ func TestCommander_1(t *testing.T) {
 	assert.Equal(t, host, "127.0.0.1")
 }
 
-func TestCommander_calculator(t *testing.T) {
+func TestCommander_Calculator(t *testing.T) {
 	var result int
 
-	cmd := NewCommander("calculator_example").
+	Program.Command("calculator_example").
 		Version("0.0.1").
 		Description("simple calculator example")
-	cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
+
+	Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
 		Action(func(c *Context) error {
 			if c.Contain("<function>") {
 				return nil
@@ -85,7 +83,8 @@ func TestCommander_calculator(t *testing.T) {
 			}
 			return nil
 		})
-	cmd.LineArgument("<function> <value> [( , <value> )]...").
+
+	Program.LineArgument("<function> <value> [( , <value> )]...").
 		Action(func(c *Context) error {
 			result = 0
 			switch c.Doc.GetString("<function>") {
@@ -100,19 +99,19 @@ func TestCommander_calculator(t *testing.T) {
 			return nil
 		})
 
-	if _, err := cmd.Parse([]string{"calculator_example",
+	if _, err := Program.Parse([]string{"calculator_example",
 		"1", "+", "2", "+", "3", "+", "4", "+", "5"}); err != nil {
 		t.Fatal(err)
 	}
 	assert.Equal(t, result, 15)
 
-	if _, err := cmd.Parse([]string{"calculator_example",
+	if _, err := Program.Parse([]string{"calculator_example",
 		"1", "+", "2", "*", "3", "/", "4", "-", "5"}); err != nil {
 		t.Fatal(err)
 	}
 	assert.Equal(t, result, -3)
 
-	if _, err := cmd.Parse([]string{"calculator_example",
+	if _, err := Program.Parse([]string{"calculator_example",
 		"sum", "10", ",", "20", ",", "30", ",", "40"}); err != nil {
 		t.Fatal(err)
 	}

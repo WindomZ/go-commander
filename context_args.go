@@ -18,7 +18,11 @@ func (c ContextArgs) Get(index int) string {
 	return ""
 }
 
-func (c ContextArgs) String(offsets ...int) string {
+func (c ContextArgs) String() string {
+	return strings.Join(c, " ")
+}
+
+func (c ContextArgs) StringSeparator(sep string, offsets ...int) string {
 	var offset int = 0
 	if len(offsets) != 0 {
 		offset = offsets[0]
@@ -29,5 +33,5 @@ func (c ContextArgs) String(offsets ...int) string {
 	if offset < 0 {
 		offset = 0
 	}
-	return strings.Join(c[offset:], " | ")
+	return strings.Join(c[offset:], sep)
 }

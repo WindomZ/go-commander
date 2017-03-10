@@ -19,8 +19,8 @@ type Commander interface {
 	Parse(argv ...[]string) (*Context, error)
 }
 
-func NewCommander(usage string, args ...interface{}) Commander {
-	return newCommand(usage, true, args...)
+func newCommander() Commander {
+	return newCommand(true)
 }
 
 func Parse(doc string, argv []string, help bool, version string,
