@@ -37,7 +37,7 @@ func TestCommand_1(t *testing.T) {
 			"-c --count    cmd3 count description",
 		})
 
-	assert.Equal(t, c.GetHelpMessage(),
+	assert.Equal(t, c.HelpMessage(),
 		`this is description
 
 Usage:

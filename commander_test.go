@@ -56,7 +56,7 @@ func TestCommander_Calculator(t *testing.T) {
 
 	Program.Command("calculator_example").
 		Version("0.0.1").
-		Description("simple calculator example")
+		Description("Simple calculator example")
 
 	Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
 		Action(func(c *Context) error {

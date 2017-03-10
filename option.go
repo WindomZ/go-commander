@@ -6,18 +6,18 @@ import (
 	"strings"
 )
 
-// Option
-type Option struct {
-	actor               // actor
-	usage     string    // usage
-	required  bool      // option required
-	desc      string    // desc
-	show      bool      // show on options
-	arguments Arguments // arguments
+// _Option
+type _Option struct {
+	actor                // actor
+	usage     string     // usage
+	required  bool       // option required
+	desc      string     // desc
+	show      bool       // show on options
+	arguments _Arguments // arguments
 }
 
-func newOption(usage string, args ...interface{}) *Option {
-	o := &Option{
+func newOption(usage string, args ...interface{}) *_Option {
+	o := &_Option{
 		usage: strings.TrimSpace(usage),
 	}
 	o.regexpNames()
@@ -45,37 +45,37 @@ func newOption(usage string, args ...interface{}) *Option {
 	return o
 }
 
-func (o *Option) regexpNames() {
-	o.names = RegexpOption(o.usage)
+func (o *_Option) regexpNames() {
+	o.names = regexpOption(o.usage)
 }
 
-func (o *Option) regexpArguments() {
+func (o *_Option) regexpArguments() {
 	o.arguments.Set(o.usage)
 }
 
-func (o *Option) regexpRequired() {
+func (o *_Option) regexpRequired() {
 	if strings.HasPrefix(o.usage, "(") {
 		o.required = true
 	}
 }
 
-func (o Option) Valid() bool {
+func (o _Option) Valid() bool {
 	return len(o.names) != 0 && len(o.usage) != 0
 }
 
-func (o Option) Names() []string {
+func (o _Option) Names() []string {
 	return o.names
 }
 
-func (o Option) IsRequired() bool {
+func (o _Option) IsRequired() bool {
 	return o.required
 }
 
-func (o Option) IsOptional() bool {
+func (o _Option) IsOptional() bool {
 	return !o.IsRequired()
 }
 
-func (o Option) UsageString(ones ...bool) (s string) {
+func (o _Option) UsageString(ones ...bool) (s string) {
 	if ok, _ := regexp.MatchString(`^[\[(].+[)\]]$`, o.usage); ok {
 		s = o.usage
 	} else if len(ones) != 0 && ones[0] {
@@ -89,7 +89,7 @@ func (o Option) UsageString(ones ...bool) (s string) {
 	return
 }
 
-func (o Option) OptionString() (s string) {
+func (o _Option) OptionString() (s string) {
 	if !o.show {
 		return ""
 	}
@@ -109,6 +109,6 @@ func (o Option) OptionString() (s string) {
 	return
 }
 
-func (o Option) run(c *Context) Result {
+func (o _Option) run(c *Context) Result {
 	return o.actor.run(c)
 }

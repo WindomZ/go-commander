@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-// Command Command line command implementation
-type Command struct {
+// _Command Command line command implementation
+type _Command struct {
 	actor
 	usage      string              // api set usage
 	root       bool                // root command
@@ -16,14 +16,14 @@ type Command struct {
 	version    string              // version if root command
 	desc       string              // description
 	annotation map[string][]string // annotation, like 'try', 'examples', etc.
-	arguments  Arguments           // parse arguments from usage
-	commands   Commands            // api set subcommands
-	options    Options             // api set options
+	arguments  _Arguments          // parse arguments from usage
+	commands   _Commands           // api set subcommands
+	options    _Options            // api set options
 	errFunc    ErrFunc             // error function // TODO: not finish this
 }
 
-func newCommand(root bool) *Command {
-	c := &Command{
+func newCommand(root bool) *_Command {
+	c := &_Command{
 		root: root,
 		errFunc: func(err error, obj interface{}) {
 			fmt.Printf("  err: %v\n  object: %#v\n", err, obj)
@@ -32,7 +32,7 @@ func newCommand(root bool) *Command {
 	return c
 }
 
-func (c *Command) Usage(usage string, args ...interface{}) Commander {
+func (c *_Command) Usage(usage string, args ...interface{}) Commander {
 	c.usage = strings.TrimSpace(usage)
 	c.regexpNames()
 	c.regexpArguments()
@@ -48,23 +48,23 @@ func (c *Command) Usage(usage string, args ...interface{}) Commander {
 	return c
 }
 
-func (c *Command) regexpNames() {
-	c.names = RegexpCommand(c.usage)
+func (c *_Command) regexpNames() {
+	c.names = regexpCommand(c.usage)
 }
 
-func (c *Command) regexpArguments() {
+func (c *_Command) regexpArguments() {
 	c.arguments.Set(c.usage)
 }
 
-func (c Command) Valid() bool {
+func (c _Command) Valid() bool {
 	return len(c.names) != 0 && len(c.usage) != 0
 }
 
-func (c Command) Names() []string {
+func (c _Command) Names() []string {
 	return c.names
 }
 
-func (c Command) Name() string {
+func (c _Command) Name() string {
 	name := c.names[0]
 	if len(c.names) > 1 {
 		name = fmt.Sprintf("(%s)", strings.Join(c.names, "|"))
@@ -72,17 +72,17 @@ func (c Command) Name() string {
 	return name
 }
 
-func (c *Command) Version(ver string) Commander {
+func (c *_Command) Version(ver string) Commander {
 	c.version = ver
 	return c
 }
 
-func (c *Command) Description(desc string) Commander {
+func (c *_Command) Description(desc string) Commander {
 	c.desc = desc
 	return c
 }
 
-func (c *Command) Annotation(title string, contents []string) Commander {
+func (c *_Command) Annotation(title string, contents []string) Commander {
 	if c.annotation == nil {
 		c.annotation = make(map[string][]string)
 	}
@@ -90,12 +90,12 @@ func (c *Command) Annotation(title string, contents []string) Commander {
 	return c
 }
 
-func (c *Command) Action(action interface{}, keys ...[]string) Commander {
+func (c *_Command) Action(action interface{}, keys ...[]string) Commander {
 	c.actor.Action(action, keys...)
 	return c
 }
 
-func (c *Command) Command(usage string, args ...interface{}) Commander {
+func (c *_Command) Command(usage string, args ...interface{}) Commander {
 	if c.clone {
 		usage = c.usage + " " + usage
 	} else if c.Valid() {
@@ -111,7 +111,7 @@ func (c *Command) Command(usage string, args ...interface{}) Commander {
 	return c.Usage(usage, args...)
 }
 
-func (c *Command) Option(usage string, args ...interface{}) Commander {
+func (c *_Command) Option(usage string, args ...interface{}) Commander {
 	if opt := newOption(usage, args...); opt.Valid() {
 		c.options = append(c.options, opt)
 	} else if c.errFunc != nil {
@@ -120,14 +120,14 @@ func (c *Command) Option(usage string, args ...interface{}) Commander {
 	return c
 }
 
-func (c *Command) Line(usage string, args ...interface{}) *Command {
+func (c *_Command) Line(usage string, args ...interface{}) *_Command {
 	cmd := newCommand(c.root)
 	cmd.Usage(usage, args...)
 	cmd.clone = true
 	return cmd
 }
 
-func (c *Command) LineArgument(usage string, args ...interface{}) Commander {
+func (c *_Command) LineArgument(usage string, args ...interface{}) Commander {
 	usage = c.Name() + " " + usage
 	cmd := c.Line(usage, args...)
 	if cmd.arguments.IsEmpty() {
@@ -138,7 +138,7 @@ func (c *Command) LineArgument(usage string, args ...interface{}) Commander {
 	return cmd
 }
 
-func (c *Command) LineOption(usage string, args ...interface{}) Commander {
+func (c *_Command) LineOption(usage string, args ...interface{}) Commander {
 	cmd := c.Line(c.usage, args...)
 	cmd.Option(usage, args...)
 	if cmd.options.IsEmpty() {
@@ -148,7 +148,7 @@ func (c *Command) LineOption(usage string, args ...interface{}) Commander {
 	return cmd
 }
 
-func (c Command) UsagesString() (r []string) {
+func (c _Command) UsagesString() (r []string) {
 	if !c.Valid() {
 		return
 	}
@@ -181,7 +181,7 @@ func (c Command) UsagesString() (r []string) {
 	return
 }
 
-func (c Command) OptionsString() (r []string) {
+func (c _Command) OptionsString() (r []string) {
 	if !c.Valid() {
 		return
 	}
@@ -190,7 +190,7 @@ func (c Command) OptionsString() (r []string) {
 	return
 }
 
-func (c Command) GetHelpMessage() string {
+func (c _Command) HelpMessage() string {
 	var bb bytes.Buffer
 
 	if len(c.desc) != 0 {
@@ -224,13 +224,13 @@ func (c Command) GetHelpMessage() string {
 	return bb.String()
 }
 
-func (c Command) ShowHelpMessage() string {
-	s := c.GetHelpMessage()
+func (c _Command) ShowHelpMessage() string {
+	s := c.HelpMessage()
 	fmt.Println(s)
 	return s
 }
 
-func (c Command) Parse(args ...[]string) (*Context, error) {
+func (c _Command) Parse(args ...[]string) (*Context, error) {
 	var argv []string = nil
 	if len(args) != 0 {
 		argv = args[0]
@@ -238,7 +238,7 @@ func (c Command) Parse(args ...[]string) (*Context, error) {
 	if argv == nil && len(os.Args) > 1 {
 		argv = os.Args
 	}
-	d, err := Parse(c.GetHelpMessage(), argv, true, c.version, false)
+	d, err := Parse(c.HelpMessage(), argv, true, c.version, false)
 	if err != nil {
 		return nil, err
 	}
@@ -253,7 +253,7 @@ func (c Command) Parse(args ...[]string) (*Context, error) {
 	return context, nil
 }
 
-func (c Command) run(context *Context) Result {
+func (c _Command) run(context *Context) Result {
 	if c.root || c.allow(context) {
 		if r := c.options.run(context); r != nil && r.Break() {
 			return r

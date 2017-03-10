@@ -14,7 +14,7 @@ type Commander interface {
 	LineOption(usage string, args ...interface{}) Commander
 	UsagesString() []string
 	OptionsString() []string
-	GetHelpMessage() string
+	HelpMessage() string
 	ShowHelpMessage() string
 	Parse(argv ...[]string) (*Context, error)
 }

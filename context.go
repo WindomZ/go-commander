@@ -18,5 +18,6 @@ func (c Context) String() string {
 }
 
 func (c Context) Contain(key string) bool {
-	return c.Doc.Contain(key)
+	ok := c.Doc.Contain(key)
+	return ok
 }

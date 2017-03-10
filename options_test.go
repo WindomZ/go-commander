@@ -6,7 +6,7 @@ import (
 )
 
 func TestOptions_UsagesString(t *testing.T) {
-	o := Options{
+	o := _Options{
 		newOption("-a, --about", "about description"),
 		newOption("-b=<kn>, --bold=<kn>", "bold description"),
 		newOption("-c, --config", "config description"),
@@ -22,7 +22,7 @@ func TestOptions_UsagesString(t *testing.T) {
 }
 
 func TestOptions_OptionsString(t *testing.T) {
-	o := Options{
+	o := _Options{
 		newOption("-a, --about", "about description"),
 		newOption("-b=<kn>, --bold=<kn>", "bold description"),
 		newOption("-c, --config", "config description"),

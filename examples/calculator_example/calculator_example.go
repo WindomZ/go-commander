@@ -12,7 +12,7 @@ func main() {
 	commander.Program.
 		Command("calculator_example").
 		Version("0.0.1").
-		Description("simple calculator example")
+		Description("Simple calculator example")
 
 	// calculator_example <value> ( ( + | - | * | / ) <value> )...
 	commander.Program.
@@ -75,7 +75,7 @@ func main() {
 
 	context, _ := commander.Program.Parse()
 
-	//fmt.Println(cmd.GetHelpMessage()) // print help messages
+	//fmt.Println(commander.Program.HelpMessage()) // print help messages
 	fmt.Println(context.String())
 
 	fmt.Println("-------------")

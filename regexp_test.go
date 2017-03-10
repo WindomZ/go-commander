@@ -7,57 +7,57 @@ import (
 
 func TestRegexpCommand(t *testing.T) {
 	assert.Equal(t,
-		RegexpCommand("new <name>"),
+		regexpCommand("new <name>"),
 		[]string{"new"},
 	)
 	assert.Equal(t,
-		RegexpCommand("ship <name> move <x> <y>"),
+		regexpCommand("ship <name> move <x> <y>"),
 		[]string{"ship"},
 	)
 	assert.Equal(t,
-		RegexpCommand("(set|remove) <x> <y> [--moored|--drifting]"),
+		regexpCommand("(set|remove) <x> <y> [--moored|--drifting]"),
 		[]string{"set", "remove"},
 	)
 }
 
 func TestRegexpArgument(t *testing.T) {
 	assert.Equal(t,
-		RegexpArgument("new <name>"),
+		regexpArgument("new <name>"),
 		[]string{"<name>"},
 	)
 	assert.Equal(t,
-		RegexpArgument("ship <name> move <x> <y>"),
+		regexpArgument("ship <name> move <x> <y>"),
 		[]string{"<name>", "<x>", "<y>"},
 	)
 	assert.Equal(t,
-		RegexpArgument("(set|remove) <x> <y> [--moored|--drifting]"),
+		regexpArgument("(set|remove) <x> <y> [--moored|--drifting]"),
 		[]string{"<x>", "<y>"},
 	)
 }
 
 func TestRegexpOption(t *testing.T) {
 	assert.Equal(t,
-		RegexpOption("new <name>"),
+		regexpOption("new <name>"),
 		[]string(nil),
 	)
 	assert.Equal(t,
-		RegexpOption("-p <x-y>"),
+		regexpOption("-p <x-y>"),
 		[]string{"-p"},
 	)
 	assert.Equal(t,
-		RegexpOption("-p"),
+		regexpOption("-p"),
 		[]string{"-p"},
 	)
 	assert.Equal(t,
-		RegexpOption("-p, --pepper"),
+		regexpOption("-p, --pepper"),
 		[]string{"-p", "--pepper"},
 	)
 	assert.Equal(t,
-		RegexpOption("--pepper"),
+		regexpOption("--pepper"),
 		[]string{"--pepper"},
 	)
 	assert.Equal(t,
-		RegexpOption("(set|remove) <x> <y> [--not-ss | -a | --moored|--drifting]"),
+		regexpOption("(set|remove) <x> <y> [--not-ss | -a | --moored|--drifting]"),
 		[]string{"--not-ss", "-a", "--moored", "--drifting"},
 	)
 }
