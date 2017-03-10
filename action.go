@@ -10,33 +10,34 @@ type (
 	ActionNativeDocopt func(m map[string]interface{}) error
 )
 
+// parseAction handle function to Action type
 func parseAction(arg interface{}) (a Action) {
 	switch action := arg.(type) {
-	case Action:
+	case func(c Context) Result: // Action
 		a = action
-	case ActionNormal:
+	case func(c Context) error: // ActionNormal
 		a = func(c Context) Result {
 			if err := action(c); err != nil {
 				return NewResultError(err)
 			}
 			return ResultPass
 		}
-	case ActionSimple:
+	case func(c Context): // ActionSimple
 		a = func(c Context) Result {
 			action(c)
 			return ResultPass
 		}
-	case ActionNative:
+	case func(): // ActionNative
 		a = func(c Context) Result {
 			action()
 			return ResultPass
 		}
-	case ActionNativeSimple:
+	case func() error: // ActionNativeSimple
 		a = func(c Context) Result {
 			action()
 			return ResultPass
 		}
-	case ActionNativeDocopt:
+	case func(m map[string]interface{}) error: // ActionNativeDocopt
 		a = func(c Context) Result {
 			if err := action(c.Map()); err != nil {
 				return NewResultError(err)
