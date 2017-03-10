@@ -3,7 +3,7 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
 
-![v0.5.1](https://img.shields.io/badge/version-v0.5.1-orange.svg)
+![v0.6.0](https://img.shields.io/badge/version-v0.6.0-orange.svg)
 ![status](https://img.shields.io/badge/status-beta-yellow.svg)
 
 The solution for Go command-line interfaces, 
@@ -43,14 +43,21 @@ To coding with `go-commander` just like this:
 ```go
 import "github.com/WindomZ/go-commander"
 
-// new quick_example
-cmd := commander.NewCommander("quick_example").Version("0.1.1rc")
+// quick_example
+commander.Program.
+	Command("quick_example").
+	Version("0.1.1rc")
 
 // quick_example tcp <host> <port> [--timeout=<seconds>]
-cmd.Command("tcp <host> <port>").Option("--timeout=<seconds>")
+commander.Program.
+	Command("tcp <host> <port>").
+	Option("--timeout=<seconds>")
 
 // quick_example serial <port> [--baud=9600] [--timeout=<seconds>]
-cmd.Command("serial <port>").Option("--baud=9600").Option("--timeout=<seconds>")
+commander.Program.
+	Command("serial <port>").
+	Option("--baud=9600").
+	Option("--timeout=<seconds>")
 ```
 
 ### [Counted example](https://github.com/WindomZ/go-commander/blob/master/examples/counted_example/counted_example.go)
@@ -72,20 +79,22 @@ To coding with `go-commander` just like this:
 ```go
 import "github.com/WindomZ/go-commander"
 
-// new counted_example
-cmd := commander.NewCommander("counted_example")
-
 // counted_example -v...
-cmd.Option("-v...")
+commander.Program.
+	Command("counted_example").
+	Option("-v...")
 
 // counted_example go [go]
-cmd.Command("go [go]")
+commander.Program.
+	Command("go [go]")
 
 // counted_example (--path=<path>)...
-cmd.LineOption("(--path=<path>)...")
+commander.Program.
+	LineOption("(--path=<path>)...")
 
 // counted_example <file> <file>
-cmd.LineArgument("<file> <file>")
+commander.Program.
+	LineArgument("<file> <file>")
 ```
 
 ### [Calculator example](https://github.com/WindomZ/go-commander/blob/master/examples/calculator_example/calculator_example.go)
@@ -112,63 +121,70 @@ To coding with `go-commander` just like this:
 ```go
 import "github.com/WindomZ/go-commander"
 
-// new calculator_example
-cmd := commander.NewCommander("calculator_example").
-    Version("0.0.1").
-    Description("simple calculator example")
+// calculator_example
+commander.Program.
+	Command("calculator_example").
+	Version("0.0.1").
+	Description("simple calculator example")
 
 // calculator_example <value> ( ( + | - | * | / ) <value> )...
-cmd.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
-    Action(func(c *commander.Context) error {
-        if c.Contain("<function>") {
-            return nil
-        }
-        var result int
-        values := c.Doc.GetStrings("<value>")
-        for index, value := range values {
-            if i, err := strconv.Atoi(value); err != nil {
-            } else if index == 0 {
-                result = i
-            } else {
-                switch c.Args.Get(index*2 - 1) {
-                case "+":
-                    result += i
-                case "-":
-                    result -= i
-                case "*":
-                    result *= i
-                case "/":
-                    result /= i
-                }
-            }
-        }
-        fmt.Println(result)
-        return nil
-    })
+commander.Program.
+	LineArgument("<value> ( ( + | - | * | / ) <value> )...").
+	Action(func(c *commander.Context) error {
+		if c.Contain("<function>") {
+			return nil
+		}
+		var result int
+		values := c.Doc.GetStrings("<value>")
+		for index, value := range values {
+			if i, err := strconv.Atoi(value); err != nil {
+			} else if index == 0 {
+				result = i
+			} else {
+				switch c.Args.Get(index*2 - 1) {
+				case "+":
+					result += i
+				case "-":
+					result -= i
+				case "*":
+					result *= i
+				case "/":
+					result /= i
+				}
+			}
+		}
+		fmt.Println(c.Args.String(), "=", result)
+		return nil
+	})
 
 // calculator_example <function> <value> [( , <value> )]...
-cmd.LineArgument("<function> <value> [( , <value> )]...").
-    Action(func(c *commander.Context) error {
-        var result int
-        switch c.Doc.GetString("<function>") {
-        case "sum":
-            values := c.Doc.GetStrings("<value>")
-            for _, value := range values {
-                if i, err := strconv.Atoi(value); err == nil {
-                    result += i
-                }
-            }
-        }
-        fmt.Println(result)
-        return nil
-    })
+commander.Program.
+	LineArgument("<function> <value> [( , <value> )]...").
+	Action(func(c *commander.Context) error {
+		var result int
+		switch c.Doc.GetString("<function>") {
+		case "sum":
+			values := c.Doc.GetStrings("<value>")
+			for _, value := range values {
+				if i, err := strconv.Atoi(value); err == nil {
+					result += i
+				}
+			}
+		}
+		fmt.Println(c.Args.String(), "=", result)
+		return nil
+	})
 
 // Examples: ...
-cmd.Annotation("Examples", []string{
-    "calculator_example 1 + 2 + 3 + 4 + 5",
-    "calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
-    "calculator_example sum 10 , 20 , 30 , 40",
-})
+commander.Program.
+	Annotation(
+		"Examples",
+		[]string{
+			"calculator_example 1 + 2 + 3 + 4 + 5",
+			"calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
+			"calculator_example sum 10 , 20 , 30 , 40",
+		},
+	)
 ```
 
 Get the terminal output:

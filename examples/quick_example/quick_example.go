@@ -7,7 +7,7 @@ import (
 
 func main() {
 	// ----------- go-commander -----------
-	// new quick_example
+	// quick_example
 	commander.Program.
 		Command("quick_example").
 		Version("0.1.1rc")
