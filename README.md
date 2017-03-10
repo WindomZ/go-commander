@@ -3,8 +3,10 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
 
-![v0.7.0](https://img.shields.io/badge/version-v0.7.0-orange.svg)
+![v0.7.1](https://img.shields.io/badge/version-v0.7.1-orange.svg)
 ![status](https://img.shields.io/badge/status-beta-yellow.svg)
+
+The exported functions could *change* at any time before the first *stable release*(>=1.0.0).
 
 The solution for Go command-line interfaces, 
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
