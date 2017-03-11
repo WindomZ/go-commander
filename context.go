@@ -33,8 +33,7 @@ func newContext(args []string, d DocoptMap) *_Context {
 }
 
 func (c _Context) Contain(key string) bool {
-	ok := c.DocoptMap.Contain(key)
-	return ok
+	return c.DocoptMap.Contain(key)
 }
 
 func (c _Context) String() string {

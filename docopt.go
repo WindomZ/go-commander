@@ -24,8 +24,22 @@ func (d DocoptMap) Get(key string) interface{} {
 }
 
 func (d DocoptMap) Contain(key string) bool {
-	v, ok := d[key]
-	return ok && v != nil
+	if v, ok := d[key]; ok && v != nil {
+		switch i := v.(type) {
+		case string:
+			return len(i) != 0 &&
+				i != "0" && i != "false"
+		case []string:
+			return len(i) != 0
+		case bool:
+			return i
+		case int, int8, int16, int32, int64:
+			return i != 0
+		case float32, float64:
+			return i != 0
+		}
+	}
+	return false
 }
 
 func (d DocoptMap) GetString(key string) string {

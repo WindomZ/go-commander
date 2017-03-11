@@ -38,27 +38,28 @@ func (a *actor) Action(action interface{}, keys ...[]string) {
 }
 
 // allow Determine whether meet the requirements(actor.names or actor.musts) for the execution
-func (a actor) allow(c Context) (b bool) {
+func (a actor) allow(c Context) bool {
+	//println(fmt.Sprintf("allow:\n1 %#v\n2 %v\n3 %v",
+	//	a, c.String(), a.action != nil))
 	for _, key := range a.names {
-		if b = c.GetBool(key); b {
-			return
+		if c.Contain(key) {
+			return true
 		}
 	}
 	for _, key := range a.musts {
-		if b = c.GetBool(key); b {
-		} else if b = c.Contain(key); b &&
-			containArgument(key) {
-		} else {
-			b = false
-			break
+		if !c.Contain(key) {
+			return false
 		}
 	}
-	return
+	return len(a.musts) != 0
 }
 
 // run Common external function, if allow() than execute actor.action
 func (a actor) run(c Context) _Result {
+	//println(fmt.Sprintf("run:\n1 %#v\n2 %v\n3 %v",
+	//	a, c.String(), a.action != nil))
 	if !a.allow(c) || a.action == nil {
+		//println(fmt.Sprintf("run:\n4 %v", false))
 	} else if r := a.action(c); r != nil {
 		return r
 	}

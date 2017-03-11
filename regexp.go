@@ -41,3 +41,20 @@ func containOption(str string) (ok bool) {
 			ReplaceAllString(str, ""))
 	return
 }
+
+//// isCommand str contain docopt command format
+//func isCommand(str string) bool {
+//	return !isArgument(str) && !isOption(str)
+//}
+//
+//// isArgument str contain docopt command format
+//func isArgument(str string) (ok bool) {
+//	ok, _ = regexp.MatchString(`^<[A-Za-z0-9_-]+>$`, str)
+//	return
+//}
+//
+//// isOption str contain docopt command format
+//func isOption(str string) (ok bool) {
+//	ok, _ = regexp.MatchString(`^-{1,2}[A-Za-z0-9_-]+$`, str)
+//	return
+//}
