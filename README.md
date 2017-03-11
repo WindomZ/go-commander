@@ -10,7 +10,7 @@ The exported functions could *change* at any time before the first *stable relea
 
 The solution for Go command-line interfaces, 
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
-inspired by <[commander](https://github.com/tj/commander.js)>
+inspired by <[commander.js](https://github.com/tj/commander.js)>
 
 ## Installation
 
@@ -179,7 +179,7 @@ Examples:
 To coding with `go-commander` just like this:
 
 ```go
-import "github.com/WindomZ/go-commander"
+import . "github.com/WindomZ/go-commander"
 
 // calculator_example
 Program.Command("calculator_example").
