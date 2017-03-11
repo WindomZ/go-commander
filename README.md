@@ -3,7 +3,7 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
 
-![v0.7.1](https://img.shields.io/badge/version-v0.7.1-orange.svg)
+![v0.7.3](https://img.shields.io/badge/version-v0.7.3-orange.svg)
 ![status](https://img.shields.io/badge/status-beta-yellow.svg)
 
 The exported functions could *change* at any time before the first *stable release*(>=1.0.0).
@@ -53,13 +53,42 @@ commander.Program.
 // quick_example tcp <host> <port> [--timeout=<seconds>]
 commander.Program.
 	Command("tcp <host> <port>").
-	Option("--timeout=<seconds>")
+	Option("--timeout=<seconds>").
+	Action(func() {
+		fmt.Printf("tcp %s %s %s\n",
+			commander.Program.GetString("<host>"),
+			commander.Program.GetString("<port>"),
+			commander.Program.GetString("--timeout"),
+		)
+	})
 
 // quick_example serial <port> [--baud=9600] [--timeout=<seconds>]
 commander.Program.
 	Command("serial <port>").
 	Option("--baud=9600").
-	Option("--timeout=<seconds>")
+	Option("--timeout=<seconds>").
+	Action(func() {
+		fmt.Printf("serial %s %s %s\n",
+			commander.Program.GetString("<port>"),
+			commander.Program.GetString("--baud"),
+			commander.Program.GetString("--timeout"),
+		)
+	})
+
+commander.Program.Parse()
+```
+
+Get the terminal output:
+
+```bash
+quick_example --version
+# output: 0.1.1rc
+
+quick_example tcp 127.0.0.1 1080 --timeout=110
+# output: tcp 127.0.0.1 1080 110
+
+quick_example serial 80 --baud=5800 --timeout=120
+# output: serial 80 5800 120
 ```
 
 ### [Counted example](https://github.com/WindomZ/go-commander/blob/master/examples/counted_example/counted_example.go)
@@ -68,7 +97,7 @@ Such as the following help message
 
 ```markdown
 Usage:
-  counted_example [-v...]
+  counted_example -v...
   counted_example go [go]
   counted_example (--path=<path>)...
   counted_example <file> <file>
@@ -84,19 +113,49 @@ import "github.com/WindomZ/go-commander"
 // counted_example -v...
 commander.Program.
 	Command("counted_example").
-	Option("-v...")
+	Option("-v...", "", func() {
+		fmt.Println("-v =", commander.Program.Get("-v"))
+	})
 
 // counted_example go [go]
 commander.Program.
-	Command("go [go]")
+	Command("go [go]").
+	Action(func(c commander.Context) {
+		fmt.Println("go =", c.Get("go"))
+	})
 
 // counted_example (--path=<path>)...
 commander.Program.
-	LineOption("(--path=<path>)...")
+	LineOption("(--path=<path>)...", "", func() {
+		fmt.Printf("--path = %q\n",
+			commander.Program.GetStrings("--path"))
+	})
 
 // counted_example <file> <file>
 commander.Program.
-	LineArgument("<file> <file>")
+	LineArgument("<file> <file>").
+	Action(func(c commander.Context) {
+		fmt.Printf("<file> = %q\n",
+			commander.Program.GetStrings("<file>"))
+	})
+
+commander.Program.Parse()
+```
+
+Get the terminal output:
+
+```bash
+counted_example -vvvvvvvvvv
+# output: -v = 10
+
+counted_example go go
+# output: go = 2
+
+counted_example --path ./here --path ./there
+# output: --path = ["./here" "./there"]
+
+counted_example this.txt that.txt
+# output: <file> = ["this.txt" "that.txt"]
 ```
 
 ### [Calculator example](https://github.com/WindomZ/go-commander/blob/master/examples/calculator_example/calculator_example.go)
@@ -190,6 +249,7 @@ commander.Program.
 ```
 
 Get the terminal output:
+
 ```bash
 calculator_example 1 + 2 + 3 + 4 + 5
 # output: 15
