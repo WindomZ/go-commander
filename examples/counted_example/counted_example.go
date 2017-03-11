@@ -10,8 +10,8 @@ func main() {
 	// counted_example -v...
 	commander.Program.
 		Command("counted_example").
-		Option("-v...", "", func() {
-			fmt.Println("-v =", commander.Program.Get("-v"))
+		Option("-v...", "", func(c commander.Context) {
+			fmt.Println("-v =", c.Get("-v"))
 		})
 
 	// counted_example go [go]
@@ -23,17 +23,16 @@ func main() {
 
 	// counted_example (--path=<path>)...
 	commander.Program.
-		LineOption("(--path=<path>)...", "", func() {
+		LineOption("(--path=<path>)...", "", func(c commander.Context) {
 			fmt.Printf("--path = %q\n",
-				commander.Program.GetStrings("--path"))
+				c.GetStrings("--path"))
 		})
 
 	// counted_example <file> <file>
 	commander.Program.
-		LineArgument("<file> <file>").
-		Action(func(c commander.Context) {
+		LineArgument("<file> <file>", "", func(c commander.Context) {
 			fmt.Printf("<file> = %q\n",
-				commander.Program.GetStrings("<file>"))
+				c.GetStrings("<file>"))
 		})
 
 	context, _ := commander.Program.Parse()

@@ -24,10 +24,6 @@ func TestProgram_Ping(t *testing.T) {
 		})
 
 	Program.Command("ping <host>").
-		Action(func() error {
-			host = Program.GetString("<host>")
-			return nil
-		}).
 		Option("--timeout=<seconds>",
 			"",
 			func() error {
@@ -38,7 +34,10 @@ func TestProgram_Ping(t *testing.T) {
 				assert.Equal(t, seconds, 0)
 				return nil
 			},
-		)
+		).Action(func() error {
+		host = Program.GetString("<host>")
+		return nil
+	})
 
 	if _, err := Program.Parse([]string{"test", "add", "10", "20"}); err != nil {
 		t.Fatal(err)
@@ -58,46 +57,44 @@ func TestProgram_Calculator(t *testing.T) {
 		Version("0.0.1").
 		Description("Simple calculator example")
 
-	Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
-		Action(func() error {
-			if Program.Contain("<function>") {
-				return nil
-			}
-			values := Program.GetStrings("<value>")
-			for index, value := range values {
-				if i, err := strconv.Atoi(value); err != nil {
-				} else if index == 0 {
-					result = i
-				} else {
-					switch Program.GetArg(index*2 - 1) {
-					case "+":
-						result += i
-					case "-":
-						result -= i
-					case "*":
-						result *= i
-					case "/":
-						result /= i
-					}
+	Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...", "", func() error {
+		if Program.Contain("<function>") {
+			return nil
+		}
+		values := Program.GetStrings("<value>")
+		for index, value := range values {
+			if i, err := strconv.Atoi(value); err != nil {
+			} else if index == 0 {
+				result = i
+			} else {
+				switch Program.GetArg(index*2 - 1) {
+				case "+":
+					result += i
+				case "-":
+					result -= i
+				case "*":
+					result *= i
+				case "/":
+					result /= i
 				}
 			}
-			return nil
-		})
+		}
+		return nil
+	})
 
-	Program.LineArgument("<function> <value> [( , <value> )]...").
-		Action(func() error {
-			result = 0
-			switch Program.GetString("<function>") {
-			case "sum":
-				values := Program.GetStrings("<value>")
-				for _, value := range values {
-					if i, err := strconv.Atoi(value); err == nil {
-						result += i
-					}
+	Program.LineArgument("<function> <value> [( , <value> )]...", "", func() error {
+		result = 0
+		switch Program.GetString("<function>") {
+		case "sum":
+			values := Program.GetStrings("<value>")
+			for _, value := range values {
+				if i, err := strconv.Atoi(value); err == nil {
+					result += i
 				}
 			}
-			return nil
-		})
+		}
+		return nil
+	})
 
 	if _, err := Program.Parse([]string{"calculator_example",
 		"1", "+", "2", "+", "3", "+", "4", "+", "5"}); err != nil {

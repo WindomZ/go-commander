@@ -14,52 +14,49 @@ func main() {
 		Description("Simple calculator example")
 
 	// calculator_example <value> ( ( + | - | * | / ) <value> )...
-	Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
-		Action(func() {
-			if Program.Contain("<function>") {
-				return
-			}
-			var result int
-			values := Program.GetStrings("<value>")
-			for index, value := range values {
-				if i, err := strconv.Atoi(value); err != nil {
-				} else if index == 0 {
-					result = i
-				} else {
-					switch Program.GetArg(index*2 - 1) {
-					case "+":
-						result += i
-					case "-":
-						result -= i
-					case "*":
-						result *= i
-					case "/":
-						result /= i
-					}
+	Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...", "", func() {
+		if Program.Contain("<function>") {
+			return
+		}
+		var result int
+		values := Program.GetStrings("<value>")
+		for index, value := range values {
+			if i, err := strconv.Atoi(value); err != nil {
+			} else if index == 0 {
+				result = i
+			} else {
+				switch Program.GetArg(index*2 - 1) {
+				case "+":
+					result += i
+				case "-":
+					result -= i
+				case "*":
+					result *= i
+				case "/":
+					result /= i
 				}
 			}
-			fmt.Println(Program.ArgsString(), "=", result)
-		})
+		}
+		fmt.Println(Program.ArgsString(), "=", result)
+	})
 
 	// calculator_example <function> <value> [( , <value> )]...
-	Program.LineArgument("<function> <value> [( , <value> )]...").
-		Action(func() {
-			var result int
-			switch Program.GetString("<function>") {
-			case "sum":
-				values := Program.GetStrings("<value>")
-				for _, value := range values {
-					if i, err := strconv.Atoi(value); err == nil {
-						result += i
-					}
+	Program.LineArgument("<function> <value> [( , <value> )]...", "", func() {
+		var result int
+		switch Program.GetString("<function>") {
+		case "sum":
+			values := Program.GetStrings("<value>")
+			for _, value := range values {
+				if i, err := strconv.Atoi(value); err == nil {
+					result += i
 				}
 			}
-			fmt.Println(Program.ArgsString(), "=", result)
-		})
+		}
+		fmt.Println(Program.ArgsString(), "=", result)
+	})
 
 	// Examples: ...
-	Program.Annotation(
-		"Examples",
+	Program.Annotation("Examples",
 		[]string{
 			"calculator_example 1 + 2 + 3 + 4 + 5",
 			"calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
