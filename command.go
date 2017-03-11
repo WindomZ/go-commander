@@ -17,7 +17,7 @@ type _Command struct {
 	arguments  _Arguments          // parse arguments from usage
 	commands   _Commands           // api set subcommands
 	options    _Options            // api set options
-	errFunc    ErrFunc             // error function // TODO: not finish this
+	errFunc    errFunc             // error function // TODO: not finish this
 }
 
 func newCommand(root bool) *_Command {
@@ -41,7 +41,7 @@ func (c *_Command) Usage(usage string, args ...interface{}) Commander {
 		c.setAction(args[1])
 	}
 	if len(args) >= 3 {
-		c.errFunc, _ = args[2].(ErrFunc)
+		c.errFunc, _ = args[2].(errFunc)
 	}
 	return c
 }
@@ -101,7 +101,7 @@ func (c *_Command) Command(usage string, args ...interface{}) Commander {
 		if cmd.Valid() {
 			c.commands = append(c.commands, cmd)
 		} else if c.errFunc != nil {
-			c.errFunc(ErrCommand, cmd)
+			c.errFunc(errCommand, cmd)
 		}
 		return cmd
 	}
@@ -112,7 +112,7 @@ func (c *_Command) Option(usage string, args ...interface{}) Commander {
 	if opt := newOption(usage, args...); opt.Valid() {
 		c.options = append(c.options, opt)
 	} else if c.errFunc != nil {
-		c.errFunc(ErrOption, opt)
+		c.errFunc(errOption, opt)
 	}
 	return c
 }
@@ -151,7 +151,7 @@ func (c _Command) UsagesString() (r []string) {
 	}
 	str := c.usage
 	if len(c.options) != 0 {
-		uStrs := c.options.UsagesString(c.clone && c.arguments.IsEmpty())
+		uStrs := c.options.UsagesString(c.arguments.IsEmpty())
 		for _, uStr := range uStrs {
 			str += " " + uStr
 		}
@@ -231,7 +231,7 @@ func (c _Command) Parse(args ...[]string) (Context, error) {
 	return nil, nil
 }
 
-func (c _Command) run(context Context) Result {
+func (c _Command) run(context Context) _Result {
 	if c.root || c.allow(context) {
 		if r := c.options.run(context); r != nil && r.Break() {
 			return r

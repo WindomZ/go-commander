@@ -15,7 +15,7 @@ func (a *actor) addMustKeys(keys []string) {
 }
 
 // setAction set executive function to actor.action
-// arg like: func(c Context) Result
+// arg like: func(c Context) _Result
 //           func(c Context) error
 //           func(c Context)
 //           func(m map[string]interface{}) error
@@ -26,7 +26,7 @@ func (a *actor) setAction(arg interface{}) {
 }
 
 // Action set executive function to actor.action and actor.musts
-// action like: func(c Context) Result
+// action like: func(c Context) _Result
 //              func(c Context) error
 //              func(c Context)
 //              func(m map[string]interface{}) error
@@ -57,10 +57,10 @@ func (a actor) allow(c Context) (b bool) {
 }
 
 // run Common external function, if allow() than execute actor.action
-func (a actor) run(c Context) Result {
+func (a actor) run(c Context) _Result {
 	if !a.allow(c) || a.action == nil {
 	} else if r := a.action(c); r != nil {
 		return r
 	}
-	return ResultPass
+	return resultPass
 }

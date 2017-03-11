@@ -2,7 +2,7 @@ package commander
 
 import "errors"
 
-type Result interface {
+type _Result interface {
 	Code() int
 	Error() error
 	ErrorString() string
@@ -10,56 +10,56 @@ type Result interface {
 }
 
 var (
-	ResultPass  Result = &ResultCode{}
-	ResultBreak        = &ResultCode{_break: true}
+	resultPass  _Result = &_ResultCode{}
+	resultBreak         = &_ResultCode{_break: true}
 )
 
-type ResultCode struct {
+type _ResultCode struct {
 	code   int
 	error  error
 	_break bool
 }
 
-func (e ResultCode) Code() int {
+func (e _ResultCode) Code() int {
 	return e.code
 }
 
-func (e ResultCode) Error() error {
+func (e _ResultCode) Error() error {
 	return e.error
 }
 
-func (e ResultCode) ErrorString() string {
+func (e _ResultCode) ErrorString() string {
 	if e.error != nil {
 		return e.error.Error()
 	}
 	return ""
 }
 
-func (e ResultCode) Break() bool {
+func (e _ResultCode) Break() bool {
 	return e._break || e.error != nil
 }
 
-func NewResult(text string) Result {
-	return &ResultCode{error: errors.New(text)}
+func newResult(text string) _Result {
+	return &_ResultCode{error: errors.New(text)}
 }
 
-func NewResultCode(code int, text ...string) Result {
+func newResultCode(code int, text ...string) _Result {
 	var err error
 	if len(text) != 0 {
 		err = errors.New(text[0])
 	}
-	return &ResultCode{
+	return &_ResultCode{
 		code:  code,
 		error: err,
 	}
 }
 
-func NewResultError(err error, codes ...int) Result {
+func newResultError(err error, codes ...int) _Result {
 	var code int = 0
 	if len(codes) != 0 {
 		code = codes[0]
 	}
-	return &ResultCode{
+	return &_ResultCode{
 		code:  code,
 		error: err,
 	}

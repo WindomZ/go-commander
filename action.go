@@ -2,7 +2,7 @@ package commander
 
 // The following are ACTION functions, chose one if you like it.
 type (
-	Action             func(c Context) Result // default internal function
+	Action             func(c Context) _Result // default internal function
 	ActionNormal       func(c Context) error
 	ActionSimple       func(c Context)
 	ActionNative       func()
@@ -13,36 +13,36 @@ type (
 // parseAction handle function to Action type
 func parseAction(arg interface{}) (a Action) {
 	switch action := arg.(type) {
-	case func(c Context) Result: // Action
+	case func(c Context) _Result: // Action
 		a = action
 	case func(c Context) error: // ActionNormal
-		a = func(c Context) Result {
+		a = func(c Context) _Result {
 			if err := action(c); err != nil {
-				return NewResultError(err)
+				return newResultError(err)
 			}
-			return ResultPass
+			return resultPass
 		}
 	case func(c Context): // ActionSimple
-		a = func(c Context) Result {
+		a = func(c Context) _Result {
 			action(c)
-			return ResultPass
+			return resultPass
 		}
 	case func(): // ActionNative
-		a = func(c Context) Result {
+		a = func(c Context) _Result {
 			action()
-			return ResultPass
+			return resultPass
 		}
 	case func() error: // ActionNativeSimple
-		a = func(c Context) Result {
+		a = func(c Context) _Result {
 			action()
-			return ResultPass
+			return resultPass
 		}
 	case func(m map[string]interface{}) error: // ActionNativeDocopt
-		a = func(c Context) Result {
+		a = func(c Context) _Result {
 			if err := action(c.Map()); err != nil {
-				return NewResultError(err)
+				return newResultError(err)
 			}
-			return ResultPass
+			return resultPass
 		}
 	default:
 		a = nil

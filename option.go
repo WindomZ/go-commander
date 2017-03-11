@@ -109,6 +109,6 @@ func (o _Option) OptionString() (s string) {
 	return
 }
 
-func (o _Option) run(c Context) Result {
+func (o _Option) run(c Context) _Result {
 	return o.actor.run(c)
 }

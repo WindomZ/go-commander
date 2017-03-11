@@ -27,11 +27,11 @@ func (o _Options) OptionsString() (r []string) {
 	return
 }
 
-func (o _Options) run(c Context) Result {
+func (o _Options) run(c Context) _Result {
 	for _, opt := range o {
 		if r := opt.run(c); r != nil && r.Break() {
 			return r
 		}
 	}
-	return ResultPass
+	return resultPass
 }
