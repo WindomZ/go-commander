@@ -15,13 +15,27 @@ func main() {
 	// quick_example tcp <host> <port> [--timeout=<seconds>]
 	commander.Program.
 		Command("tcp <host> <port>").
-		Option("--timeout=<seconds>")
+		Option("--timeout=<seconds>").
+		Action(func() {
+			fmt.Printf("tcp %s %s %s\n",
+				commander.Program.GetString("<host>"),
+				commander.Program.GetString("<port>"),
+				commander.Program.GetString("--timeout"),
+			)
+		})
 
 	// quick_example serial <port> [--baud=9600] [--timeout=<seconds>]
 	commander.Program.
 		Command("serial <port>").
 		Option("--baud=9600").
-		Option("--timeout=<seconds>")
+		Option("--timeout=<seconds>").
+		Action(func() {
+			fmt.Printf("serial %s %s %s\n",
+				commander.Program.GetString("<port>"),
+				commander.Program.GetString("--baud"),
+				commander.Program.GetString("--timeout"),
+			)
+		})
 
 	context, _ := commander.Program.Parse()
 

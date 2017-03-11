@@ -2,33 +2,31 @@ package main
 
 import (
 	"fmt"
-	"github.com/WindomZ/go-commander"
+	. "github.com/WindomZ/go-commander"
 	"strconv"
 )
 
 func main() {
 	// ----------- go-commander -----------
 	// calculator_example
-	commander.Program.
-		Command("calculator_example").
+	Program.Command("calculator_example").
 		Version("0.0.1").
 		Description("Simple calculator example")
 
 	// calculator_example <value> ( ( + | - | * | / ) <value> )...
-	commander.Program.
-		LineArgument("<value> ( ( + | - | * | / ) <value> )...").
-		Action(func(c commander.Context) error {
-			if c.Contain("<function>") {
-				return nil
+	Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...").
+		Action(func() {
+			if Program.Contain("<function>") {
+				return
 			}
 			var result int
-			values := c.GetStrings("<value>")
+			values := Program.GetStrings("<value>")
 			for index, value := range values {
 				if i, err := strconv.Atoi(value); err != nil {
 				} else if index == 0 {
 					result = i
 				} else {
-					switch c.GetArg(index*2 - 1) {
+					switch Program.GetArg(index*2 - 1) {
 					case "+":
 						result += i
 					case "-":
@@ -40,42 +38,38 @@ func main() {
 					}
 				}
 			}
-			fmt.Println(c.ArgsString(), "=", result)
-			return nil
+			fmt.Println(Program.ArgsString(), "=", result)
 		})
 
 	// calculator_example <function> <value> [( , <value> )]...
-	commander.Program.
-		LineArgument("<function> <value> [( , <value> )]...").
-		Action(func(c commander.Context) error {
+	Program.LineArgument("<function> <value> [( , <value> )]...").
+		Action(func() {
 			var result int
-			switch c.GetString("<function>") {
+			switch Program.GetString("<function>") {
 			case "sum":
-				values := c.GetStrings("<value>")
+				values := Program.GetStrings("<value>")
 				for _, value := range values {
 					if i, err := strconv.Atoi(value); err == nil {
 						result += i
 					}
 				}
 			}
-			fmt.Println(c.ArgsString(), "=", result)
-			return nil
+			fmt.Println(Program.ArgsString(), "=", result)
 		})
 
 	// Examples: ...
-	commander.Program.
-		Annotation(
-			"Examples",
-			[]string{
-				"calculator_example 1 + 2 + 3 + 4 + 5",
-				"calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
-				"calculator_example sum 10 , 20 , 30 , 40",
-			},
-		)
+	Program.Annotation(
+		"Examples",
+		[]string{
+			"calculator_example 1 + 2 + 3 + 4 + 5",
+			"calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
+			"calculator_example sum 10 , 20 , 30 , 40",
+		},
+	)
 
-	context, _ := commander.Program.Parse()
+	context, _ := Program.Parse()
 
-	//fmt.Println(commander.Program.HelpMessage()) // print help messages
+	//fmt.Println(Program.HelpMessage()) // print help messages
 	fmt.Println(context.String())
 
 	fmt.Println("-------------")
@@ -96,7 +90,7 @@ Examples:
 Options:
   -h, --help
 `
-	arguments, _ := commander.Parse(usage, nil, true, "", false)
+	arguments, _ := Parse(usage, nil, true, "", false)
 
 	//fmt.Println(usage) // print help messages
 	fmt.Println(arguments)
