@@ -81,13 +81,13 @@ commander.Program.Parse()
 Get the terminal output:
 
 ```bash
-quick_example --version
+$ quick_example --version
 # output: 0.1.1rc
 
-quick_example tcp 127.0.0.1 1080 --timeout=110
+$ quick_example tcp 127.0.0.1 1080 --timeout=110
 # output: tcp 127.0.0.1 1080 110
 
-quick_example serial 80 --baud=5800 --timeout=120
+$ quick_example serial 80 --baud=5800 --timeout=120
 # output: serial 80 5800 120
 ```
 
@@ -113,8 +113,8 @@ import "github.com/WindomZ/go-commander"
 // counted_example -v...
 commander.Program.
 	Command("counted_example").
-	Option("-v...", "", func() {
-		fmt.Println("-v =", commander.Program.Get("-v"))
+	Option("-v...", "", func(c commander.Context) {
+		fmt.Println("-v =", c.Get("-v"))
 	})
 
 // counted_example go [go]
@@ -126,17 +126,16 @@ commander.Program.
 
 // counted_example (--path=<path>)...
 commander.Program.
-	LineOption("(--path=<path>)...", "", func() {
+	LineOption("(--path=<path>)...", "", func(c commander.Context) {
 		fmt.Printf("--path = %q\n",
-			commander.Program.GetStrings("--path"))
+			c.GetStrings("--path"))
 	})
 
 // counted_example <file> <file>
 commander.Program.
-	LineArgument("<file> <file>").
-	Action(func(c commander.Context) {
+	LineArgument("<file> <file>", "", func(c commander.Context) {
 		fmt.Printf("<file> = %q\n",
-			commander.Program.GetStrings("<file>"))
+			c.GetStrings("<file>"))
 	})
 
 commander.Program.Parse()
@@ -145,16 +144,16 @@ commander.Program.Parse()
 Get the terminal output:
 
 ```bash
-counted_example -vvvvvvvvvv
+$ counted_example -vvvvvvvvvv
 # output: -v = 10
 
-counted_example go go
+$ counted_example go go
 # output: go = 2
 
-counted_example --path ./here --path ./there
+$ counted_example --path ./here --path ./there
 # output: --path = ["./here" "./there"]
 
-counted_example this.txt that.txt
+$ counted_example this.txt that.txt
 # output: <file> = ["this.txt" "that.txt"]
 ```
 
@@ -183,81 +182,74 @@ To coding with `go-commander` just like this:
 import "github.com/WindomZ/go-commander"
 
 // calculator_example
-commander.Program.
-	Command("calculator_example").
+Program.Command("calculator_example").
 	Version("0.0.1").
 	Description("Simple calculator example")
 
 // calculator_example <value> ( ( + | - | * | / ) <value> )...
-commander.Program.
-	LineArgument("<value> ( ( + | - | * | / ) <value> )...").
-	Action(func(c commander.Context) error {
-		if c.Contain("<function>") {
-			return nil
-		}
-		var result int
-		values := c.Doc.GetStrings("<value>")
-		for index, value := range values {
-			if i, err := strconv.Atoi(value); err != nil {
-			} else if index == 0 {
-				result = i
-			} else {
-				switch c.Args.Get(index*2 - 1) {
-				case "+":
-					result += i
-				case "-":
-					result -= i
-				case "*":
-					result *= i
-				case "/":
-					result /= i
-				}
+Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...", "", func() {
+	if Program.Contain("<function>") {
+		return
+	}
+	var result int
+	values := Program.GetStrings("<value>")
+	for index, value := range values {
+		if i, err := strconv.Atoi(value); err != nil {
+		} else if index == 0 {
+			result = i
+		} else {
+			switch Program.GetArg(index*2 - 1) {
+			case "+":
+				result += i
+			case "-":
+				result -= i
+			case "*":
+				result *= i
+			case "/":
+				result /= i
 			}
 		}
-		fmt.Println(c.Args.String(), "=", result)
-		return nil
-	})
+	}
+	fmt.Println(Program.ArgsString(), "=", result)
+})
 
 // calculator_example <function> <value> [( , <value> )]...
-commander.Program.
-	LineArgument("<function> <value> [( , <value> )]...").
-	Action(func(c commander.Context) error {
-		var result int
-		switch c.Doc.GetString("<function>") {
-		case "sum":
-			values := c.Doc.GetStrings("<value>")
-			for _, value := range values {
-				if i, err := strconv.Atoi(value); err == nil {
-					result += i
-				}
+Program.LineArgument("<function> <value> [( , <value> )]...", "", func() {
+	var result int
+	switch Program.GetString("<function>") {
+	case "sum":
+		values := Program.GetStrings("<value>")
+		for _, value := range values {
+			if i, err := strconv.Atoi(value); err == nil {
+				result += i
 			}
 		}
-		fmt.Println(c.Args.String(), "=", result)
-		return nil
-	})
+	}
+	fmt.Println(Program.ArgsString(), "=", result)
+})
 
 // Examples: ...
-commander.Program.
-	Annotation(
-		"Examples",
-		[]string{
-			"calculator_example 1 + 2 + 3 + 4 + 5",
-			"calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
-			"calculator_example sum 10 , 20 , 30 , 40",
-		},
-	)
+Program.Annotation("Examples",
+	[]string{
+		"calculator_example 1 + 2 + 3 + 4 + 5",
+		"calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'",
+		"calculator_example sum 10 , 20 , 30 , 40",
+	},
+)
+
+commander.Program.Parse()
 ```
 
 Get the terminal output:
 
 ```bash
-calculator_example 1 + 2 + 3 + 4 + 5
+$ calculator_example 1 + 2 + 3 + 4 + 5
 # output: 15
 
-calculator_example 1 + 2 '*' 3 / 4 - 5
+$ calculator_example 1 + 2 '*' 3 / 4 - 5
 # output: -3
 
-calculator_example sum 10 , 20 , 30 , 40
+$ calculator_example sum 10 , 20 , 30 , 40
 # output: 100
 ```
 
