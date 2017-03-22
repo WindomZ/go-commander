@@ -3,14 +3,14 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
 
-![v0.7.3](https://img.shields.io/badge/version-v0.7.3-orange.svg)
-![status](https://img.shields.io/badge/status-beta-yellow.svg)
-
-The exported functions could *change* at any time before the first *stable release*(>=1.0.0).
-
 The solution for Go command-line interfaces, 
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander.js](https://github.com/tj/commander.js)>
+
+![v0.7.5](https://img.shields.io/badge/version-v0.7.5-orange.svg)
+![status](https://img.shields.io/badge/status-beta-yellow.svg)
+
+The exported functions could *change* at any time before the first *stable release*(>=1.0.0).
 
 ## Installation
 
@@ -33,11 +33,11 @@ go get github.com/WindomZ/go-commander
 Such as the following help message
 
 ```markdown
-Usage:
-  quick_example tcp <host> <port> [--timeout=<seconds>]
-  quick_example serial <port> [--baud=9600] [--timeout=<seconds>]
-  quick_example -h | --help
-  quick_example --version
+  Usage:
+    quick_example tcp <host> <port> [--timeout=<seconds>]
+    quick_example serial <port> [--baud=9600] [--timeout=<seconds>]
+    quick_example -h | --help
+    quick_example --version
 ```
 
 To coding with `go-commander` just like this:
@@ -96,13 +96,13 @@ $ quick_example serial 80 --baud=5800 --timeout=120
 Such as the following help message
 
 ```markdown
-Usage:
-  counted_example -v...
-  counted_example go [go]
-  counted_example (--path=<path>)...
-  counted_example <file> <file>
-  counted_example -h | --help
-  counted_example --version
+  Usage:
+    counted_example -v...
+    counted_example go [go]
+    counted_example (--path=<path>)...
+    counted_example <file> <file>
+    counted_example -h | --help
+    counted_example --version
 ```
 
 To coding with `go-commander` just like this:
@@ -162,18 +162,18 @@ $ counted_example this.txt that.txt
 Such as the following help message
 
 ```markdown
-Simple calculator example
+  Simple calculator example
 
-Usage:
-  calculator_example <value> ( ( + | - | * | / ) <value> )...
-  calculator_example <function> <value> [( , <value> )]...
-  calculator_example -h | --help
-  calculator_example --version
+  Usage:
+    calculator_example <value> ( ( + | - | * | / ) <value> )...
+    calculator_example <function> <value> [( , <value> )]...
+    calculator_example -h | --help
+    calculator_example --version
 
-Examples:
-  calculator_example 1 + 2 + 3 + 4 + 5
-  calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'
-  calculator_example sum 10 , 20 , 30 , 40
+  Examples:
+    calculator_example 1 + 2 + 3 + 4 + 5
+    calculator_example 1 + 2 '*' 3 / 4 - 5    # note quotes around '*'
+    calculator_example sum 10 , 20 , 30 , 40
 ```
 
 To coding with `go-commander` just like this:
