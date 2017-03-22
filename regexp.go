@@ -49,20 +49,25 @@ func containOption(str string) (ok bool) {
 //func isCommand(str string) bool {
 //	return !isArgument(str) && !isOption(str)
 //}
-//
-//// isArgument str contain docopt command format
-//func isArgument(str string) (ok bool) {
-//	ok, _ = regexp.MatchString(`^<[A-Za-z0-9_-]+>$`, str)
-//	return
-//}
-//
-//// isOption str contain docopt command format
-//func isOption(str string) (ok bool) {
-//	ok, _ = regexp.MatchString(`^-{1,2}[A-Za-z0-9_-]+$`, str)
-//	return
-//}
+
+// isArgument str contain docopt command format
+func isArgument(str string) (ok bool) {
+	ok, _ = regexp.MatchString(`^<[A-Za-z0-9_-]+>$`, str)
+	return
+}
+
+// isOption str contain docopt command format
+func isOption(str string) (ok bool) {
+	ok, _ = regexp.MatchString(`^-{1,2}[A-Za-z0-9_-]+$`, str)
+	return
+}
 
 // replaceCommand replace name of command in usage with new name
 func replaceCommand(usage, oldName, newName string) string {
 	return strings.Replace(usage, oldName, newName, 1)
+}
+
+// firstParameter find first parameter in usage
+func firstParameter(usage string) string {
+	return regexp.MustCompile(`^([^\s=]+){1}`).FindString(strings.TrimSpace(usage))
 }

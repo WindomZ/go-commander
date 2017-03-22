@@ -111,7 +111,11 @@ func (c *_Command) addCommand(cmd *_Command) bool {
 }
 
 func (c *_Command) Command(usage string, args ...interface{}) Commander {
-	if c.clone {
+	if param := firstParameter(usage); isArgument(param) {
+		return c.LineArgument(usage, args...)
+	} else if isOption(param) {
+		return c.LineOption(usage, args...)
+	} else if c.clone {
 		usage = c.usage + " " + usage
 	} else if c.Valid() {
 		cmd := newCommand(false)

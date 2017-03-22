@@ -57,7 +57,7 @@ func TestProgram_Calculator(t *testing.T) {
 		Version("0.0.1").
 		Description("Simple calculator example")
 
-	Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...", "", func() error {
+	Program.Command("<value> ( ( + | - | * | / ) <value> )...", "", func() error {
 		values := Program.GetStrings("<value>")
 		for index, value := range values {
 			if i, err := strconv.Atoi(value); err != nil {
@@ -79,7 +79,7 @@ func TestProgram_Calculator(t *testing.T) {
 		return nil
 	})
 
-	Program.LineArgument("<function> <value> [( , <value> )]...", "", func() error {
+	Program.Command("<function> <value> [( , <value> )]...", "", func() error {
 		result = 0
 		switch Program.GetString("<function>") {
 		case "sum":

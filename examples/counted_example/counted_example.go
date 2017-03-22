@@ -23,14 +23,14 @@ func main() {
 
 	// counted_example (--path=<path>)...
 	commander.Program.
-		LineOption("(--path=<path>)...", "", func(c commander.Context) {
+		Command("(--path=<path>)...", "", func(c commander.Context) {
 			fmt.Printf("--path = %q\n",
 				c.GetStrings("--path"))
 		})
 
 	// counted_example <file> <file>
 	commander.Program.
-		LineArgument("<file> <file>", "", func(c commander.Context) {
+		Command("<file> <file>", "", func(c commander.Context) {
 			fmt.Printf("<file> = %q\n",
 				c.GetStrings("<file>"))
 		})

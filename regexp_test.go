@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestRegexpCommand(t *testing.T) {
+func TestRegexp_RegexpCommand(t *testing.T) {
 	assert.Equal(t,
 		regexpCommand("new <name>"),
 		[]string{"new"},
@@ -20,7 +20,7 @@ func TestRegexpCommand(t *testing.T) {
 	)
 }
 
-func TestRegexpArgument(t *testing.T) {
+func TestRegexp_RegexpArgument(t *testing.T) {
 	assert.Equal(t,
 		regexpArgument("new <name>"),
 		[]string{"<name>"},
@@ -35,7 +35,7 @@ func TestRegexpArgument(t *testing.T) {
 	)
 }
 
-func TestRegexpOption(t *testing.T) {
+func TestRegexp_RegexpOption(t *testing.T) {
 	assert.Equal(t,
 		regexpOption("new <name>"),
 		[]string(nil),
@@ -62,7 +62,7 @@ func TestRegexpOption(t *testing.T) {
 	)
 }
 
-func TestReplaceCommand(t *testing.T) {
+func TestRegexp_ReplaceCommand(t *testing.T) {
 	assert.Equal(t,
 		replaceCommand("new <name>", "new", "(new|n)"),
 		"(new|n) <name>",
@@ -70,5 +70,24 @@ func TestReplaceCommand(t *testing.T) {
 	assert.Equal(t,
 		replaceCommand("(new|n) <name>", "(new|n)", "(new|n|add)"),
 		"(new|n|add) <name>",
+	)
+}
+
+func TestRegexp_FirstParameter(t *testing.T) {
+	assert.Equal(t,
+		firstParameter("new <name>"),
+		"new",
+	)
+	assert.Equal(t,
+		firstParameter("(new|n|add) <name>"),
+		"(new|n|add)",
+	)
+	assert.Equal(t,
+		firstParameter("<hello> <world>"),
+		"<hello>",
+	)
+	assert.Equal(t,
+		firstParameter("--hello=<world>"),
+		"--hello",
 	)
 }

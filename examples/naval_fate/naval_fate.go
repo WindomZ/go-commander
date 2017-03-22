@@ -14,7 +14,7 @@ func main() {
 	ship := commander.Program.
 		Command("ship")
 	ship.Command("new <name>...")
-	ship.LineArgument("<name>").
+	ship.Command("<name>").
 		Command("move <x> <y>").
 		Option("--speed=<kn>", "Speed in knots", nil, 10)
 	ship.Command("shoot <x> <y>")

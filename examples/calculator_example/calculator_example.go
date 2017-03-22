@@ -14,7 +14,7 @@ func main() {
 		Description("Simple calculator example")
 
 	// calculator_example <value> ( ( + | - | * | / ) <value> )...
-	Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...", "", func() {
+	Program.Command("<value> ( ( + | - | * | / ) <value> )...", "", func() {
 		var result int
 		values := Program.GetStrings("<value>")
 		for index, value := range values {
@@ -38,7 +38,7 @@ func main() {
 	})
 
 	// calculator_example <function> <value> [( , <value> )]...
-	Program.LineArgument("<function> <value> [( , <value> )]...", "", func() {
+	Program.Command("<function> <value> [( , <value> )]...", "", func() {
 		var result int
 		switch Program.GetString("<function>") {
 		case "sum":
