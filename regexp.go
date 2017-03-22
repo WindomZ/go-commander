@@ -1,6 +1,9 @@
 package commander
 
-import "regexp"
+import (
+	"regexp"
+	"strings"
+)
 
 // regexpCommand Regular screening out docopt commands
 func regexpCommand(str string) []string {
@@ -58,3 +61,8 @@ func containOption(str string) (ok bool) {
 //	ok, _ = regexp.MatchString(`^-{1,2}[A-Za-z0-9_-]+$`, str)
 //	return
 //}
+
+// replaceCommand replace name of command in usage with new name
+func replaceCommand(usage, oldName, newName string) string {
+	return strings.Replace(usage, oldName, newName, 1)
+}

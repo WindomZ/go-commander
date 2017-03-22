@@ -7,6 +7,7 @@ type Commander interface {
 	Version(ver string) Commander
 	Description(desc string) Commander
 	Annotation(title string, contents []string) Commander
+	Aliases(aliases []string) Commander
 	Action(action interface{}, keys ...[]string) Commander
 	Command(usage string, args ...interface{}) Commander
 	Option(usage string, args ...interface{}) Commander

@@ -61,3 +61,14 @@ func TestRegexpOption(t *testing.T) {
 		[]string{"--not-ss", "-a", "--moored", "--drifting"},
 	)
 }
+
+func TestReplaceCommand(t *testing.T) {
+	assert.Equal(t,
+		replaceCommand("new <name>", "new", "(new|n)"),
+		"(new|n) <name>",
+	)
+	assert.Equal(t,
+		replaceCommand("(new|n) <name>", "(new|n)", "(new|n|add)"),
+		"(new|n|add) <name>",
+	)
+}

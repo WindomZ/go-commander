@@ -85,6 +85,13 @@ func (c *_Command) Annotation(title string, contents []string) Commander {
 	return c
 }
 
+func (c *_Command) Aliases(aliases []string) Commander {
+	name := c.Name()
+	c.names = append(c.names, aliases...)
+	c.usage = replaceCommand(c.usage, name, c.Name())
+	return c
+}
+
 func (c *_Command) Action(action interface{}, keys ...[]string) Commander {
 	c.actor.Action(action, keys...)
 	return c

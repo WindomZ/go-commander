@@ -56,3 +56,21 @@ func TestCommand_1(t *testing.T) {
     -c --count    cmd3 count description
 `)
 }
+
+func TestCommand_Aliases(t *testing.T) {
+	c := newCommand(true)
+	c.Command("cmd").
+		Aliases([]string{"c0", "cmd0"}).
+		Option("-a, --about", "cmd about description").
+		Option("-t, --test", "cmd test description")
+	println(c.HelpMessage())
+	assert.Equal(t, c.HelpMessage(), `  Usage:
+    (cmd|c0|cmd0) [-a|--about] [-t|--test]
+    (cmd|c0|cmd0) -h | --help
+    (cmd|c0|cmd0) --version
+
+  Options:
+    -a --about    cmd about description
+    -t --test     cmd test description
+`)
+}
