@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestCommand_1(t *testing.T) {
+func TestCommand_String(t *testing.T) {
 	c := newCommand(true).
 		Usage("cmd <x>", "this is description").
 		Option("-c, --config", "config description").

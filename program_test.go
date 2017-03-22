@@ -6,13 +6,23 @@ import (
 	"testing"
 )
 
+func TestProgram_AutomaticHelp(t *testing.T) {
+	Program.Command("test").
+		Version("0.0.1").
+		Description("this is a test cli.")
+
+	if _, err := Program.Parse([]string{}); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestProgram_Ping(t *testing.T) {
 	var sum int
 	var host string
 
 	Program.Command("test").
 		Version("0.0.1").
-		Description("This is a test cli.")
+		Description("this is a test cli.")
 
 	Program.Command("add <x> <y>").
 		Description("addition operation").

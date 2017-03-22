@@ -26,6 +26,9 @@ func newCommand(root bool) *_Command {
 			fmt.Printf("  err: %v\n  object: %#v\n", err, obj)
 		},
 	}
+	//if c.root {
+	//	c.setAction(func() { c.ShowHelpMessage() })
+	//}
 	return c
 }
 
