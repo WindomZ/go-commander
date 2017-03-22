@@ -15,8 +15,10 @@ The exported functions could *change* at any time before the first *stable relea
 ## Features
 
 - [x] Has all the features of [docopt](https://github.com/docopt/docopt.go).
-- [x] Command line rules [documents](http://docopt.org/) of docopt.
-- [x] Like [commander.js](https://github.com/tj/commander.js) as simple and readable.
+- [x] Usage like [commander.js](https://github.com/tj/commander.js) as simple and readable.
+- [x] Automatic generated a help message, see [documents](http://docopt.org/) of docopt.
+- [x] Automatically execute the correct action function, don't worry about conflict.
+- [x] Can customize the action function, better with context.
 
 ## Installation
 
@@ -50,6 +52,7 @@ To coding with `go-commander` just like this:
 
 ```go
 import "github.com/WindomZ/go-commander"
+...
 
 // quick_example
 commander.Program.
@@ -115,6 +118,7 @@ To coding with `go-commander` just like this:
 
 ```go
 import "github.com/WindomZ/go-commander"
+...
 
 // counted_example -v...
 commander.Program.
@@ -186,6 +190,7 @@ To coding with `go-commander` just like this:
 
 ```go
 import . "github.com/WindomZ/go-commander"
+...
 
 // calculator_example
 Program.Command("calculator_example").
