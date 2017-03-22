@@ -15,10 +15,7 @@ func (a *actor) addMustKeys(keys []string) {
 }
 
 // setAction set executive function to actor.action
-// arg like: func(c Context) _Result
-//           func(c Context) error
-//           func(c Context)
-//           func(m map[string]interface{}) error
+// arg is ACTION function, see ./action.go
 func (a *actor) setAction(arg interface{}) {
 	if action := parseAction(arg); action != nil {
 		a.action = action
@@ -26,10 +23,7 @@ func (a *actor) setAction(arg interface{}) {
 }
 
 // Action set executive function to actor.action and actor.musts
-// action like: func(c Context) _Result
-//              func(c Context) error
-//              func(c Context)
-//              func(m map[string]interface{}) error
+// action is ACTION function, see ./action.go
 func (a *actor) Action(action interface{}, keys ...[]string) {
 	a.setAction(action)
 	if len(keys) != 0 {
@@ -59,9 +53,10 @@ func (a actor) run(c Context) _Result {
 	//println(fmt.Sprintf("run:\n1 %#v\n2 %v\n3 %v",
 	//	a, c.String(), a.action != nil))
 	if !a.allow(c) || a.action == nil {
-		//println(fmt.Sprintf("run:\n4 %v", false))
 	} else if r := a.action(c); r != nil {
+		//println(fmt.Sprintf("run:\n4 %v\n5 pass", true))
 		return r
 	}
+	//println(fmt.Sprintf("run:\n4 %v\n5 stop", false))
 	return resultPass
 }

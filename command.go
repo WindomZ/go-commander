@@ -63,6 +63,9 @@ func (c _Command) Names() []string {
 }
 
 func (c _Command) Name() string {
+	if len(c.names) == 0 {
+		return ""
+	}
 	name := c.names[0]
 	if len(c.names) > 1 {
 		name = fmt.Sprintf("(%s)", strings.Join(c.names, "|"))
@@ -157,7 +160,7 @@ func (c _Command) UsagesString() (r []string) {
 		}
 	}
 	name := c.Name()
-	if str != name {
+	if !c.clone || str != name {
 		r = append(r, str)
 	}
 	name += " "

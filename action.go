@@ -34,7 +34,9 @@ func parseAction(arg interface{}) (a Action) {
 		}
 	case func() error: // ActionNativeSimple
 		a = func(c Context) _Result {
-			action()
+			if err := action(); err != nil {
+				return newResultError(err)
+			}
 			return resultPass
 		}
 	case func(m map[string]interface{}) error: // ActionNativeDocopt
