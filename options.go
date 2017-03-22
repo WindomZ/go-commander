@@ -29,9 +29,9 @@ func (o _Options) OptionsString() (r []string) {
 
 func (o _Options) run(c Context) _Result {
 	for _, opt := range o {
-		if r := opt.run(c); r != nil && r.Break() {
+		if r := opt.run(c); r != nil {
 			return r
 		}
 	}
-	return resultPass
+	return nil
 }

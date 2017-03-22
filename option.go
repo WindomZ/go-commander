@@ -110,5 +110,8 @@ func (o _Option) OptionString() (s string) {
 }
 
 func (o _Option) run(c Context) _Result {
-	return o.actor.run(c)
+	if r := o.actor.run(c); r != nil && r.Break() {
+		return r
+	}
+	return nil
 }

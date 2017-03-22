@@ -94,17 +94,27 @@ func (c *_Command) Action(action interface{}, keys ...[]string) Commander {
 	return c
 }
 
+func (c *_Command) addCommand(cmd *_Command) bool {
+	if cmd.Valid() {
+		for _, _cmd := range c.commands {
+			_cmd.addExcludeKeys(cmd.musts)
+		}
+		c.commands = append(c.commands, cmd)
+		return true
+	} else if c.errFunc != nil {
+		c.errFunc(errCommand, cmd)
+	}
+	return false
+}
+
 func (c *_Command) Command(usage string, args ...interface{}) Commander {
 	if c.clone {
 		usage = c.usage + " " + usage
 	} else if c.Valid() {
 		cmd := newCommand(false)
 		cmd.Usage(usage, args...)
-		if cmd.Valid() {
-			c.commands = append(c.commands, cmd)
-		} else if c.errFunc != nil {
-			c.errFunc(errCommand, cmd)
-		}
+		cmd.addMustKeys(cmd.names)
+		c.addCommand(cmd)
 		return cmd
 	}
 	return c.Usage(usage, args...)
@@ -133,7 +143,7 @@ func (c *_Command) LineArgument(usage string, args ...interface{}) Commander {
 		return cmd
 	}
 	cmd.addMustKeys(cmd.arguments.Get())
-	c.commands = append(c.commands, cmd)
+	c.addCommand(cmd)
 	return cmd
 }
 
@@ -143,7 +153,7 @@ func (c *_Command) LineOption(usage string, args ...interface{}) Commander {
 	if cmd.options.IsEmpty() {
 		return cmd
 	}
-	c.commands = append(c.commands, cmd)
+	c.addCommand(cmd)
 	return cmd
 }
 
@@ -235,10 +245,10 @@ func (c _Command) Parse(args ...[]string) (Context, error) {
 
 func (c _Command) run(context Context) _Result {
 	if c.root || c.allow(context) {
-		if r := c.options.run(context); r != nil && r.Break() {
+		if r := c.commands.run(context); r != nil {
 			return r
 		}
-		if r := c.commands.run(context); r != nil && r.Break() {
+		if r := c.options.run(context); r != nil && r.Break() {
 			return r
 		}
 		return c.actor.run(context)
