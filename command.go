@@ -1,7 +1,6 @@
 package commander
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 )
@@ -191,37 +190,37 @@ func (c _Command) OptionsString() (r []string) {
 }
 
 func (c _Command) HelpMessage() string {
-	var bb bytes.Buffer
+	var hm _HelpMessage
 
 	if len(c.desc) != 0 {
-		bb.WriteString(c.desc + "\n\n")
+		hm.Description(c.desc)
 	}
 
 	if strs := c.UsagesString(); len(strs) != 0 {
-		bb.WriteString("Usage:\n")
+		hm.Title("Usage")
 		for _, str := range strs {
-			bb.WriteString(fmt.Sprintf("  %s\n", str))
+			hm.Subtitle(str)
 		}
 	}
 
 	if strs := c.OptionsString(); len(strs) != 0 {
-		bb.WriteString("\nOptions:\n")
+		hm.Line().Title("Options")
 		strs = c.OptionsString()
 		for _, str := range strs {
-			bb.WriteString(fmt.Sprintf("  %s\n", str))
+			hm.Subtitle(str)
 		}
 	}
 
 	if c.annotation != nil {
 		for title, contents := range c.annotation {
-			bb.WriteString(fmt.Sprintf("\n%s:\n", title))
+			hm.Line().Title(title)
 			for _, content := range contents {
-				bb.WriteString(fmt.Sprintf("  %s\n", content))
+				hm.Subtitle(content)
 			}
 		}
 	}
 
-	return bb.String()
+	return hm.String()
 }
 
 func (c _Command) ShowHelpMessage() string {

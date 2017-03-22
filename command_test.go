@@ -38,21 +38,21 @@ func TestCommand_1(t *testing.T) {
 		})
 
 	assert.Equal(t, c.HelpMessage(),
-		`this is description
+		`  this is description
 
-Usage:
-  cmd <x> [-c|--config] [-d|--drop]
-  cmd cmd2 [-a|--about] [-t|--test]
-  cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]
-  cmd -h | --help
-  cmd --version
+  Usage:
+    cmd <x> [-c|--config] [-d|--drop]
+    cmd cmd2 [-a|--about] [-t|--test]
+    cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]
+    cmd -h | --help
+    cmd --version
 
-Options:
-  -c --config   config description
-  -d --drop     drop description
-  -a --about    cmd2 about description
-  -t --test     cmd2 test description
-  -b=<kn> --bold=<kn>  cmd3 bold description
-  -c --count    cmd3 count description
+  Options:
+    -c --config   config description
+    -d --drop     drop description
+    -a --about    cmd2 about description
+    -t --test     cmd2 test description
+    -b=<kn> --bold=<kn>  cmd3 bold description
+    -c --count    cmd3 count description
 `)
 }
