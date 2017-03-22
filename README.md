@@ -7,7 +7,7 @@ The solution for Go command-line interfaces,
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander.js](https://github.com/tj/commander.js)>
 
-![v0.9.0](https://img.shields.io/badge/version-v0.9.0-yellow.svg)
+![v0.10.0](https://img.shields.io/badge/version-v0.10.0-yellow.svg)
 ![status](https://img.shields.io/badge/status-beta-yellow.svg)
 
 The exported functions could *change* at any time before the first *stable release*(>=1.0.0).
@@ -136,14 +136,14 @@ commander.Program.
 
 // counted_example (--path=<path>)...
 commander.Program.
-	LineOption("(--path=<path>)...", "", func(c commander.Context) {
+	Command("(--path=<path>)...", "", func(c commander.Context) {
 		fmt.Printf("--path = %q\n",
 			c.GetStrings("--path"))
 	})
 
 // counted_example <file> <file>
 commander.Program.
-	LineArgument("<file> <file>", "", func(c commander.Context) {
+	Command("<file> <file>", "", func(c commander.Context) {
 		fmt.Printf("<file> = %q\n",
 			c.GetStrings("<file>"))
 	})
@@ -198,7 +198,7 @@ Program.Command("calculator_example").
 	Description("Simple calculator example")
 
 // calculator_example <value> ( ( + | - | * | / ) <value> )...
-Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...", "", func() {
+Program.Command("<value> ( ( + | - | * | / ) <value> )...", "", func() {
 	var result int
 	values := Program.GetStrings("<value>")
 	for index, value := range values {
@@ -222,7 +222,7 @@ Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...", "", func() {
 })
 
 // calculator_example <function> <value> [( , <value> )]...
-Program.LineArgument("<function> <value> [( , <value> )]...", "", func() {
+Program.Command("<function> <value> [( , <value> )]...", "", func() {
 	var result int
 	switch Program.GetString("<function>") {
 	case "sum":
