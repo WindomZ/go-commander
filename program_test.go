@@ -58,9 +58,6 @@ func TestProgram_Calculator(t *testing.T) {
 		Description("Simple calculator example")
 
 	Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...", "", func() error {
-		if Program.Contain("<function>") {
-			return nil
-		}
 		values := Program.GetStrings("<value>")
 		for index, value := range values {
 			if i, err := strconv.Atoi(value); err != nil {

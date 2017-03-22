@@ -15,9 +15,6 @@ func main() {
 
 	// calculator_example <value> ( ( + | - | * | / ) <value> )...
 	Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...", "", func() {
-		if Program.Contain("<function>") {
-			return
-		}
 		var result int
 		values := Program.GetStrings("<value>")
 		for index, value := range values {

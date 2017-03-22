@@ -243,11 +243,12 @@ func (c _Command) run(context Context) _Result {
 	if c.root || c.allow(context) {
 		if r := c.commands.run(context); r != nil {
 			return r
+		} else if r := c.actor.run(context); r != nil {
+			if r.Break() {
+				return r
+			}
+			return c.options.run(context)
 		}
-		if r := c.options.run(context); r != nil && r.Break() {
-			return r
-		}
-		return c.actor.run(context)
 	}
 	return nil
 }
