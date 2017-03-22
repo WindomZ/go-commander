@@ -1,8 +1,9 @@
 package commander
 
 type Context interface {
-	// _ContextArguments
+	// _Argv
 	GetArg(index int) string
+	GetArgs(offsets ...int) []string
 	ArgsString() string
 	ArgsStringSeparator(sep string, offsets ...int) string
 	// DocoptMap
@@ -21,14 +22,14 @@ type Context interface {
 
 // _Context
 type _Context struct {
-	_ContextArguments `json:"arguments"`
-	DocoptMap         `json:"docopt"`
+	_Argv     `json:"argv"`
+	DocoptMap `json:"docopt"`
 }
 
 func newContext(args []string, d DocoptMap) *_Context {
 	return &_Context{
-		_ContextArguments: newContextArguments(args),
-		DocoptMap:         d,
+		_Argv:     newArgv(args),
+		DocoptMap: d,
 	}
 }
 
