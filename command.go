@@ -57,10 +57,6 @@ func (c _Command) Valid() bool {
 	return len(c.names) != 0 && len(c.usage) != 0
 }
 
-func (c _Command) Names() []string {
-	return c.names
-}
-
 func (c _Command) Name() string {
 	if len(c.names) == 0 {
 		return ""
@@ -97,7 +93,7 @@ func (c *_Command) Action(action interface{}, keys ...[]string) Commander {
 func (c *_Command) addCommand(cmd *_Command) bool {
 	if cmd.Valid() {
 		for _, _cmd := range c.commands {
-			_cmd.addExcludeKeys(cmd.musts)
+			_cmd.addExcludeKeys(cmd.getIncludeKeys())
 		}
 		c.commands = append(c.commands, cmd)
 		return true
@@ -113,7 +109,7 @@ func (c *_Command) Command(usage string, args ...interface{}) Commander {
 	} else if c.Valid() {
 		cmd := newCommand(false)
 		cmd.Usage(usage, args...)
-		cmd.addMustKeys(cmd.names)
+		cmd.addIncludeKeys(cmd.names)
 		c.addCommand(cmd)
 		return cmd
 	}
@@ -142,7 +138,7 @@ func (c *_Command) LineArgument(usage string, args ...interface{}) Commander {
 	if cmd.arguments.IsEmpty() {
 		return cmd
 	}
-	cmd.addMustKeys(cmd.arguments.Get())
+	cmd.addIncludeKeys(cmd.arguments.Get())
 	c.addCommand(cmd)
 	return cmd
 }
