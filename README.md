@@ -7,7 +7,7 @@ The solution for Go command-line interfaces,
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander.js](https://github.com/tj/commander.js)>
 
-![v0.7.5](https://img.shields.io/badge/version-v0.7.5-orange.svg)
+![v0.7.7](https://img.shields.io/badge/version-v0.7.7-orange.svg)
 ![status](https://img.shields.io/badge/status-beta-yellow.svg)
 
 The exported functions could *change* at any time before the first *stable release*(>=1.0.0).
