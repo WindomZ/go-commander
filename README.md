@@ -12,6 +12,12 @@ inspired by <[commander.js](https://github.com/tj/commander.js)>
 
 The exported functions could *change* at any time before the first *stable release*(>=1.0.0).
 
+## Features
+
+- [x] Has all the features of [docopt](https://github.com/docopt/docopt.go).
+- [x] Command line rules [documents](http://docopt.org/) of docopt.
+- [x] Like [commander.js](https://github.com/tj/commander.js) as simple and readable.
+
 ## Installation
 
 To use commander in your Go code:
