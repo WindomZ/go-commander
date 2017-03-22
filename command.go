@@ -160,7 +160,7 @@ func (c _Command) UsagesString() (r []string) {
 		}
 	}
 	name := c.Name()
-	if !c.clone || str != name {
+	if !(c.root || c.clone) || str != name {
 		r = append(r, str)
 	}
 	name += " "
