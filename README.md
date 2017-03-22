@@ -7,7 +7,7 @@ The solution for Go command-line interfaces,
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander.js](https://github.com/tj/commander.js)>
 
-![v0.8.0](https://img.shields.io/badge/version-v0.8.0-yellow.svg)
+![v0.8.1](https://img.shields.io/badge/version-v0.8.1-yellow.svg)
 ![status](https://img.shields.io/badge/status-beta-yellow.svg)
 
 The exported functions could *change* at any time before the first *stable release*(>=1.0.0).
@@ -188,9 +188,6 @@ Program.Command("calculator_example").
 
 // calculator_example <value> ( ( + | - | * | / ) <value> )...
 Program.LineArgument("<value> ( ( + | - | * | / ) <value> )...", "", func() {
-	if Program.Contain("<function>") {
-		return
-	}
 	var result int
 	values := Program.GetStrings("<value>")
 	for index, value := range values {
