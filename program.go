@@ -41,11 +41,11 @@ func (p *_Program) Parse(args ...[]string) (Context, error) {
 	p._Context = *newContext(argv, d)
 	if r := p.run(&p._Context); r != nil {
 		if r.Break() {
+			// TODO: Handle error
 			return &p._Context, r.Error()
 		}
 	} else {
 		// TODO: Should be print help message, but docopt auto to do this.
 	}
 	return &p._Context, nil
-
 }
