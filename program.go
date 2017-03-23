@@ -35,9 +35,9 @@ func (p *_Program) Parse(args ...[]string) (Context, error) {
 		argv = os.Args
 	}
 	if argv == nil || len(argv) == 0 {
-		argv = []string{"-h"}
+		argv = []string{"", "-h"}
 	}
-	d, err := Parse(p.HelpMessage(), argv, true, p.version, false)
+	d, err := Parse(p.HelpMessage(), argv, true, p.version, false, false)
 	if err != nil {
 		return nil, err
 	}
