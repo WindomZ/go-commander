@@ -22,16 +22,16 @@ The exported functions could *change* at any time before the first *stable relea
 
 ## Installation
 
-To use commander in your Go code:
-
-```go
-import "github.com/WindomZ/go-commander"
-```
-
 To install commander according to your `$GOPATH`:
 
 ```bash
 go get github.com/WindomZ/go-commander
+```
+
+To use commander in your Go code:
+
+```go
+import "github.com/WindomZ/go-commander"
 ```
 
 ## Examples
