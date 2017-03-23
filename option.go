@@ -101,11 +101,7 @@ func (o _Option) OptionString() (s string) {
 			return str
 		})
 	s = regexp.MustCompile(`(\s*[,|]\s*-)`).ReplaceAllString(s, " -")
-	if len(s) >= 12 {
-		s = fmt.Sprintf("%s  %s", s, o.desc)
-	} else {
-		s = fmt.Sprintf("%-14s%s", s, o.desc)
-	}
+	s = formatDescriptionLine(s, o.desc, 2, 14, true)
 	return
 }
 

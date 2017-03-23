@@ -11,8 +11,6 @@ type Commander interface {
 	Action(action interface{}, keys ...[]string) Commander
 	Command(usage string, args ...interface{}) Commander
 	Option(usage string, args ...interface{}) Commander
-	UsagesString() []string
-	OptionsString() []string
 	HelpMessage() string
 	ShowHelpMessage() string
 	Parse(argv ...[]string) (Context, error)

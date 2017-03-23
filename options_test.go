@@ -31,7 +31,7 @@ func TestOptions_OptionsString(t *testing.T) {
 	assert.Equal(t, o.OptionsString(),
 		[]string{
 			"-a --about    about description",
-			"-b=<kn> --bold=<kn>  bold description",
+			"-b=<kn> --bold=<kn>\n              bold description",
 			"-c --config   config description",
 			"-d --drop     drop description",
 		})

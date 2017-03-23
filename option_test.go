@@ -32,7 +32,7 @@ func TestOption_3(t *testing.T) {
 	assert.Equal(t, o.IsRequired(), false)
 	assert.Equal(t, o.IsOptional(), true)
 	assert.Equal(t, o.UsageString(), "[-p=<path>|--pepper=<path>]")
-	assert.Equal(t, o.OptionString(), "-p=<path> --pepper=<path>  add pepper directory")
+	assert.Equal(t, o.OptionString(), "-p=<path> --pepper=<path>\n              add pepper directory")
 }
 
 func TestOption_4(t *testing.T) {
@@ -42,5 +42,5 @@ func TestOption_4(t *testing.T) {
 	assert.Equal(t, o.IsRequired(), false)
 	assert.Equal(t, o.IsOptional(), true)
 	assert.Equal(t, o.UsageString(), "[-p=[path]|--pepper=[path]]")
-	assert.Equal(t, o.OptionString(), "-p=[path] --pepper=[path]  add pepper directory")
+	assert.Equal(t, o.OptionString(), "-p=[path] --pepper=[path]\n              add pepper directory")
 }

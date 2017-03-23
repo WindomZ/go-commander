@@ -7,6 +7,8 @@ import (
 )
 
 func TestProgram_AutomaticHelp(t *testing.T) {
+	Program = newProgram()
+
 	Program.Command("test").
 		Version("0.0.1").
 		Description("this is a test cli.")
@@ -19,6 +21,7 @@ func TestProgram_AutomaticHelp(t *testing.T) {
 func TestProgram_Ping(t *testing.T) {
 	var sum int
 	var host string
+	Program = newProgram()
 
 	Program.Command("test").
 		Version("0.0.1").
@@ -62,6 +65,7 @@ func TestProgram_Ping(t *testing.T) {
 
 func TestProgram_Calculator(t *testing.T) {
 	var result int
+	Program = newProgram()
 
 	Program.Command("calculator_example").
 		Version("0.0.1").

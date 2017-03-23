@@ -2,6 +2,7 @@ package commander
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 )
 
@@ -209,13 +210,35 @@ func (c _Command) OptionsString() (r []string) {
 	return
 }
 
+func (c _Command) CommandsString(prefix string) (r []string) {
+	if !c.Valid() {
+		return
+	}
+	name := regexp.MustCompile(`[()]`).ReplaceAllString(c.Name(), "")
+	if c.root {
+		name = prefix
+	} else {
+		if len(prefix) != 0 {
+			name = prefix + " " + name
+		}
+		if len(c.desc) != 0 {
+			r = append(r, formatDescriptionLine(name, c.desc, 2, 14, true))
+		}
+	}
+	r = append(r, c.commands.CommandsString(name)...)
+	return
+}
+
+// HelpMessage get string of help message that generated according to the docopt format
 func (c _Command) HelpMessage() string {
 	var hm _HelpMessage
 
+	// Description
 	if len(c.desc) != 0 {
 		hm.Description(c.desc)
 	}
 
+	// Usages
 	if strs := c.UsagesString(); len(strs) != 0 {
 		hm.Title("Usage")
 		for _, str := range strs {
@@ -223,14 +246,23 @@ func (c _Command) HelpMessage() string {
 		}
 	}
 
+	// Options
 	if strs := c.OptionsString(); len(strs) != 0 {
 		hm.Line().Title("Options")
-		strs = c.OptionsString()
 		for _, str := range strs {
 			hm.Subtitle(str)
 		}
 	}
 
+	// Commands
+	if strs := c.CommandsString(""); len(strs) != 0 {
+		hm.Line().Title("Commands")
+		for _, str := range strs {
+			hm.Subtitle(str)
+		}
+	}
+
+	// Annotation
 	if c.annotation != nil {
 		for title, contents := range c.annotation {
 			hm.Line().Title(title)

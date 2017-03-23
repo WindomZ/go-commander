@@ -11,6 +11,14 @@ func (c _Commands) OptionsString() (r []string) {
 	return
 }
 
+// CommandsString
+func (c _Commands) CommandsString(prefix string) (r []string) {
+	for _, cmd := range c {
+		r = append(r, cmd.CommandsString(prefix)...)
+	}
+	return
+}
+
 func (c _Commands) run(context Context) _Result {
 	for _, cmd := range c {
 		if r := cmd.run(context); r != nil {
