@@ -9,7 +9,6 @@ func main() {
 	// ----------- go-commander -----------
 	// counted_example -v...
 	commander.Program.
-		Command("counted_example").
 		Option("-v...", "", func(c commander.Context) {
 			fmt.Println("-v =", c.Get("-v"))
 		})

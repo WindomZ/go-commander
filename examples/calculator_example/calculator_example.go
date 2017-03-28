@@ -9,8 +9,7 @@ import (
 func main() {
 	// ----------- go-commander -----------
 	// calculator_example
-	Program.Command("calculator_example").
-		Version("0.0.1").
+	Program.Version("0.0.1").
 		Description("Simple calculator example")
 
 	// calculator_example <value> ( ( + | - | * | / ) <value> )...

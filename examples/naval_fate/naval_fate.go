@@ -8,7 +8,6 @@ import (
 func main() {
 	// ----------- go-commander -----------
 	commander.Program.
-		Command("naval_fate").
 		Description("Naval Fate.")
 
 	ship := commander.Program.

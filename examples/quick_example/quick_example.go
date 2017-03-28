@@ -9,7 +9,6 @@ func main() {
 	// ----------- go-commander -----------
 	// quick_example
 	commander.Program.
-		Command("quick_example").
 		Version("0.1.1rc")
 
 	// quick_example tcp <host> <port> [--timeout=<seconds>]
