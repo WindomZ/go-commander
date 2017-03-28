@@ -103,7 +103,7 @@ func (c *_Command) Annotation(title string, contents []string) Commander {
 }
 
 func (c *_Command) addCommand(cmd *_Command) bool {
-	if cmd.Valid() {
+	if c.init().Valid() && cmd.Valid() {
 		for _, _cmd := range c.commands {
 			_cmd.addExcludeKeys(cmd.getIncludeKeys())
 		}
@@ -133,7 +133,7 @@ func (c *_Command) Command(usage string, args ...interface{}) Commander {
 }
 
 func (c *_Command) Aliases(aliases []string) Commander {
-	name := c.Name()
+	name := c.init().Name()
 	c.names = append(c.names, aliases...)
 	c.usage = replaceCommand(c.usage, name, c.Name())
 	return c
@@ -141,7 +141,7 @@ func (c *_Command) Aliases(aliases []string) Commander {
 
 func (c *_Command) Option(usage string, args ...interface{}) Commander {
 	if opt := newOption(usage, args...); opt.Valid() {
-		c.options = append(c.options, opt)
+		c.init().options = append(c.options, opt)
 	} else if c.errFunc != nil {
 		c.errFunc(errOption, opt)
 	}
@@ -177,7 +177,7 @@ func (c *_Command) LineOption(usage string, args ...interface{}) Commander {
 }
 
 func (c *_Command) Action(action interface{}, keys ...[]string) Commander {
-	c.actor.Action(action, keys...)
+	c.init().actor.Action(action, keys...)
 	return c
 }
 

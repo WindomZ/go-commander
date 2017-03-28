@@ -23,7 +23,7 @@ func newProgram() *_Program {
 
 func (p *_Program) Version(ver string) Commander {
 	p.version = ver
-	return p
+	return p.init()
 }
 
 func (p *_Program) Parse(args ...[]string) (Context, error) {
