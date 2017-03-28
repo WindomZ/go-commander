@@ -2,6 +2,8 @@ package commander
 
 import (
 	"fmt"
+	"os"
+	"path"
 	"regexp"
 	"strings"
 )
@@ -33,10 +35,21 @@ func newCommand(root bool) *_Command {
 	return c
 }
 
+func (c *_Command) init() *_Command {
+	if !c.Valid() {
+		if dir, err := os.Getwd(); err == nil {
+			c.Usage(path.Base(dir))
+		}
+	}
+	return c
+}
+
 func (c *_Command) Usage(usage string, args ...interface{}) Commander {
-	c.usage = strings.TrimSpace(usage)
-	c.regexpNames()
-	c.regexpArguments()
+	if len(usage) != 0 {
+		c.usage = strings.TrimSpace(usage)
+		c.regexpNames()
+		c.regexpArguments()
+	}
 	if len(args) >= 1 {
 		c.desc, _ = args[0].(string)
 	}
@@ -73,12 +86,12 @@ func (c _Command) Name() string {
 }
 
 func (c *_Command) Version(ver string) Commander {
-	return c
+	return c.init()
 }
 
 func (c *_Command) Description(desc string) Commander {
 	c.desc = desc
-	return c
+	return c.init()
 }
 
 func (c *_Command) Annotation(title string, contents []string) Commander {
@@ -86,19 +99,7 @@ func (c *_Command) Annotation(title string, contents []string) Commander {
 		c.annotation = make(map[string][]string)
 	}
 	c.annotation[title] = contents
-	return c
-}
-
-func (c *_Command) Aliases(aliases []string) Commander {
-	name := c.Name()
-	c.names = append(c.names, aliases...)
-	c.usage = replaceCommand(c.usage, name, c.Name())
-	return c
-}
-
-func (c *_Command) Action(action interface{}, keys ...[]string) Commander {
-	c.actor.Action(action, keys...)
-	return c
+	return c.init()
 }
 
 func (c *_Command) addCommand(cmd *_Command) bool {
@@ -129,6 +130,13 @@ func (c *_Command) Command(usage string, args ...interface{}) Commander {
 		return cmd
 	}
 	return c.Usage(usage, args...)
+}
+
+func (c *_Command) Aliases(aliases []string) Commander {
+	name := c.Name()
+	c.names = append(c.names, aliases...)
+	c.usage = replaceCommand(c.usage, name, c.Name())
+	return c
 }
 
 func (c *_Command) Option(usage string, args ...interface{}) Commander {
@@ -166,6 +174,11 @@ func (c *_Command) LineOption(usage string, args ...interface{}) Commander {
 	}
 	c.addCommand(cmd)
 	return cmd
+}
+
+func (c *_Command) Action(action interface{}, keys ...[]string) Commander {
+	c.actor.Action(action, keys...)
+	return c
 }
 
 func (c _Command) UsagesString() (r []string) {
