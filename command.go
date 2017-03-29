@@ -125,12 +125,9 @@ func (c *_Command) addCommand(cmd *_Command) bool {
 }
 
 func (c *_Command) Command(usage string, args ...interface{}) (commander Commander) {
-	defer func() {
-		c.last = commander
-	}()
 	if param := firstParameter(usage); isArgument(param) {
 		commander = c.LineArgument(usage, args...)
-		return
+		goto SetLast
 	} else if isOption(param) {
 		commander = c.LineOption(usage, args...)
 		return
@@ -142,9 +139,11 @@ func (c *_Command) Command(usage string, args ...interface{}) (commander Command
 		cmd.addIncludeKeys(cmd.names)
 		c.addCommand(cmd)
 		commander = cmd
-		return
+		goto SetLast
 	}
 	commander = c.Usage(usage, args...)
+SetLast:
+	c.last = commander
 	return
 }
 
@@ -156,14 +155,13 @@ func (c *_Command) Aliases(aliases []string) Commander {
 }
 
 func (c *_Command) addOption(line bool, usage string, args ...interface{}) (opt *_Option) {
-	defer func() {
-		c.last = opt
-	}()
 	opt = newOption(usage, args...)
 	opt.line = line
+	opt.break_off = line
 	if opt.Valid() {
 		c.init().options = append(c.options, opt)
 	}
+	c.last = opt
 	return opt
 }
 
@@ -179,6 +177,7 @@ func (c *_Command) Line(usage string, args ...interface{}) *_Command {
 	cmd := newCommand(c.root)
 	cmd.Usage(usage, args...)
 	cmd.clone = true
+	cmd.ignore = true
 	return cmd
 }
 
@@ -188,6 +187,7 @@ func (c *_Command) LineArgument(usage string, args ...interface{}) Commander {
 	if cmd.arguments.IsEmpty() {
 		return cmd
 	}
+	cmd.ignore = false
 	cmd.addIncludeKeys(cmd.arguments.Get())
 	c.addCommand(cmd)
 	return cmd
@@ -207,16 +207,14 @@ func (c *_Command) LineOption(usage string, args ...interface{}) Commander {
 func (c *_Command) Action(action interface{}, keys ...[]string) Commander {
 	if c.init().last != nil {
 		switch obj := c.last.(type) {
-		case *_Command:
-			goto CommandAction
+		//case *_Command:
 		case *_Option:
+			obj.actor.Action(action, keys...)
 			if c.hasAction() {
-				obj.actor.Action(action, keys...)
 				return c
 			}
 		}
 	}
-CommandAction:
 	c.actor.Action(action, keys...)
 	return c
 }

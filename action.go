@@ -25,31 +25,31 @@ func parseAction(arg interface{}) (a Action) {
 			if err := action(c); err != nil {
 				return newResultError(err)
 			}
-			return resultPass
+			return resultPass()
 		}
 	case func(c Context): // ActionSimple
 		a = func(c Context) _Result {
 			action(c)
-			return resultPass
+			return resultPass()
 		}
 	case func(): // ActionNative
 		a = func(c Context) _Result {
 			action()
-			return resultPass
+			return resultPass()
 		}
 	case func() error: // ActionNativeSimple
 		a = func(c Context) _Result {
 			if err := action(); err != nil {
 				return newResultError(err)
 			}
-			return resultPass
+			return resultPass()
 		}
 	case func(m map[string]interface{}) error: // ActionNativeDocopt
 		a = func(c Context) _Result {
 			if err := action(c.Map()); err != nil {
 				return newResultError(err)
 			}
-			return resultPass
+			return resultPass()
 		}
 	default:
 		a = nil

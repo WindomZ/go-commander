@@ -7,12 +7,8 @@ type _Result interface {
 	Error() error
 	ErrorString() string
 	Break() bool
+	setBreak()
 }
-
-var (
-	resultPass  _Result = &_ResultCode{}
-	resultBreak         = &_ResultCode{_break: true}
-)
 
 type _ResultCode struct {
 	code   int
@@ -36,7 +32,11 @@ func (e _ResultCode) ErrorString() string {
 }
 
 func (e _ResultCode) Break() bool {
-	return e._break || e.error != nil
+	return e._break || (e.error != nil)
+}
+
+func (e *_ResultCode) setBreak() {
+	e._break = true
 }
 
 func newResult(text string) _Result {
@@ -65,8 +65,10 @@ func newResultError(err error, codes ...int) _Result {
 	}
 }
 
-func newResultBreak() _Result {
-	return &_ResultCode{
-		_break: true,
-	}
+func resultPass() _Result {
+	return &_ResultCode{}
+}
+
+func resultBreak() _Result {
+	return &_ResultCode{_break: true}
 }

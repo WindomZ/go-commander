@@ -18,6 +18,45 @@ func TestProgram_AutomaticHelp(t *testing.T) {
 	}
 }
 
+func TestProgram_LineOption(t *testing.T) {
+	var result string
+
+	Program = newProgram()
+
+	Program.Command("test").
+		Version("0.0.1").
+		Description("this is a test cli.")
+
+	Program.Command("-a --aaa").
+		Action(func() {
+			result = "aaa"
+		})
+	Program.Command("-b --bbb", "",
+		func() {
+			result = "bbb"
+		})
+	Program.Command("-c").
+		Action(func() {
+			result = "ccc"
+		})
+
+	if _, err := Program.Parse([]string{"test", "-a"}); err != nil {
+		t.Fatal(err)
+	} else {
+		assert.Equal(t, result, "aaa")
+	}
+	if _, err := Program.Parse([]string{"test", "--bbb"}); err != nil {
+		t.Fatal(err)
+	} else {
+		assert.Equal(t, result, "bbb")
+	}
+	if _, err := Program.Parse([]string{"test", "-c"}); err != nil {
+		t.Fatal(err)
+	} else {
+		assert.Equal(t, result, "ccc")
+	}
+}
+
 func TestProgram_Ping(t *testing.T) {
 	var sum int
 	var host string
@@ -69,7 +108,7 @@ func TestProgram_Calculator(t *testing.T) {
 
 	Program.Command("calculator_example").
 		Version("0.0.1").
-		Description("Simple calculator example")
+		Description("simple calculator example")
 
 	Program.Command("<value> ( ( + | - | * | / ) <value> )...", "", func() error {
 		values := Program.GetStrings("<value>")
