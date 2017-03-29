@@ -155,13 +155,22 @@ func (c *_Command) Aliases(aliases []string) Commander {
 	return c
 }
 
-func (c *_Command) Option(usage string, args ...interface{}) Commander {
-	if opt := newOption(usage, args...); opt.Valid() {
-		c.init().options = append(c.options, opt)
+func (c *_Command) addOption(line bool, usage string, args ...interface{}) (opt *_Option) {
+	defer func() {
 		c.last = opt
+	}()
+	opt = newOption(usage, args...)
+	opt.line = line
+	if opt.Valid() {
+		c.init().options = append(c.options, opt)
+	}
+	return opt
+}
+
+func (c *_Command) Option(usage string, args ...interface{}) Commander {
+	if opt := c.addOption(false, usage, args...); opt.Valid() {
 	} else if c.errFunc != nil {
 		c.errFunc(errOption, opt)
-		c.last = opt
 	}
 	return c
 }
@@ -186,10 +195,11 @@ func (c *_Command) LineArgument(usage string, args ...interface{}) Commander {
 
 func (c *_Command) LineOption(usage string, args ...interface{}) Commander {
 	cmd := c.Line(c.usage, args...)
-	cmd.Option(usage, args...)
+	opt := cmd.addOption(true, usage, args...)
 	if cmd.options.IsEmpty() {
 		return cmd
 	}
+	cmd.addIncludeKeys(opt.Names())
 	c.addCommand(cmd)
 	return cmd
 }
@@ -217,7 +227,7 @@ func (c _Command) UsagesString() (r []string) {
 	}
 	str := c.usage
 	if len(c.options) != 0 {
-		uStrs := c.options.UsagesString(!c.clone && c.arguments.IsEmpty())
+		uStrs := c.options.UsagesString(c.isRoot() && c.arguments.IsEmpty())
 		for _, uStr := range uStrs {
 			str += " " + uStr
 		}
