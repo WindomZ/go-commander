@@ -4,9 +4,11 @@ import "fmt"
 
 // actor Assigned to execute the command
 type actor struct {
-	names    []string        // the keys contain one of names than execute action
-	triggers map[string]bool // the keys contain all true values and none false value in triggers than execute action
-	action   Action          // executed command
+	names     []string        // the keys contain one of names than execute action
+	triggers  map[string]bool // the keys contain all true values and none false value in triggers than execute action
+	action    Action          // executed command
+	ignore    bool            // ignore this action
+	break_off bool            // break off both actions
 }
 
 // addIncludeKeys append include keys to actor.triggers
@@ -81,7 +83,8 @@ func (a *actor) Action(action interface{}, keys ...[]string) {
 func (a actor) allow(c Context) (pass bool) {
 	if DEBUG {
 		defer func() {
-			fmt.Printf("allow:\n 1.actor %#v\n 2.argv %v\n 3.action %v\n 4.pass %v\n",
+			fmt.Printf("----------allow----------"+
+				"\n  1.actor  %#v\n  2.argv   %v\n  3.action %v\n  4.pass   %v\n",
 				a, c.String(), a.action != nil, pass)
 		}()
 	}
@@ -113,7 +116,8 @@ func (a actor) allow(c Context) (pass bool) {
 func (a actor) run(c Context, force ...bool) (result _Result) {
 	if DEBUG {
 		defer func() {
-			fmt.Printf("run:\n 1.actor %#v\n 2.argv %v\n 3.action %v\n 4.result %#v\n",
+			fmt.Printf("----------run----------"+
+				"\n  1.actor  %#v\n  2.argv   %v\n  3.action %v\n  4.result %#v\n",
 				a, c.String(), a.action != nil, result)
 		}()
 	}
@@ -122,7 +126,16 @@ func (a actor) run(c Context, force ...bool) (result _Result) {
 	} else if len(force) != 0 && force[0] {
 	} else if !a.allow(c) {
 		return
+	} else if a.ignore {
+		return resultPass()
 	}
 	result = a.action(c)
+	if a.break_off {
+		if result != nil && !result.Break() {
+			result.setBreak()
+		} else {
+			result = resultBreak()
+		}
+	}
 	return
 }
