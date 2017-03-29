@@ -64,3 +64,9 @@ func newResultError(err error, codes ...int) _Result {
 		error: err,
 	}
 }
+
+func newResultBreak() _Result {
+	return &_ResultCode{
+		_break: true,
+	}
+}

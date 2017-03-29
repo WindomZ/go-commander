@@ -45,6 +45,10 @@ func (c *_Command) init() *_Command {
 	return c
 }
 
+func (c _Command) isRoot() bool {
+	return c.root && !c.clone
+}
+
 func (c *_Command) Usage(usage string, args ...interface{}) Commander {
 	if len(usage) != 0 {
 		c.usage = strings.TrimSpace(usage)
@@ -88,6 +92,10 @@ func (c _Command) Name() string {
 
 func (c *_Command) Version(ver string) Commander {
 	return c.init()
+}
+
+func (c _Command) ShowVersion() string {
+	return ""
 }
 
 func (c *_Command) Description(desc string) Commander {
@@ -209,7 +217,7 @@ func (c _Command) UsagesString() (r []string) {
 	}
 	str := c.usage
 	if len(c.options) != 0 {
-		uStrs := c.options.UsagesString(c.arguments.IsEmpty())
+		uStrs := c.options.UsagesString(!c.clone && c.arguments.IsEmpty())
 		for _, uStr := range uStrs {
 			str += " " + uStr
 		}
@@ -228,10 +236,6 @@ func (c _Command) UsagesString() (r []string) {
 				r = append(r, name+uStr)
 			}
 		}
-	}
-	if c.root && !c.clone {
-		r = append(r, fmt.Sprintf("%s-h | --help", name))
-		r = append(r, fmt.Sprintf("%s--version", name))
 	}
 	return
 }
@@ -328,7 +332,7 @@ func (c _Command) run(context Context) _Result {
 		if r := c.options.run(context); r != nil && r.Break() {
 			return r
 		}
-		return c.actor.run(context, c.root && !c.clone)
+		return c.actor.run(context, c.isRoot())
 	}
 	return nil
 }
