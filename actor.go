@@ -72,10 +72,10 @@ func (a *actor) Action(action interface{}, keys ...[]string) {
 
 // allow Determine whether meet the requirements(actor.names or actor.triggers) for the execution
 func (a actor) allow(c Context) (pass bool) {
-	//defer func() {
-	//	println(fmt.Sprintf("allow:\n 1 %#v\n 2 %v\n 3 %v\n 4 %v",
-	//		a, c.String(), a.action != nil, pass))
-	//}()
+	defer func() {
+		//println(fmt.Sprintf("allow:\n 1.actor %#v\n 2.argv %v\n 3.action %v\n 4.pass %v",
+		//	a, c.String(), a.action != nil, pass))
+	}()
 	for key, ok := range a.triggers {
 		if !ok && c.Contain(key) {
 			pass = false
@@ -101,15 +101,15 @@ func (a actor) allow(c Context) (pass bool) {
 }
 
 // run Common external function, if allow() than execute actor.action
-func (a actor) run(c Context) (reuslt _Result) {
-	//defer func() {
-	//	println(fmt.Sprintf("run:\n 1 %#v\n 2 %v\n 3 %v\n 4 %#v",
-	//		a, c.String(), a.action != nil, reuslt))
-	//}()
+func (a actor) run(c Context) (result _Result) {
+	defer func() {
+		//println(fmt.Sprintf("run:\n 1.actor %#v\n 2.argv %v\n 3.action %v\n 4.result %v",
+		//	a, c.String(), a.action != nil, result))
+	}()
 	if !a.allow(c) || a.action == nil {
-		reuslt = nil
+		result = nil
 	} else {
-		reuslt = a.action(c)
+		result = a.action(c)
 	}
 	return
 }
