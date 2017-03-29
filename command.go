@@ -302,8 +302,8 @@ func (c _Command) run(context Context) _Result {
 	if c.root || c.allow(context) {
 		if r := c.commands.run(context); r != nil {
 			return r
-		} else if r := c.actor.run(context); r != nil {
-			if r.Break() {
+		} else if r := c.actor.run(context); c.root || r != nil {
+			if r != nil && r.Break() {
 				return r
 			}
 			return c.options.run(context)
