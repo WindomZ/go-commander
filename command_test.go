@@ -48,8 +48,6 @@ func TestCommand_HelpMessage(t *testing.T) {
 			"cmd <x> [-c|--config] [-d|--drop]",
 			"cmd cmd2 [-a|--about] [-t|--test]",
 			"cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]",
-			"cmd -h | --help",
-			"cmd --version",
 		})
 	assert.Equal(t, c.OptionsString(),
 		[]string{
@@ -68,8 +66,6 @@ func TestCommand_HelpMessage(t *testing.T) {
     cmd <x> [-c|--config] [-d|--drop]
     cmd cmd2 [-a|--about] [-t|--test]
     cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]
-    cmd -h | --help
-    cmd --version
 
   Options:
     -c --config   config description
@@ -90,8 +86,6 @@ func TestCommand_Aliases(t *testing.T) {
 		Option("-t, --test", "cmd test description")
 	assert.Equal(t, c.HelpMessage(), `  Usage:
     (cmd|c0|cmd0) [-a|--about] [-t|--test]
-    (cmd|c0|cmd0) -h | --help
-    (cmd|c0|cmd0) --version
 
   Options:
     -a --about    cmd about description

@@ -7,7 +7,7 @@ The solution for Go command-line interfaces,
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander.js](https://github.com/tj/commander.js)>
 
-![v0.12.2](https://img.shields.io/badge/version-v0.12.2-yellow.svg)
+![v0.14.1](https://img.shields.io/badge/version-v0.14.1-yellow.svg)
 ![status](https://img.shields.io/badge/status-beta-yellow.svg)
 
 The exported functions could *change* at any time before the first *stable release*(>=1.0.0).
@@ -44,8 +44,12 @@ Such as the following help message
 Usage:
   quick_example tcp <host> <port> [--timeout=<seconds>]
   quick_example serial <port> [--baud=9600] [--timeout=<seconds>]
-  quick_example -h | --help
-  quick_example --version
+  quick_example -h|--help
+  quick_example -v|--version
+
+Options:
+  -h --help     show help message
+  -v --version  show version
 ```
 
 To coding with `go-commander` just like this:
@@ -110,8 +114,12 @@ Usage:
   counted_example go [go]
   counted_example (--path=<path>)...
   counted_example <file> <file>
-  counted_example -h | --help
-  counted_example --version
+  counted_example -h|--help
+  counted_example -v|--version
+
+Options:
+  -h --help     show help message
+  -v --version  show version
 ```
 
 To coding with `go-commander` just like this:
@@ -177,8 +185,12 @@ Simple calculator example
 Usage:
   calculator_example <value> ( ( + | - | * | / ) <value> )...
   calculator_example <function> <value> [( , <value> )]...
-  calculator_example -h | --help
-  calculator_example --version
+  calculator_example -h|--help
+  calculator_example -v|--version
+
+Options:
+  -h --help     show help message
+  -v --version  show version
 
 Examples:
   calculator_example 1 + 2 + 3 + 4 + 5

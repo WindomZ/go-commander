@@ -3,6 +3,7 @@ package commander
 // The following are ACTION functions, chose one if you like it.
 type (
 	Action             func(c Context) _Result // default internal function
+	ActionResult       func() _Result
 	ActionNormal       func(c Context) error
 	ActionSimple       func(c Context)
 	ActionNative       func()
@@ -15,6 +16,10 @@ func parseAction(arg interface{}) (a Action) {
 	switch action := arg.(type) {
 	case func(c Context) _Result: // Action
 		a = action
+	case func() _Result: // ActionResult
+		a = func(c Context) _Result {
+			return action()
+		}
 	case func(c Context) error: // ActionNormal
 		a = func(c Context) _Result {
 			if err := action(c); err != nil {

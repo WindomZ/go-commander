@@ -19,6 +19,7 @@ type _Command struct {
 	arguments  _Arguments          // parse arguments from usage
 	commands   _Commands           // api set subcommands
 	options    _Options            // api set options
+	last       interface{}         // the last defined object
 	errFunc    errFunc             // error function // TODO: not finish this
 }
 
@@ -42,6 +43,10 @@ func (c *_Command) init() *_Command {
 		}
 	}
 	return c
+}
+
+func (c _Command) isRoot() bool {
+	return c.root && !c.clone
 }
 
 func (c *_Command) Usage(usage string, args ...interface{}) Commander {
@@ -89,6 +94,10 @@ func (c *_Command) Version(ver string) Commander {
 	return c.init()
 }
 
+func (c _Command) ShowVersion() string {
+	return ""
+}
+
 func (c *_Command) Description(desc string) Commander {
 	c.desc = desc
 	return c.init()
@@ -115,11 +124,16 @@ func (c *_Command) addCommand(cmd *_Command) bool {
 	return false
 }
 
-func (c *_Command) Command(usage string, args ...interface{}) Commander {
+func (c *_Command) Command(usage string, args ...interface{}) (commander Commander) {
+	defer func() {
+		c.last = commander
+	}()
 	if param := firstParameter(usage); isArgument(param) {
-		return c.LineArgument(usage, args...)
+		commander = c.LineArgument(usage, args...)
+		return
 	} else if isOption(param) {
-		return c.LineOption(usage, args...)
+		commander = c.LineOption(usage, args...)
+		return
 	} else if c.clone {
 		usage = c.usage + " " + usage
 	} else if c.Valid() {
@@ -127,9 +141,11 @@ func (c *_Command) Command(usage string, args ...interface{}) Commander {
 		cmd.Usage(usage, args...)
 		cmd.addIncludeKeys(cmd.names)
 		c.addCommand(cmd)
-		return cmd
+		commander = cmd
+		return
 	}
-	return c.Usage(usage, args...)
+	commander = c.Usage(usage, args...)
+	return
 }
 
 func (c *_Command) Aliases(aliases []string) Commander {
@@ -139,9 +155,20 @@ func (c *_Command) Aliases(aliases []string) Commander {
 	return c
 }
 
-func (c *_Command) Option(usage string, args ...interface{}) Commander {
-	if opt := newOption(usage, args...); opt.Valid() {
+func (c *_Command) addOption(line bool, usage string, args ...interface{}) (opt *_Option) {
+	defer func() {
+		c.last = opt
+	}()
+	opt = newOption(usage, args...)
+	opt.line = line
+	if opt.Valid() {
 		c.init().options = append(c.options, opt)
+	}
+	return opt
+}
+
+func (c *_Command) Option(usage string, args ...interface{}) Commander {
+	if opt := c.addOption(false, usage, args...); opt.Valid() {
 	} else if c.errFunc != nil {
 		c.errFunc(errOption, opt)
 	}
@@ -168,16 +195,29 @@ func (c *_Command) LineArgument(usage string, args ...interface{}) Commander {
 
 func (c *_Command) LineOption(usage string, args ...interface{}) Commander {
 	cmd := c.Line(c.usage, args...)
-	cmd.Option(usage, args...)
+	opt := cmd.addOption(true, usage, args...)
 	if cmd.options.IsEmpty() {
 		return cmd
 	}
+	cmd.addIncludeKeys(opt.Names())
 	c.addCommand(cmd)
 	return cmd
 }
 
 func (c *_Command) Action(action interface{}, keys ...[]string) Commander {
-	c.init().actor.Action(action, keys...)
+	if c.init().last != nil {
+		switch obj := c.last.(type) {
+		case *_Command:
+			goto CommandAction
+		case *_Option:
+			if c.hasAction() {
+				obj.actor.Action(action, keys...)
+				return c
+			}
+		}
+	}
+CommandAction:
+	c.actor.Action(action, keys...)
 	return c
 }
 
@@ -187,7 +227,7 @@ func (c _Command) UsagesString() (r []string) {
 	}
 	str := c.usage
 	if len(c.options) != 0 {
-		uStrs := c.options.UsagesString(c.arguments.IsEmpty())
+		uStrs := c.options.UsagesString(c.isRoot() && c.arguments.IsEmpty())
 		for _, uStr := range uStrs {
 			str += " " + uStr
 		}
@@ -206,10 +246,6 @@ func (c _Command) UsagesString() (r []string) {
 				r = append(r, name+uStr)
 			}
 		}
-	}
-	if c.root && !c.clone {
-		r = append(r, fmt.Sprintf("%s-h | --help", name))
-		r = append(r, fmt.Sprintf("%s--version", name))
 	}
 	return
 }
@@ -302,12 +338,11 @@ func (c _Command) run(context Context) _Result {
 	if c.root || c.allow(context) {
 		if r := c.commands.run(context); r != nil {
 			return r
-		} else if r := c.actor.run(context); c.root || r != nil {
-			if r != nil && r.Break() {
-				return r
-			}
-			return c.options.run(context)
 		}
+		if r := c.options.run(context); r != nil && r.Break() {
+			return r
+		}
+		return c.actor.run(context, c.isRoot())
 	}
 	return nil
 }

@@ -1,5 +1,7 @@
 package commander
 
+import "fmt"
+
 // actor Assigned to execute the command
 type actor struct {
 	names    []string        // the keys contain one of names than execute action
@@ -61,6 +63,11 @@ func (a *actor) setAction(arg interface{}) {
 	}
 }
 
+// hasAction there is a legitimate actor.action
+func (a actor) hasAction() bool {
+	return a.action != nil
+}
+
 // Action set executive function to actor.action and include keys to actor.triggers
 // action is ACTION function, see ./action.go
 func (a *actor) Action(action interface{}, keys ...[]string) {
@@ -72,10 +79,12 @@ func (a *actor) Action(action interface{}, keys ...[]string) {
 
 // allow Determine whether meet the requirements(actor.names or actor.triggers) for the execution
 func (a actor) allow(c Context) (pass bool) {
-	defer func() {
-		//println(fmt.Sprintf("allow:\n 1.actor %#v\n 2.argv %v\n 3.action %v\n 4.pass %v",
-		//	a, c.String(), a.action != nil, pass))
-	}()
+	if DEBUG {
+		defer func() {
+			fmt.Printf("allow:\n 1.actor %#v\n 2.argv %v\n 3.action %v\n 4.pass %v\n",
+				a, c.String(), a.action != nil, pass)
+		}()
+	}
 	for key, ok := range a.triggers {
 		if !ok && c.Contain(key) {
 			pass = false
@@ -101,15 +110,19 @@ func (a actor) allow(c Context) (pass bool) {
 }
 
 // run Common external function, if allow() than execute actor.action
-func (a actor) run(c Context) (result _Result) {
-	defer func() {
-		//println(fmt.Sprintf("run:\n 1.actor %#v\n 2.argv %v\n 3.action %v\n 4.result %v",
-		//	a, c.String(), a.action != nil, result))
-	}()
-	if !a.allow(c) || a.action == nil {
-		result = nil
-	} else {
-		result = a.action(c)
+func (a actor) run(c Context, force ...bool) (result _Result) {
+	if DEBUG {
+		defer func() {
+			fmt.Printf("run:\n 1.actor %#v\n 2.argv %v\n 3.action %v\n 4.result %#v\n",
+				a, c.String(), a.action != nil, result)
+		}()
 	}
+	if a.action == nil {
+		return
+	} else if len(force) != 0 && force[0] {
+	} else if !a.allow(c) {
+		return
+	}
+	result = a.action(c)
 	return
 }

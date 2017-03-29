@@ -13,6 +13,7 @@ type _Option struct {
 	required  bool       // option required
 	desc      string     // desc
 	show      bool       // show on options
+	line      bool       // show on options in new line
 	arguments _Arguments // arguments
 }
 
@@ -78,7 +79,7 @@ func (o _Option) IsOptional() bool {
 func (o _Option) UsageString(ones ...bool) (s string) {
 	if ok, _ := regexp.MatchString(`^[\[(].+[)\]]$`, o.usage); ok {
 		s = o.usage
-	} else if len(ones) != 0 && ones[0] {
+	} else if o.line || (len(ones) != 0 && ones[0]) {
 		s = o.usage
 	} else if o.IsRequired() {
 		s = fmt.Sprintf("(%s)", o.usage)
