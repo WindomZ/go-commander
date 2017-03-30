@@ -6,7 +6,7 @@ go:
   - 1.5.x
   - 1.6.x
   - 1.7.x
-  - tip
+  - master
   - master
 
 before_install:
@@ -15,5 +15,5 @@ before_install:
   - go get github.com/mattn/goveralls
 
 script:
-  - $HOME/gopath/bin/goveralls -service=travis-ci
+  - $HOME/gopath/bin/goveralls -ignore=examples -service=travis-ci
   - go test -v ./...
