@@ -15,7 +15,7 @@ func main() {
 	// calculator_example <value> ( ( + | - | * | / ) <value> )...
 	Program.Command("<value> ( ( + | - | * | / ) <value> )...", "", func() {
 		var result int
-		values := Program.GetStrings("<value>")
+		values := Program.MustStrings("<value>")
 		for index, value := range values {
 			if i, err := strconv.Atoi(value); err != nil {
 			} else if index == 0 {
@@ -39,9 +39,9 @@ func main() {
 	// calculator_example <function> <value> [( , <value> )]...
 	Program.Command("<function> <value> [( , <value> )]...", "", func() {
 		var result int
-		switch Program.GetString("<function>") {
+		switch Program.MustString("<function>") {
 		case "sum":
-			values := Program.GetStrings("<value>")
+			values := Program.MustStrings("<value>")
 			for _, value := range values {
 				if i, err := strconv.Atoi(value); err == nil {
 					result += i
@@ -60,10 +60,9 @@ func main() {
 		},
 	)
 
-	context, _ := Program.Parse()
+	Program.Parse()
 
 	//fmt.Println(Program.HelpMessage()) // print help messages
-	fmt.Println(context.String())
 
 	fmt.Println("-------------")
 

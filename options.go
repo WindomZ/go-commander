@@ -47,7 +47,7 @@ func (o _Options) run(c Context) (result _Result) {
 	for _, opt := range o {
 		if r := opt.run(c); r != nil && r.Break() {
 			if result = r; r.Error() != nil {
-				return
+				break
 			}
 		}
 	}

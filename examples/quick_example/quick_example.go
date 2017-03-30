@@ -17,9 +17,9 @@ func main() {
 		Option("--timeout=<seconds>").
 		Action(func() {
 			fmt.Printf("tcp %s %s %s\n",
-				commander.Program.GetString("<host>"),
-				commander.Program.GetString("<port>"),
-				commander.Program.GetString("--timeout"),
+				commander.Program.MustString("<host>"),
+				commander.Program.MustString("<port>"),
+				commander.Program.MustString("--timeout"),
 			)
 		})
 
@@ -30,16 +30,15 @@ func main() {
 		Option("--timeout=<seconds>").
 		Action(func() {
 			fmt.Printf("serial %s %s %s\n",
-				commander.Program.GetString("<port>"),
-				commander.Program.GetString("--baud"),
-				commander.Program.GetString("--timeout"),
+				commander.Program.MustString("<port>"),
+				commander.Program.MustString("--baud"),
+				commander.Program.MustString("--timeout"),
 			)
 		})
 
-	context, _ := commander.Program.Parse()
+	commander.Program.Parse()
 
 	//fmt.Println(commander.Program.HelpMessage()) // print help messages
-	fmt.Println(context.String())
 
 	fmt.Println("-------------")
 

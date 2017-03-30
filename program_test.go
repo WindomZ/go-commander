@@ -80,9 +80,7 @@ func TestProgram_Ping(t *testing.T) {
 	Program.Command("add <x> <y>").
 		Description("addition operation").
 		Action(func() error {
-			x, _ := Program.GetInt("<x>")
-			y, _ := Program.GetInt("<y>")
-			sum = x + y
+			sum = Program.MustInt("<x>") + Program.MustInt("<y>")
 			return nil
 		})
 
@@ -90,7 +88,7 @@ func TestProgram_Ping(t *testing.T) {
 		Option("--timeout=<seconds>",
 			"",
 			func() error {
-				seconds := Program.GetString("<seconds>")
+				seconds := Program.MustString("<seconds>")
 
 				t.Log("seconds =", seconds)
 
@@ -98,7 +96,7 @@ func TestProgram_Ping(t *testing.T) {
 				return nil
 			},
 		).Action(func() error {
-		host = Program.GetString("<host>")
+		host = Program.MustString("<host>")
 		return nil
 	})
 
@@ -122,7 +120,7 @@ func TestProgram_Calculator(t *testing.T) {
 		Description("simple calculator example")
 
 	Program.Command("<value> ( ( + | - | * | / ) <value> )...", "", func() error {
-		values := Program.GetStrings("<value>")
+		values := Program.MustStrings("<value>")
 		for index, value := range values {
 			if i, err := strconv.Atoi(value); err != nil {
 			} else if index == 0 {
@@ -145,9 +143,9 @@ func TestProgram_Calculator(t *testing.T) {
 
 	Program.Command("<function> <value> [( , <value> )]...", "", func() error {
 		result = 0
-		switch Program.GetString("<function>") {
+		switch Program.MustString("<function>") {
 		case "sum":
-			values := Program.GetStrings("<value>")
+			values := Program.MustStrings("<value>")
 			for _, value := range values {
 				if i, err := strconv.Atoi(value); err == nil {
 					result += i

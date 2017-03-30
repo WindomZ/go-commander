@@ -13,14 +13,14 @@ func newArgument(name string) *_Argument {
 	}
 }
 
-func (a _Argument) Name() string {
-	return a.name
-}
-
-func (a _Argument) UsageString() string {
-	return a.name
-}
-
-func (a _Argument) OptionString() string {
-	return a.name
-}
+//func (a _Argument) Name() string {
+//	return a.name
+//}
+//
+//func (a _Argument) UsageString() string {
+//	return a.name
+//}
+//
+//func (a _Argument) OptionString() string {
+//	return a.name
+//}
