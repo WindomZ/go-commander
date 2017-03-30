@@ -9,11 +9,13 @@ import (
 func TestProgram_AutomaticHelp(t *testing.T) {
 	Program = newProgram()
 
-	Program.Command("test").
-		Version("0.0.1").
+	Program.Version("0.0.1").
 		Description("this is a test cli.")
 
 	if _, err := Program.Parse([]string{}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := Program.Parse([]string{"go-commander", "-h"}); err != nil {
 		t.Fatal(err)
 	}
 }

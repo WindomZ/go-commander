@@ -56,3 +56,8 @@ func parseAction(arg interface{}) (a Action) {
 	}
 	return
 }
+
+// emptyAction if action is empty
+func emptyAction(a Action) bool {
+	return a == nil
+}

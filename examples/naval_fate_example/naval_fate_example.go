@@ -33,12 +33,12 @@ func main() {
 	usage := `Naval Fate.
 
 Usage:
-  naval_fate ship new <name>...
-  naval_fate ship <name> move <x> <y> [--speed=<kn>]
-  naval_fate ship shoot <x> <y>
-  naval_fate mine (set|remove) <x> <y> [--moored|--drifting]
-  naval_fate -h | --help
-  naval_fate --version
+  naval_fate_example ship new <name>...
+  naval_fate_example ship <name> move <x> <y> [--speed=<kn>]
+  naval_fate_example ship shoot <x> <y>
+  naval_fate_example mine (set|remove) <x> <y> [--moored|--drifting]
+  naval_fate_example -h | --help
+  naval_fate_example --version
 
 Options:
   -h --help     Show this screen.
