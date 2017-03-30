@@ -24,20 +24,19 @@ func main() {
 	commander.Program.
 		Command("(--path=<path>)...", "", func(c commander.Context) {
 			fmt.Printf("--path = %q\n",
-				c.GetStrings("--path"))
+				c.MustStrings("--path"))
 		})
 
 	// counted_example <file> <file>
 	commander.Program.
 		Command("<file> <file>", "", func(c commander.Context) {
 			fmt.Printf("<file> = %q\n",
-				c.GetStrings("<file>"))
+				c.MustStrings("<file>"))
 		})
 
-	context, _ := commander.Program.Parse()
+	commander.Program.Parse()
 
 	//fmt.Println(commander.Program.HelpMessage()) // print help messages
-	fmt.Println(context.String())
 
 	fmt.Println("-------------")
 

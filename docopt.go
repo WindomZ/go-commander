@@ -42,50 +42,93 @@ func (d DocoptMap) Contain(key string) bool {
 	return false
 }
 
-func (d DocoptMap) GetString(key string) string {
+func (d DocoptMap) GetString(key string) (string, bool) {
 	if v := d.Get(key); v != nil {
 		if s, ok := v.(string); ok {
-			return s
+			return s, true
 		}
-		return fmt.Sprintf("%v", v)
+		return fmt.Sprintf("%v", v), true
+	}
+	return "", false
+}
+
+func (d DocoptMap) MustString(key string) string {
+	if s, ok := d.GetString(key); ok {
+		return s
 	}
 	return ""
 }
 
-func (d DocoptMap) GetStrings(key string) []string {
+func (d DocoptMap) GetStrings(key string) ([]string, bool) {
 	if v := d.Get(key); v != nil {
 		if s, ok := v.([]string); ok {
-			return s
+			return s, true
 		}
+	}
+	return nil, false
+}
+
+func (d DocoptMap) MustStrings(key string) []string {
+	if s, ok := d.GetStrings(key); ok {
+		return s
 	}
 	return []string{}
 }
 
-func (d DocoptMap) GetBool(key string) bool {
-	b, err := strconv.ParseBool(d.GetString(key))
-	return b && err == nil
+func (d DocoptMap) GetBool(key string) (bool, bool) {
+	b, err := strconv.ParseBool(d.MustString(key))
+	return b, err == nil
+}
+
+func (d DocoptMap) MustBool(key string) bool {
+	b, ok := d.GetBool(key)
+	return b && ok
 }
 
 func (d DocoptMap) GetInt64(key string) (int64, bool) {
-	i, err := strconv.ParseInt(d.GetString(key), 10, 64)
+	i, err := strconv.ParseInt(d.MustString(key), 10, 64)
 	return i, err == nil
 }
 
+func (d DocoptMap) MustInt64(key string) int64 {
+	if i, ok := d.GetInt64(key); ok {
+		return i
+	}
+	return 0
+}
+
 func (d DocoptMap) GetInt(key string) (int, bool) {
-	i, err := strconv.ParseInt(d.GetString(key), 10, 32)
+	i, err := strconv.ParseInt(d.MustString(key), 10, 32)
 	return int(i), err == nil
 }
 
+func (d DocoptMap) MustInt(key string) int {
+	if i, ok := d.GetInt(key); ok {
+		return i
+	}
+	return 0
+}
+
 func (d DocoptMap) GetFloat64(key string) (float64, bool) {
-	f, err := strconv.ParseFloat(d.GetString(key), 64)
+	f, err := strconv.ParseFloat(d.MustString(key), 64)
 	return f, err == nil
 }
 
+func (d DocoptMap) MustFloat64(key string) float64 {
+	if f, ok := d.GetFloat64(key); ok {
+		return f
+	}
+	return 0
+}
+
 func (d DocoptMap) GetFloat(key string) (float32, bool) {
-	f, err := strconv.ParseFloat(d.GetString(key), 32)
+	f, err := strconv.ParseFloat(d.MustString(key), 32)
 	return float32(f), err == nil
 }
 
-func (d DocoptMap) String() string {
-	return fmt.Sprintf("%#v", d)
+func (d DocoptMap) MustFloat(key string) float32 {
+	if f, ok := d.GetFloat(key); ok {
+		return f
+	}
+	return 0
 }

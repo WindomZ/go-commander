@@ -23,10 +23,9 @@ func main() {
 	mine.Command("(set|remove) <x> <y>").
 		Option("--moored|--drifting")
 
-	context, _ := commander.Program.Parse()
+	commander.Program.Parse()
 
 	//fmt.Println(commander.Program.HelpMessage()) // print help messages
-	fmt.Println(context.String())
 
 	fmt.Println("-------------")
 
