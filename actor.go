@@ -60,7 +60,7 @@ func (a actor) getExcludeKeys() (keys []string) {
 // setAction set executive function to actor.action
 // arg is ACTION function, see ./action.go
 func (a *actor) setAction(arg interface{}) {
-	if action := parseAction(arg); action != nil {
+	if action := parseAction(arg); !emptyAction(action) {
 		a.action = action
 	}
 }
