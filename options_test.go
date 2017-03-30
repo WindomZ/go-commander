@@ -6,7 +6,12 @@ import (
 )
 
 func TestOptions_UsagesString(t *testing.T) {
-	o := _Options{
+	var o _Options
+
+	o = _Options{}
+	assert.Equal(t, o.UsagesString(), []string(nil))
+
+	o = _Options{
 		newOption("-a, --about", "about description"),
 		newOption("-b=<kn>, --bold=<kn>", "bold description"),
 		newOption("-c, --config", "config description"),
