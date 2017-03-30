@@ -23,18 +23,18 @@ func (a _Arguments) Get() (r []string) {
 	return
 }
 
-func (a _Arguments) UsagesString() (r []string) {
-	for _, arg := range a {
-		r = append(r, arg.UsageString())
-	}
-	return
-}
-
-func (a _Arguments) OptionsString() (r []string) {
-	for _, arg := range a {
-		if s := arg.OptionString(); len(s) != 0 {
-			r = append(r, s)
-		}
-	}
-	return
-}
+//func (a _Arguments) UsagesString() (r []string) {
+//	for _, arg := range a {
+//		r = append(r, arg.UsageString())
+//	}
+//	return
+//}
+//
+//func (a _Arguments) OptionsString() (r []string) {
+//	for _, arg := range a {
+//		if s := arg.OptionString(); len(s) != 0 {
+//			r = append(r, s)
+//		}
+//	}
+//	return
+//}
