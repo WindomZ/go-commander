@@ -20,6 +20,7 @@ type _Command struct {
 	commands   _Commands           // api set subcommands
 	options    _Options            // api set options
 	last       interface{}         // the last defined object
+	doc        string              // define help message
 	errFunc    errFunc             // error function // TODO: not finish this
 }
 
@@ -88,6 +89,11 @@ func (c _Command) Name() string {
 		name = fmt.Sprintf("(%s)", strings.Join(c.names, "|"))
 	}
 	return name
+}
+
+func (c *_Command) Doc(doc string) Commander {
+	c.init().doc = doc
+	return c
 }
 
 func (c *_Command) Version(ver string) Commander {
@@ -225,7 +231,7 @@ func (c _Command) UsagesString() (r []string) {
 	}
 	str := c.usage
 	if len(c.options) != 0 {
-		uStrs := c.options.UsagesString(c.isRoot() && c.arguments.IsEmpty())
+		uStrs := c.options.UsagesString(c.arguments.IsEmpty())
 		for _, uStr := range uStrs {
 			str += " " + uStr
 		}
@@ -278,6 +284,10 @@ func (c _Command) CommandsString(prefix string) (r []string) {
 
 // HelpMessage get string of help message that generated according to the docopt format
 func (c _Command) HelpMessage() string {
+	if len(c.doc) != 0 {
+		return c.doc
+	}
+
 	var hm _HelpMessage
 
 	// Description

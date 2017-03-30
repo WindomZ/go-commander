@@ -4,6 +4,7 @@ import "github.com/docopt/docopt-go"
 
 // Commander Command line implementation
 type Commander interface {
+	Doc(doc string) Commander
 	Version(ver string) Commander
 	ShowVersion() string
 	Description(desc string) Commander

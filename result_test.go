@@ -8,17 +8,17 @@ import (
 
 func TestNewResult(t *testing.T) {
 	r := newResult("test")
-	assert.Equal(t, r.ErrorString(), "test")
+	assert.Equal(t, r.Error().Error(), "test")
 }
 
 func TestNewResultCode(t *testing.T) {
 	r := newResultCode(1, "test")
 	assert.Equal(t, r.Code(), 1)
-	assert.Equal(t, r.ErrorString(), "test")
+	assert.Equal(t, r.Error().Error(), "test")
 }
 
 func TestNewResultError(t *testing.T) {
 	r := newResultError(errors.New("Test"), 2)
 	assert.Equal(t, r.Code(), 2)
-	assert.Equal(t, r.ErrorString(), "Test")
+	assert.Equal(t, r.Error().Error(), "Test")
 }

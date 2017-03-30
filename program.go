@@ -52,8 +52,14 @@ func (p _Program) ShowVersion() string {
 	return p.version
 }
 
+func (p _Program) HelpMessage() string {
+	return p.init()._Command.HelpMessage()
+}
+
 func (p _Program) ShowHelpMessage() string {
-	return p.init()._Command.ShowHelpMessage()
+	s := p.HelpMessage()
+	fmt.Println(s)
+	return s
 }
 
 func (p *_Program) Parse(args ...[]string) (Context, error) {
@@ -67,7 +73,7 @@ func (p *_Program) Parse(args ...[]string) (Context, error) {
 	if argv == nil || len(argv) == 0 {
 		argv = []string{"", "-h"}
 	}
-	d, err := Parse(p.init().HelpMessage(), argv, false, "", false, false)
+	d, err := Parse(p.HelpMessage(), argv, false, "", false, false)
 	if err != nil {
 		return nil, err
 	}
