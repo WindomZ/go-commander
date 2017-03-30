@@ -11,7 +11,7 @@ func TestOption_1(t *testing.T) {
 	assert.Equal(t, o.Names(), []string{"-p"})
 	assert.Equal(t, o.IsRequired(), false)
 	assert.Equal(t, o.IsOptional(), true)
-	assert.Equal(t, o.UsageString(), "[-p]")
+	assert.Equal(t, o.UsageString(), "-p")
 	assert.Equal(t, o.OptionString(), "-p            add pepper")
 }
 

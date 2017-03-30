@@ -77,13 +77,14 @@ func (o _Option) IsOptional() bool {
 }
 
 func (o _Option) UsageString(ones ...bool) (s string) {
+	s = o.usage
 	if ok, _ := regexp.MatchString(`^[\[(].+[)\]]$`, o.usage); ok {
-		s = o.usage
-	} else if o.line || (len(ones) != 0 && ones[0]) {
-		s = o.usage
-	} else if o.IsRequired() {
-		s = fmt.Sprintf("(%s)", o.usage)
-	} else {
+	} else if o.line && (len(ones) != 0 && ones[0]) {
+	} else if o.line || o.IsRequired() {
+		if len(o.names) > 1 {
+			s = fmt.Sprintf("(%s)", o.usage)
+		}
+	} else if len(o.names) > 1 {
 		s = fmt.Sprintf("[%s]", o.usage)
 	}
 	s = regexp.MustCompile(`(\s*,\s*-)|(\s-)`).ReplaceAllString(s, "|-")

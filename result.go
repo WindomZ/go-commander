@@ -5,7 +5,6 @@ import "errors"
 type _Result interface {
 	Code() int
 	Error() error
-	ErrorString() string
 	Break() bool
 	setBreak()
 }
@@ -22,13 +21,6 @@ func (e _ResultCode) Code() int {
 
 func (e _ResultCode) Error() error {
 	return e.error
-}
-
-func (e _ResultCode) ErrorString() string {
-	if e.error != nil {
-		return e.error.Error()
-	}
-	return ""
 }
 
 func (e _ResultCode) Break() bool {

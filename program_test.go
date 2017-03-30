@@ -20,6 +20,7 @@ func TestProgram_AutomaticHelp(t *testing.T) {
 
 func TestProgram_LineOption(t *testing.T) {
 	var result string
+	var result2 string
 
 	Program = newProgram()
 
@@ -30,6 +31,10 @@ func TestProgram_LineOption(t *testing.T) {
 	Program.Command("-a --aaa").
 		Action(func() {
 			result = "aaa"
+		}).
+		Option("-d --ddd").
+		Action(func() {
+			result2 = "ddd"
 		})
 	Program.Command("-b --bbb", "",
 		func() {
@@ -44,6 +49,12 @@ func TestProgram_LineOption(t *testing.T) {
 		t.Fatal(err)
 	} else {
 		assert.Equal(t, result, "aaa")
+	}
+	if _, err := Program.Parse([]string{"test", "-a", "-d"}); err != nil {
+		t.Fatal(err)
+	} else {
+		assert.Equal(t, result, "aaa")
+		assert.Equal(t, result2, "ddd")
 	}
 	if _, err := Program.Parse([]string{"test", "--bbb"}); err != nil {
 		t.Fatal(err)
