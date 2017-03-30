@@ -92,8 +92,8 @@ func (c _Command) Name() string {
 }
 
 func (c *_Command) Doc(doc string) Commander {
-	c.init().doc = doc
-	return c
+	c.doc = doc
+	return c.init()
 }
 
 func (c *_Command) Version(ver string) Commander {

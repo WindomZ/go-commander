@@ -43,8 +43,9 @@ func (p *_Program) init() *_Program {
 }
 
 func (p *_Program) Version(ver string) Commander {
+	p._Command.Version(ver)
 	p.version = ver
-	return p._Command.init()
+	return p
 }
 
 func (p _Program) ShowVersion() string {
@@ -52,7 +53,7 @@ func (p _Program) ShowVersion() string {
 	return p.version
 }
 
-func (p _Program) HelpMessage() string {
+func (p *_Program) HelpMessage() string {
 	return p.init()._Command.HelpMessage()
 }
 
