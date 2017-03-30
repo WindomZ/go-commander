@@ -2,12 +2,13 @@
 [![Build Status](https://travis-ci.org/WindomZ/go-commander.svg?branch=master)](https://travis-ci.org/WindomZ/go-commander)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
+[![Coverage Status](https://coveralls.io/repos/github/WindomZ/go-commander/badge.svg?branch=master)](https://coveralls.io/github/WindomZ/go-commander?branch=master)
 
 The solution for Go command-line interfaces, 
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander.js](https://github.com/tj/commander.js)>
 
-![v0.15.0](https://img.shields.io/badge/version-v0.15.0-yellow.svg)
+![v0.16.0](https://img.shields.io/badge/version-v0.16.0-yellow.svg)
 ![status](https://img.shields.io/badge/status-beta-yellow.svg)
 
 The exported functions could *change* at any time before the first *stable release*(>=1.0.0).
@@ -69,9 +70,9 @@ commander.Program.
 	Option("--timeout=<seconds>").
 	Action(func() {
 		fmt.Printf("tcp %s %s %s\n",
-			commander.Program.GetString("<host>"),
-			commander.Program.GetString("<port>"),
-			commander.Program.GetString("--timeout"),
+			commander.Program.MustString("<host>"),
+			commander.Program.MustString("<port>"),
+			commander.Program.MustString("--timeout"),
 		)
 	})
 
@@ -82,9 +83,9 @@ commander.Program.
 	Option("--timeout=<seconds>").
 	Action(func() {
 		fmt.Printf("serial %s %s %s\n",
-			commander.Program.GetString("<port>"),
-			commander.Program.GetString("--baud"),
-			commander.Program.GetString("--timeout"),
+			commander.Program.MustString("<port>"),
+			commander.Program.MustString("--baud"),
+			commander.Program.MustString("--timeout"),
 		)
 	})
 
@@ -146,14 +147,14 @@ commander.Program.
 commander.Program.
 	Command("(--path=<path>)...", "", func(c commander.Context) {
 		fmt.Printf("--path = %q\n",
-			c.GetStrings("--path"))
+			c.MustStrings("--path"))
 	})
 
 // counted_example <file> <file>
 commander.Program.
 	Command("<file> <file>", "", func(c commander.Context) {
 		fmt.Printf("<file> = %q\n",
-			c.GetStrings("<file>"))
+			c.MustStrings("<file>"))
 	})
 
 commander.Program.Parse()
@@ -212,7 +213,7 @@ Program.Command("calculator_example").
 // calculator_example <value> ( ( + | - | * | / ) <value> )...
 Program.Command("<value> ( ( + | - | * | / ) <value> )...", "", func() {
 	var result int
-	values := Program.GetStrings("<value>")
+	values := Program.MustStrings("<value>")
 	for index, value := range values {
 		if i, err := strconv.Atoi(value); err != nil {
 		} else if index == 0 {
@@ -236,9 +237,9 @@ Program.Command("<value> ( ( + | - | * | / ) <value> )...", "", func() {
 // calculator_example <function> <value> [( , <value> )]...
 Program.Command("<function> <value> [( , <value> )]...", "", func() {
 	var result int
-	switch Program.GetString("<function>") {
+	switch Program.MustString("<function>") {
 	case "sum":
-		values := Program.GetStrings("<value>")
+		values := Program.MustStrings("<value>")
 		for _, value := range values {
 			if i, err := strconv.Atoi(value); err == nil {
 				result += i
