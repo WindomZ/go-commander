@@ -12,6 +12,8 @@ go:
 before_install:
   - go get github.com/WindomZ/testify/assert
   - go get github.com/docopt/docopt-go
+  - go get github.com/mattn/goveralls
 
 script:
+  - $HOME/gopath/bin/goveralls -service=travis-ci
   - go test -v ./...
