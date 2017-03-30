@@ -85,7 +85,7 @@ func (a actor) allow(c Context) (pass bool) {
 		defer func() {
 			fmt.Printf("----------allow----------"+
 				"\n  1.actor  %#v\n  2.argv   %v\n  3.action %v\n  4.pass   %v\n",
-				a, c.String(), a.action != nil, pass)
+				a, c.Map(), a.action != nil, pass)
 		}()
 	}
 	for key, ok := range a.triggers {
@@ -118,7 +118,7 @@ func (a actor) run(c Context, force ...bool) (result _Result) {
 		defer func() {
 			fmt.Printf("----------run----------"+
 				"\n  1.actor  %#v\n  2.argv   %v\n  3.action %v\n  4.result %#v\n",
-				a, c.String(), a.action != nil, result)
+				a, c.Map(), a.action != nil, result)
 		}()
 	}
 	if a.action == nil {
@@ -130,12 +130,8 @@ func (a actor) run(c Context, force ...bool) (result _Result) {
 		return resultPass()
 	}
 	result = a.action(c)
-	if a.break_off {
-		if result != nil && !result.Break() {
-			result.setBreak()
-		} else {
-			result = resultBreak()
-		}
+	if a.break_off && result != nil && !result.Break() {
+		result.setBreak()
 	}
 	return
 }

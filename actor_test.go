@@ -5,6 +5,18 @@ import (
 	"testing"
 )
 
+func TestActor_IncludeKeys(t *testing.T) {
+	var a actor
+	a.addIncludeKeys([]string{"a", "b", "c"})
+	assert.Equal(t, a.getIncludeKeys(), []string{"a", "b", "c"})
+}
+
+func TestActor_ExcludeKeys(t *testing.T) {
+	var a actor
+	a.addExcludeKeys([]string{"a", "b", "c"})
+	assert.Equal(t, a.getExcludeKeys(), []string{"a", "b", "c"})
+}
+
 func TestActor_Action(t *testing.T) {
 	var result bool
 	var a actor

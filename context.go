@@ -17,7 +17,6 @@ type Context interface {
 	GetInt(key string) (int, bool)
 	GetFloat64(key string) (float64, bool)
 	GetFloat(key string) (float32, bool)
-	String() string
 }
 
 // _Context
@@ -35,8 +34,4 @@ func newContext(args []string, d DocoptMap) *_Context {
 
 func (c _Context) Contain(key string) bool {
 	return c.DocoptMap.Contain(key)
-}
-
-func (c _Context) String() string {
-	return c.DocoptMap.String()
 }
