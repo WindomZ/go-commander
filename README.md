@@ -2,7 +2,6 @@
 [![Build Status](https://travis-ci.org/WindomZ/go-commander.svg?branch=master)](https://travis-ci.org/WindomZ/go-commander)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
-[![Coverage Status](https://coveralls.io/repos/github/WindomZ/go-commander/badge.svg?branch=master)](https://coveralls.io/github/WindomZ/go-commander?branch=master)
 
 The solution for Go command-line interfaces, 
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
