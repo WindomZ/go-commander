@@ -30,6 +30,7 @@ func TestCommand_CommandsString(t *testing.T) {
 
 func TestCommand_HelpMessage(t *testing.T) {
 	c := newCommand(true)
+	assert.Equal(t, c.HelpMessage(), "")
 
 	c.Usage("cmd <x>", "this is description").
 		Option("-c, --config", "config description").
@@ -75,6 +76,46 @@ func TestCommand_HelpMessage(t *testing.T) {
     -b=<kn> --bold=<kn>
                   cmd3 bold description
     -c --count    cmd3 count description
+`)
+
+	c.Annotation("Example", []string{
+		"cmd xxx -c",
+		"cmd cmd2 -a",
+		"cmd cmd3 y -b",
+	})
+	assert.Equal(t, c.HelpMessage(),
+		`  this is description
+
+  Usage:
+    cmd <x> [[-c|--config] | [-d|--drop]]
+    cmd cmd2 [[-a|--about] | [-t|--test]]
+    cmd cmd3 [y] [[-b=<kn>|--bold=<kn>] | [-c|--count]]
+
+  Options:
+    -c --config   config description
+    -d --drop     drop description
+    -a --about    cmd2 about description
+    -t --test     cmd2 test description
+    -b=<kn> --bold=<kn>
+                  cmd3 bold description
+    -c --count    cmd3 count description
+
+  Example:
+    cmd xxx -c
+    cmd cmd2 -a
+    cmd cmd3 y -b
+`)
+
+	c.Doc(`  Usage:
+    cmd <x> [[-c|--config] | [-d|--drop]]
+    cmd cmd2 [[-a|--about] | [-t|--test]]
+    cmd cmd3 [y] [[-b=<kn>|--bold=<kn>] | [-c|--count]]
+`)
+
+	assert.Equal(t, c.HelpMessage(), `  Usage:
+    cmd <x> [[-c|--config] | [-d|--drop]]
+    cmd cmd2 [[-a|--about] | [-t|--test]]
+    cmd cmd3 [y] [[-b=<kn>|--bold=<kn>] | [-c|--count]]
 `)
 }
 
