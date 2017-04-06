@@ -20,6 +20,34 @@ func TestProgram_AutomaticHelp(t *testing.T) {
 	}
 }
 
+func TestProgram_ShowVersion(t *testing.T) {
+	Program = newProgram()
+
+	Program.Version("0.0.1").
+		Description("this is a test cli.")
+
+	if _, err := Program.Parse([]string{"go-commander", "-v"}); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestProgram_ErrorHandling(t *testing.T) {
+	Program = newProgram()
+
+	Program.Version("0.0.1").
+		Description("this is a test cli.").
+		ErrorHandling(func(err error) {
+			assert.Error(t, err)
+		})
+	Program.Command("test").Action(func() error {
+		return newError("this is a test error")
+	})
+
+	if _, err := Program.Parse([]string{"go-commander", "test"}); err == nil {
+		assert.Error(t, err)
+	}
+}
+
 func TestProgram_LineOption(t *testing.T) {
 	var result string
 	var result2 string
@@ -68,6 +96,26 @@ func TestProgram_LineOption(t *testing.T) {
 	} else {
 		assert.Equal(t, result, "ccc")
 	}
+}
+
+func TestProgram_Aliases(t *testing.T) {
+	Program = newProgram()
+
+	Program.Command("-i --init")
+
+	Program.Command("-o").
+		Aliases([]string{"--origin"})
+
+	assert.Equal(t, Program.HelpMessage(), `  Usage:
+    go-commander -i|--init
+    go-commander -o|--origin
+    go-commander -h|--help
+    go-commander -v|--version
+
+  Options:
+    -h --help     show help message
+    -v --version  show version
+`)
 }
 
 func TestProgram_Ping(t *testing.T) {

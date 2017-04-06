@@ -21,20 +21,12 @@ type _Command struct {
 	options    _Options            // api set options
 	last       interface{}         // the last defined object
 	doc        string              // define help message
-	errFunc    errFunc             // error function // TODO: not finish this
 }
 
 func newCommand(root bool) *_Command {
-	c := &_Command{
+	return &_Command{
 		root: root,
-		errFunc: func(err error, obj interface{}) {
-			fmt.Printf("  err: %v\n  object: %#v\n", err, obj)
-		},
 	}
-	//if c.root {
-	//	c.setAction(func() { c.ShowHelpMessage() })
-	//}
-	return c
 }
 
 func (c *_Command) init() *_Command {
@@ -61,9 +53,6 @@ func (c *_Command) Usage(usage string, args ...interface{}) Commander {
 	}
 	if len(args) >= 2 {
 		c.setAction(args[1])
-	}
-	if len(args) >= 3 {
-		c.errFunc, _ = args[2].(errFunc)
 	}
 	return c
 }
@@ -124,8 +113,8 @@ func (c *_Command) addCommand(cmd *_Command) bool {
 		}
 		c.commands = append(c.commands, cmd)
 		return true
-	} else if c.errFunc != nil {
-		c.errFunc(errCommand, cmd)
+	} else {
+		panicError("ERROR Command format:", cmd)
 	}
 	return false
 }
@@ -154,7 +143,15 @@ SetLast:
 }
 
 func (c *_Command) Aliases(aliases []string) Commander {
-	name := c.init().Name()
+	if c.init().last != nil {
+		switch obj := c.last.(type) {
+		//case *_Command:
+		case *_Option:
+			obj.Aliases(aliases)
+			return c
+		}
+	}
+	name := c.Name()
 	c.names = append(c.names, aliases...)
 	c.usage = replaceCommand(c.usage, name, c.Name())
 	return c
@@ -172,9 +169,8 @@ func (c *_Command) addOption(line bool, usage string, args ...interface{}) (opt 
 }
 
 func (c *_Command) Option(usage string, args ...interface{}) Commander {
-	if opt := c.addOption(false, usage, args...); opt.Valid() {
-	} else if c.errFunc != nil {
-		c.errFunc(errOption, opt)
+	if opt := c.addOption(false, usage, args...); !opt.Valid() {
+		panicError("ERROR Option format:", opt)
 	}
 	return c
 }
@@ -353,4 +349,8 @@ func (c _Command) run(context Context) _Result {
 		return c.actor.run(context, c.isRoot())
 	}
 	return nil
+}
+
+func (c *_Command) ErrorHandling(f func(error)) Commander {
+	return c
 }

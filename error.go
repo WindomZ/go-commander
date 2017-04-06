@@ -1,11 +1,14 @@
 package commander
 
-import "errors"
-
-var (
-	errNil     error = errors.New("error nil")
-	errCommand       = errors.New("error command")
-	errOption        = errors.New("error option")
+import (
+	"errors"
+	"fmt"
 )
 
-type errFunc func(err error, obj interface{})
+func newError(a ...interface{}) error {
+	return errors.New("go-commander: " + fmt.Sprint(a...))
+}
+
+func panicError(a ...interface{}) {
+	panic(errors.New("\ngo-commander:\n  " + fmt.Sprint(a...)))
+}
