@@ -16,6 +16,7 @@ type Commander interface {
 	HelpMessage() string
 	ShowHelpMessage() string
 	Parse(argv ...[]string) (Context, error)
+	ErrorHandling(func(error)) Commander
 }
 
 func Parse(doc string, argv []string, help bool, version string,

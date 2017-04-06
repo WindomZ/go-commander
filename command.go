@@ -342,3 +342,7 @@ func (c _Command) run(context Context) _Result {
 	}
 	return nil
 }
+
+func (c *_Command) ErrorHandling(f func(error)) Commander {
+	return c
+}

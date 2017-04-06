@@ -17,11 +17,13 @@ type _Program struct {
 	_Context
 	initial bool
 	version string // version if root command
+	errFunc func(error)
 }
 
 func newProgram() *_Program {
 	return &_Program{
 		_Command: *newCommand(true),
+		errFunc:  func(err error) { fmt.Println(err.Error()) },
 	}
 }
 
@@ -81,9 +83,16 @@ func (p *_Program) Parse(args ...[]string) (Context, error) {
 	p._Context = *newContext(argv, d)
 	if r := p.run(&p._Context); r != nil {
 		if r.Break() {
-			// TODO: Handle error
+			if p.errFunc != nil && r.Error() != nil {
+				p.errFunc(r.Error())
+			}
 			return &p._Context, r.Error()
 		}
 	}
 	return &p._Context, nil
+}
+
+func (p *_Program) ErrorHandling(f func(error)) Commander {
+	p.errFunc = f
+	return p
 }
