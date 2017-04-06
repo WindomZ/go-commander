@@ -76,6 +76,17 @@ func (o _Option) IsOptional() bool {
 	return !o.IsRequired()
 }
 
+func (o *_Option) Aliases(aliases []string) *_Option {
+	s := strings.TrimSpace(strings.Join(aliases, " "))
+	if len(s) != 0 {
+		o.usage += " " + s
+		o.regexpNames()
+		o.regexpArguments()
+		o.regexpRequired()
+	}
+	return o
+}
+
 func (o _Option) UsageString(ones ...bool) (s string) {
 	s = o.usage
 	if ok, _ := regexp.MatchString(`^[\[(].+[)\]]$`, o.usage); ok {

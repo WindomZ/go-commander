@@ -98,6 +98,26 @@ func TestProgram_LineOption(t *testing.T) {
 	}
 }
 
+func TestProgram_Aliases(t *testing.T) {
+	Program = newProgram()
+
+	Program.Command("-i --init")
+
+	Program.Command("-o").
+		Aliases([]string{"--origin"})
+
+	assert.Equal(t, Program.HelpMessage(), `  Usage:
+    go-commander -i|--init
+    go-commander -o|--origin
+    go-commander -h|--help
+    go-commander -v|--version
+
+  Options:
+    -h --help     show help message
+    -v --version  show version
+`)
+}
+
 func TestProgram_Ping(t *testing.T) {
 	var sum int
 	var host string

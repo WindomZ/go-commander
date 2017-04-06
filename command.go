@@ -143,7 +143,15 @@ SetLast:
 }
 
 func (c *_Command) Aliases(aliases []string) Commander {
-	name := c.init().Name()
+	if c.init().last != nil {
+		switch obj := c.last.(type) {
+		//case *_Command:
+		case *_Option:
+			obj.Aliases(aliases)
+			return c
+		}
+	}
+	name := c.Name()
 	c.names = append(c.names, aliases...)
 	c.usage = replaceCommand(c.usage, name, c.Name())
 	return c
