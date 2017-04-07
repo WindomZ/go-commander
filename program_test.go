@@ -35,10 +35,12 @@ func TestProgram_ErrorHandling(t *testing.T) {
 	Program = newProgram()
 
 	Program.Version("0.0.1").
-		Description("this is a test cli.").
-		ErrorHandling(func(err error) {
-			assert.Error(t, err)
-		})
+		Description("this is a test cli.")
+
+	Program.ErrorHandling(func(err error) {
+		assert.Error(t, err)
+	})
+
 	Program.Command("test").Action(func() error {
 		return newError("this is a test error")
 	})

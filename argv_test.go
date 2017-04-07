@@ -23,6 +23,7 @@ func Test_Argv_GetArgs(t *testing.T) {
 		"ccc",
 	})
 	assert.Equal(t, argv.GetArgs(), []string{"bbb", "ccc"})
+	assert.Equal(t, argv.GetArgs(-1), []string{"bbb", "ccc"})
 	assert.Equal(t, argv.GetArgs(1), []string{"ccc"})
 	assert.Equal(t, argv.GetArgs(2), []string{})
 }

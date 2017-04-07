@@ -24,6 +24,9 @@ func TestFormat_DescriptionLine(t *testing.T) {
 		"abcdef\n     desc...")
 
 	assert.Equal(t,
+		formatDescriptionLine("a", "desc...", -1, 5, false),
+		"a    desc...")
+	assert.Equal(t,
 		formatDescriptionLine("a", "desc...", 0, 5, false),
 		"a    desc...")
 	assert.Equal(t,
