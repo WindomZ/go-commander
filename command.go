@@ -94,8 +94,16 @@ func (c _Command) ShowVersion() string {
 }
 
 func (c *_Command) Description(desc string) Commander {
+	if c.init().last != nil {
+		switch obj := c.last.(type) {
+		//case *_Command:
+		case *_Option:
+			obj.Description(desc)
+			return c
+		}
+	}
 	c.desc = desc
-	return c.init()
+	return c
 }
 
 func (c *_Command) Annotation(title string, contents []string) Commander {
