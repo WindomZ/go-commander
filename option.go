@@ -25,8 +25,8 @@ func newOption(usage string, args ...interface{}) *_Option {
 	o.regexpArguments()
 	o.regexpRequired()
 	if len(args) >= 1 {
-		o.desc, _ = args[0].(string)
-		o.show = len(o.desc) != 0
+		desc, _ := args[0].(string)
+		o.Description(desc)
 	}
 	if len(args) >= 2 {
 		o.setAction(args[1])
@@ -74,6 +74,12 @@ func (o _Option) IsRequired() bool {
 
 func (o _Option) IsOptional() bool {
 	return !o.IsRequired()
+}
+
+func (o *_Option) Description(desc string) *_Option {
+	o.desc = strings.TrimSpace(desc)
+	o.show = len(o.desc) != 0
+	return o
 }
 
 func (o *_Option) Aliases(aliases []string) *_Option {

@@ -118,6 +118,30 @@ func TestProgram_Aliases(t *testing.T) {
 `)
 }
 
+func TestProgram_CommandDescription(t *testing.T) {
+	Program = newProgram()
+
+	Program.Command("-i --init").
+		Description("this is init flag")
+
+	Program.Command("-o").
+		Aliases([]string{"--origin"}).
+		Description("this is origin flag")
+
+	assert.Equal(t, Program.HelpMessage(), `  Usage:
+    go-commander -i|--init
+    go-commander -o|--origin
+    go-commander -h|--help
+    go-commander -v|--version
+
+  Options:
+    -i --init     this is init flag
+    -o --origin   this is origin flag
+    -h --help     show help message
+    -v --version  show version
+`)
+}
+
 func TestProgram_Ping(t *testing.T) {
 	var sum int
 	var host string
