@@ -15,39 +15,48 @@ func TestDocoptMap_Get(t *testing.T) {
 		"int16":   16,
 		"int32":   32,
 		"int64":   64,
-		"float32": 32,
-		"float64": 64,
+		"float32": 32.32,
+		"float64": 64.64,
 	}
 	var d DocoptMap = newDocoptMap(m)
 
 	assert.Equal(t, d.Contain("string"), true)
 	assert.Equal(t, d.MustString("string"), "abc")
+	assert.Equal(t, d.MustString("string-x"), "")
 
 	assert.Equal(t, d.Contain("strings"), true)
 	assert.Equal(t, d.MustStrings("strings"), []string{"abc", "efg"})
-	assert.Equal(t, d.MustStrings("strings1"), []string{})
+	assert.Equal(t, d.MustStrings("strings-x"), []string{})
 
 	assert.Equal(t, d.Contain("bool"), true)
 	assert.Equal(t, d.MustBool("bool"), true)
+	assert.Equal(t, d.MustBool("bool-x"), false)
 
 	assert.Equal(t, d.Contain("int"), true)
 	assert.Equal(t, d.MustInt("int"), 1)
+	assert.Equal(t, d.MustInt("int-x"), 0)
 
 	assert.Equal(t, d.Contain("int8"), true)
 	assert.Equal(t, d.MustInt("int8"), 8)
+	assert.Equal(t, d.MustInt("int8-x"), 0)
 
 	assert.Equal(t, d.Contain("int16"), true)
 	assert.Equal(t, d.MustInt("int16"), 16)
+	assert.Equal(t, d.MustInt("int16-x"), 0)
 
 	assert.Equal(t, d.Contain("int32"), true)
 	assert.Equal(t, d.MustInt("int32"), 32)
+	assert.Equal(t, d.MustInt("int32-x"), 0)
 
 	assert.Equal(t, d.Contain("int64"), true)
 	assert.Equal(t, d.MustInt64("int64"), int64(64))
+	assert.Equal(t, d.MustInt64("int64-x"), int64(0))
 
 	assert.Equal(t, d.Contain("float32"), true)
-	assert.Equal(t, d.MustFloat("float32"), float32(32))
+	assert.Equal(t, d.MustFloat("float32"), float32(32.32))
+	assert.Equal(t, d.MustFloat("float32-x"), float32(0))
 
 	assert.Equal(t, d.Contain("float64"), true)
-	assert.Equal(t, d.MustFloat64("float64"), float64(64))
+	assert.Equal(t, d.MustFloat64("float64"), float64(64.64))
+	assert.Equal(t, d.MustFloat64("float64-x"), float64(0))
 }

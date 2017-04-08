@@ -133,3 +133,37 @@ func TestCommand_Aliases(t *testing.T) {
     -t --test     cmd test description
 `)
 }
+
+func TestCommand_ShowVersion(t *testing.T) {
+	c := newCommand(true)
+	c.Version("v0.0.1")
+
+	assert.Empty(t, c.ShowVersion())
+}
+
+func TestCommand_ShowHelpMessage(t *testing.T) {
+	c := newCommand(true)
+	c.Version("v0.0.1").Description("this is a test cli.")
+
+	assert.NotEmpty(t, c.ShowHelpMessage())
+
+	assert.Equal(t, c.HelpMessage(),
+		`  this is a test cli.
+
+`)
+}
+
+func TestCommand_ErrorHandling(t *testing.T) {
+	c := newCommand(true)
+	c.ErrorHandling(func(err error) {
+		assert.NoError(t, err)
+	})
+
+	c.Command("test").Action(func() error {
+		return newError("this is a test error")
+	})
+
+	if _, err := c.Parse([]string{"go-commander", "test"}); err != nil {
+		assert.Error(t, err)
+	}
+}

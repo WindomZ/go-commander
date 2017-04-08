@@ -14,4 +14,5 @@ func TestError_panicError(t *testing.T) {
 		assert.NotEmpty(t, recover())
 	}()
 	panicError("test")
+	assert.Fail(t, "fail to panic error!")
 }

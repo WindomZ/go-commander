@@ -1,5 +1,4 @@
 package commander
 
-//const DEBUG bool = true
-//
+// DEBUG open DEBUG mode
 const DEBUG bool = false
