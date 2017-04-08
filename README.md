@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
 [![Coverage Status](https://coveralls.io/repos/github/WindomZ/go-commander/badge.svg?branch=master)](https://coveralls.io/github/WindomZ/go-commander?branch=master)
 
-The solution for Go command-line interfaces, 
+The solution for building command shell programs, 
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander.js](https://github.com/tj/commander.js)>
 
@@ -15,9 +15,10 @@ inspired by <[commander.js](https://github.com/tj/commander.js)>
 
 - [x] Has all the features of [docopt](https://github.com/docopt/docopt.go).
 - [x] Usage like [commander.js](https://github.com/tj/commander.js) as simple and readable.
-- [x] Automatic generated a help message, see [documents](http://docopt.org/) of docopt.
+- [x] Automatic generated a help message, easy to use, or advanced usage see [documents](http://docopt.org/) of docopt.
 - [x] Automatically execute the correct action function, don't worry about conflict.
 - [x] Can customize the action function, better with context.
+- [x] Code colloquial use, from top to bottom.
 
 ## Installation
 
