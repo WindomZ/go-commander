@@ -33,11 +33,11 @@ func (p *_Program) init() *_Program {
 	}
 	p.initial = true
 	p._Command.init()
-	p.Command("-h --help", "show help message", func() _Result {
+	p.Command("-h --help", "output usage information", func() _Result {
 		p.ShowHelpMessage()
 		return resultBreak()
 	})
-	p.Command("-v --version", "show version", func() _Result {
+	p.Command("-v --version", "output the version number", func() _Result {
 		p.ShowVersion()
 		return resultBreak()
 	})

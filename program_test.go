@@ -115,8 +115,8 @@ func TestProgram_Aliases(t *testing.T) {
     go-commander -v|--version
 
   Options:
-    -h --help     show help message
-    -v --version  show version
+    -h --help     output usage information
+    -v --version  output the version number
 `)
 }
 
@@ -139,8 +139,8 @@ func TestProgram_CommandDescription(t *testing.T) {
   Options:
     -i --init     this is init flag
     -o --origin   this is origin flag
-    -h --help     show help message
-    -v --version  show version
+    -h --help     output usage information
+    -v --version  output the version number
 `)
 }
 
