@@ -48,8 +48,8 @@ Usage:
   quick_example -v|--version
 
 Options:
-  -h --help     show help message
-  -v --version  show version
+  -h --help     output usage information
+  -v --version  output the version number
 ```
 
 To coding with `go-commander` just like this:
@@ -118,8 +118,8 @@ Usage:
   counted_example -v|--version
 
 Options:
-  -h --help     show help message
-  -v --version  show version
+  -h --help     output usage information
+  -v --version  output the version number
 ```
 
 To coding with `go-commander` just like this:
@@ -189,8 +189,8 @@ Usage:
   calculator_example -v|--version
 
 Options:
-  -h --help     show help message
-  -v --version  show version
+  -h --help     output usage information
+  -v --version  output the version number
 
 Examples:
   calculator_example 1 + 2 + 3 + 4 + 5
