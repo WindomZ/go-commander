@@ -8,8 +8,8 @@ The solution for building command shell programs,
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander.js](https://github.com/tj/commander.js)>
 
-![v0.17.2](https://img.shields.io/badge/version-v0.17.2-yellow.svg)
-![status](https://img.shields.io/badge/status-beta-yellow.svg)
+![v1.0.1](https://img.shields.io/badge/version-v1.0.1-blue.svg)
+![status](https://img.shields.io/badge/status-stable-green.svg)
 
 ## Features
 
@@ -28,10 +28,10 @@ To install commander according to your `$GOPATH`:
 go get github.com/WindomZ/go-commander
 ```
 
-To use commander in your Go code:
+or use stable v1 version:
 
-```go
-import "github.com/WindomZ/go-commander"
+```bash
+go get gopkg.in/WindomZ/go-commander.v1
 ```
 
 ## Examples

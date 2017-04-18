@@ -46,9 +46,9 @@ func TestCommand_HelpMessage(t *testing.T) {
 
 	assert.Equal(t, c.UsagesString(),
 		[]string{
-			"cmd <x> [[-c|--config] | [-d|--drop]]",
-			"cmd cmd2 [[-a|--about] | [-t|--test]]",
-			"cmd cmd3 [y] [[-b=<kn>|--bold=<kn>] | [-c|--count]]",
+			"cmd <x> [-c|--config] [-d|--drop]",
+			"cmd cmd2 [-a|--about] [-t|--test]",
+			"cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]",
 		})
 	assert.Equal(t, c.OptionsString(),
 		[]string{
@@ -64,9 +64,9 @@ func TestCommand_HelpMessage(t *testing.T) {
 		`  this is description
 
   Usage:
-    cmd <x> [[-c|--config] | [-d|--drop]]
-    cmd cmd2 [[-a|--about] | [-t|--test]]
-    cmd cmd3 [y] [[-b=<kn>|--bold=<kn>] | [-c|--count]]
+    cmd <x> [-c|--config] [-d|--drop]
+    cmd cmd2 [-a|--about] [-t|--test]
+    cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]
 
   Options:
     -c --config   config description
@@ -87,9 +87,9 @@ func TestCommand_HelpMessage(t *testing.T) {
 		`  this is description
 
   Usage:
-    cmd <x> [[-c|--config] | [-d|--drop]]
-    cmd cmd2 [[-a|--about] | [-t|--test]]
-    cmd cmd3 [y] [[-b=<kn>|--bold=<kn>] | [-c|--count]]
+    cmd <x> [-c|--config] [-d|--drop]
+    cmd cmd2 [-a|--about] [-t|--test]
+    cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]
 
   Options:
     -c --config   config description
@@ -107,15 +107,15 @@ func TestCommand_HelpMessage(t *testing.T) {
 `)
 
 	c.Doc(`  Usage:
-    cmd <x> [[-c|--config] | [-d|--drop]]
-    cmd cmd2 [[-a|--about] | [-t|--test]]
-    cmd cmd3 [y] [[-b=<kn>|--bold=<kn>] | [-c|--count]]
+    cmd <x> [-c|--config] [-d|--drop]
+    cmd cmd2 [-a|--about] [-t|--test]
+    cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]
 `)
 
 	assert.Equal(t, c.HelpMessage(), `  Usage:
-    cmd <x> [[-c|--config] | [-d|--drop]]
-    cmd cmd2 [[-a|--about] | [-t|--test]]
-    cmd cmd3 [y] [[-b=<kn>|--bold=<kn>] | [-c|--count]]
+    cmd <x> [-c|--config] [-d|--drop]
+    cmd cmd2 [-a|--about] [-t|--test]
+    cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]
 `)
 }
 
@@ -126,7 +126,7 @@ func TestCommand_Aliases(t *testing.T) {
 		Option("-a, --about", "cmd about description").
 		Option("-t, --test", "cmd test description")
 	assert.Equal(t, c.HelpMessage(), `  Usage:
-    (cmd|c0|cmd0) [[-a|--about] | [-t|--test]]
+    (cmd|c0|cmd0) [-a|--about] [-t|--test]
 
   Options:
     -a --about    cmd about description

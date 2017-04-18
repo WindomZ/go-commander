@@ -18,7 +18,7 @@ func TestOptions_UsagesString(t *testing.T) {
 		newOption("-d, --drop", "drop description"),
 	}
 	assert.Equal(t, o.UsagesString(),
-		[]string{"[[-a|--about] | [-b=<kn>|--bold=<kn>] | [-c|--config] | [-d|--drop]]"})
+		[]string{"[-a|--about] [-b=<kn>|--bold=<kn>] [-c|--config] [-d|--drop]"})
 }
 
 func TestOptions_OptionsString(t *testing.T) {
