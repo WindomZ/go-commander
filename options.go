@@ -29,7 +29,11 @@ func (o _Options) UsagesString(ones ...bool) (r []string) {
 		}
 	}
 	if len(rs) != 0 {
-		r = append(r, fmt.Sprintf("[%s]", strings.Join(rs, " | ")))
+		if len(rs) == 1 {
+			r = append(r, fmt.Sprintf("[%s]", strings.Join(rs, " ")))
+		} else {
+			r = append(r, fmt.Sprintf("%s", strings.Join(rs, " ")))
+		}
 	}
 	return
 }
