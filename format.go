@@ -5,7 +5,16 @@ import (
 	"strconv"
 )
 
-func formatDescriptionLine(title, desc string, minSpace, maxSpace int, line bool) string {
+// FormatDescription format a line description to symmetric string
+// title and desc are shown the content by default format.
+func FormatDescription(title, desc string) string {
+	return formatDescription(title, desc, 2, 14, true)
+}
+
+// formatDescription format a line description to symmetric string
+// title and desc are shown the content,
+// minSpace and maxSpace are indentation range numbers.
+func formatDescription(title, desc string, minSpace, maxSpace int, line bool) string {
 	if minSpace < 0 {
 		minSpace = 0
 	}
