@@ -64,3 +64,12 @@ func TestOption_6(t *testing.T) {
 	assert.Equal(t, o.UsageString(), "(-p=[path])")
 	assert.Equal(t, o.OptionString(), "-p=[path]     add pepper directory [default: xxx]")
 }
+
+func TestOption_7(t *testing.T) {
+	o := newOption("(-p=[path])", "", func() {}, "xxx")
+
+	assert.Equal(t, o.Names(), []string{"-p"})
+	assert.Equal(t, o.IsRequired(), true)
+	assert.Equal(t, o.IsOptional(), false)
+	assert.Equal(t, o.UsageString(), "(-p=[path])")
+}
