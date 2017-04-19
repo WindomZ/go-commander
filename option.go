@@ -93,19 +93,28 @@ func (o *_Option) Aliases(aliases []string) *_Option {
 	return o
 }
 
-func (o _Option) UsageString(ones ...bool) (s string) {
-	s = o.usage
-	if ok, _ := regexp.MatchString(`^[\[(].+[)\]]$`, o.usage); ok {
-	} else if o.line && (len(ones) != 0 && ones[0]) {
-	} else if o.line || o.IsRequired() {
-		if len(o.names) > 1 {
-			s = fmt.Sprintf("(%s)", o.usage)
+func (o _Option) UsageString(ones ...bool) string {
+	if ok, _ := regexp.MatchString(`^[\[(].+[)\]]$`, o.usage); !ok || len(o.names) > 1 {
+		strs := make([]string, len(o.names))
+		arg := strings.Join(o.arguments.Get(), " ")
+		for i, name := range o.names {
+			if len(arg) != 0 {
+				strs[i] = name + "=" + arg
+			} else {
+				strs[i] = name
+			}
 		}
-	} else if len(o.names) > 1 {
-		s = fmt.Sprintf("[%s]", o.usage)
+		s := strings.Join(strs, "|")
+
+		if o.line && len(ones) != 0 && ones[0] {
+		} else if o.line || o.IsRequired() {
+			s = fmt.Sprintf("(%s)", s)
+		} else {
+			s = fmt.Sprintf("[%s]", s)
+		}
+		return s
 	}
-	s = regexp.MustCompile(`(\s*,\s*-)|(\s-)`).ReplaceAllString(s, "|-")
-	return
+	return regexp.MustCompile(`(\s*,\s*-)|(\s-)`).ReplaceAllString(o.usage, "|-")
 }
 
 func (o _Option) OptionString() (s string) {
@@ -120,7 +129,7 @@ func (o _Option) OptionString() (s string) {
 			return str
 		})
 	s = regexp.MustCompile(`(\s*[,|]\s*-)`).ReplaceAllString(s, " -")
-	s = formatDescriptionLine(s, o.desc, 2, 14, true)
+	s = FormatDescription(s, o.desc)
 	return
 }
 

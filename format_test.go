@@ -7,35 +7,35 @@ import (
 
 func TestFormat_DescriptionLine(t *testing.T) {
 	assert.Equal(t,
-		formatDescriptionLine("a", "desc...", 2, 5, false),
+		formatDescription("a", "desc...", 2, 5, false),
 		"a    desc...")
 	assert.Equal(t,
-		formatDescriptionLine("abcdef", "desc...", 2, 5, false),
+		formatDescription("abcdef", "desc...", 2, 5, false),
 		"abcdef  desc...")
 
 	assert.Equal(t,
-		formatDescriptionLine("a", "desc...", 2, 5, true),
+		formatDescription("a", "desc...", 2, 5, true),
 		"a    desc...")
 	assert.Equal(t,
-		formatDescriptionLine("abcde", "desc...", 2, 5, true),
+		formatDescription("abcde", "desc...", 2, 5, true),
 		"abcde\n     desc...")
 	assert.Equal(t,
-		formatDescriptionLine("abcdef", "desc...", 2, 5, true),
+		formatDescription("abcdef", "desc...", 2, 5, true),
 		"abcdef\n     desc...")
 
 	assert.Equal(t,
-		formatDescriptionLine("a", "desc...", -1, 5, false),
+		formatDescription("a", "desc...", -1, 5, false),
 		"a    desc...")
 	assert.Equal(t,
-		formatDescriptionLine("a", "desc...", 0, 5, false),
+		formatDescription("a", "desc...", 0, 5, false),
 		"a    desc...")
 	assert.Equal(t,
-		formatDescriptionLine("a", "desc...", 5, 4, false),
+		formatDescription("a", "desc...", 5, 4, false),
 		"a     desc...")
 	assert.Equal(t,
-		formatDescriptionLine("a", "desc...", 5, 5, false),
+		formatDescription("a", "desc...", 5, 5, false),
 		"a     desc...")
 	assert.Equal(t,
-		formatDescriptionLine("a", "desc...", 5, 6, false),
+		formatDescription("a", "desc...", 5, 6, false),
 		"a     desc...")
 }
