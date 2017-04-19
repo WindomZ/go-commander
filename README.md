@@ -22,16 +22,16 @@ inspired by <[commander.js](https://github.com/tj/commander.js)>
 
 ## Installation
 
-To install commander according to your `$GOPATH`:
-
-```bash
-go get github.com/WindomZ/go-commander
-```
-
-or use stable v1 version:
+To get the package, execute:
 
 ```bash
 go get gopkg.in/WindomZ/go-commander.v1
+```
+
+To import this package, add the following line to your code:
+
+```go
+import "gopkg.in/WindomZ/go-commander.v1"
 ```
 
 ## Examples
