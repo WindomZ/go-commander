@@ -10,8 +10,12 @@ func (a _Arguments) IsEmpty() bool {
 func (a *_Arguments) Set(usage string) {
 	*a = (*a)[:0]
 	if strs := regexpArgument(usage); len(strs) != 0 {
+		m := make(map[string]bool, len(strs))
 		for _, str := range strs {
-			*a = append(*a, newArgument(str))
+			if _, ok := m[str]; !ok {
+				*a = append(*a, newArgument(str))
+			}
+			m[str] = true
 		}
 	}
 }
