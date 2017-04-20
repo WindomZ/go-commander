@@ -7,7 +7,17 @@ import (
 )
 
 func TestExec_ExecPipeCommand(t *testing.T) {
-	stdout, stderr, err := ExecPipeCommand("ls")
+	stdout, stderr, err := ExecPipeCommand("")
+	assert.Error(t, err)
+	assert.Empty(t, stderr)
+	assert.Empty(t, stdout)
+
+	stdout, stderr, err = ExecPipeCommand("xxx", "xxx")
+	assert.Error(t, err)
+	assert.Empty(t, stderr)
+	assert.Empty(t, stdout)
+
+	stdout, stderr, err = ExecPipeCommand("ls")
 	assert.NoError(t, err)
 	assert.Empty(t, stderr)
 	assert.NotEmpty(t, stdout)
@@ -15,7 +25,15 @@ func TestExec_ExecPipeCommand(t *testing.T) {
 }
 
 func TestExec_ExecStdCommand(t *testing.T) {
-	stdout, err := ExecStdCommand("ls", "-d")
+	stdout, err := ExecStdCommand("")
+	assert.Error(t, err)
+	assert.Empty(t, stdout)
+
+	stdout, err = ExecStdCommand("xxx", "xxx")
+	assert.Error(t, err)
+	assert.Empty(t, stdout)
+
+	stdout, err = ExecStdCommand("ls", "-d")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, stdout)
 	assert.True(t, strings.Contains(stdout, "."))
