@@ -64,6 +64,10 @@ func (o _Option) Valid() bool {
 	return len(o.names) != 0 && len(o.usage) != 0
 }
 
+func (o _Option) Name() string {
+	return strings.Join(o.names, "|")
+}
+
 func (o _Option) Names() []string {
 	return o.names
 }

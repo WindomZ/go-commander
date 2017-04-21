@@ -137,9 +137,9 @@ func TestProgram_CommandDescription(t *testing.T) {
     go-commander -v|--version
 
   Options:
+    -h --help     output usage information
     -i --init     this is init flag
     -o --origin   this is origin flag
-    -h --help     output usage information
     -v --version  output the version number
 `)
 }

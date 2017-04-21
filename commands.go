@@ -4,9 +4,13 @@ package commander
 type _Commands []*_Command
 
 // OptionsString
-func (c _Commands) OptionsString() (r []string) {
+func (c _Commands) OptionsString() (r map[string]string) {
+	r = make(map[string]string, len(c))
 	for _, cmd := range c {
-		r = append(r, cmd.OptionsString()...)
+		opts := cmd.OptionsString()
+		for k, v := range opts {
+			r[k] = v
+		}
 	}
 	return
 }

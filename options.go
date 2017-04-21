@@ -38,10 +38,11 @@ func (o _Options) UsagesString(ones ...bool) (r []string) {
 	return
 }
 
-func (o _Options) OptionsString() (r []string) {
+func (o _Options) OptionsString() (r map[string]string) {
+	r = make(map[string]string, len(o))
 	for _, opt := range o {
 		if s := opt.OptionString(); len(s) != 0 {
-			r = append(r, s)
+			r[opt.Name()] = s
 		}
 	}
 	return

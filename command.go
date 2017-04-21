@@ -258,12 +258,15 @@ func (c _Command) UsagesString() (r []string) {
 	return
 }
 
-func (c _Command) OptionsString() (r []string) {
+func (c _Command) OptionsString() (r map[string]string) {
 	if !c.Valid() {
 		return
 	}
-	r = append(r, c.options.OptionsString()...)
-	r = append(r, c.commands.OptionsString()...)
+	r = c.options.OptionsString()
+	opts := c.commands.OptionsString()
+	for k, v := range opts {
+		r[k] = v
+	}
 	return
 }
 
@@ -308,7 +311,8 @@ func (c _Command) HelpMessage() string {
 	}
 
 	// Options
-	if strs := c.OptionsString(); len(strs) != 0 {
+	if opts := c.OptionsString(); len(opts) != 0 {
+		strs := sortStringMap(opts)
 		hm.Line().Title("Options")
 		for _, str := range strs {
 			hm.Subtitle(str)
