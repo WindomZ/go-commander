@@ -10,5 +10,5 @@ func newError(a ...interface{}) error {
 }
 
 func panicError(a ...interface{}) {
-	panic(errors.New("\ngo-commander:\n  " + fmt.Sprint(a...)))
+	panic(errors.New("\ngo-commander:\n  ERROR >>> " + fmt.Sprint(a...)))
 }
