@@ -1,9 +1,6 @@
 package commander
 
-import (
-	"fmt"
-	"strings"
-)
+import "strings"
 
 // _Options
 type _Options []*_Option
@@ -29,11 +26,7 @@ func (o _Options) UsagesString(ones ...bool) (r []string) {
 		}
 	}
 	if len(rs) != 0 {
-		if len(rs) == 1 {
-			r = append(r, fmt.Sprintf("[%s]", strings.Join(rs, " ")))
-		} else {
-			r = append(r, fmt.Sprintf("%s", strings.Join(rs, " ")))
-		}
+		r = append(r, strings.Join(rs, " "))
 	}
 	return
 }
