@@ -165,3 +165,21 @@ func TestCommand_ErrorHandling(t *testing.T) {
 		assert.Error(t, err)
 	}
 }
+
+func TestCommand_Command(t *testing.T) {
+	c := newCommand(true)
+
+	assert.Empty(t, c.Name())
+
+	c.Command("go-commander")
+	c.Version("0.0.1")
+
+	c.Command("test")
+
+	c.Line("[opt]").Command("cmd")
+
+	defer func() {
+		assert.NotEmpty(t, recover())
+	}()
+	c.Command("")
+}

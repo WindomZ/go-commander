@@ -24,8 +24,8 @@ func TestProgram_AutomaticHelp(t *testing.T) {
 func TestProgram_ShowVersion(t *testing.T) {
 	Program = newProgram()
 
-	Program.Command("go-commander").
-		Version("0.0.1").
+	Program.Command("go-commander")
+	Program.Version("0.0.1").
 		Description("this is a test cli.")
 
 	if _, err := Program.Parse([]string{"go-commander", "-v"}); err != nil {
