@@ -9,7 +9,8 @@ import (
 func TestProgram_AutomaticHelp(t *testing.T) {
 	Program = newProgram()
 
-	Program.Version("0.0.1").
+	Program.Command("go-commander").
+		Version("0.0.1").
 		Description("this is a test cli.")
 
 	if _, err := Program.Parse([]string{}); err != nil {
@@ -23,6 +24,7 @@ func TestProgram_AutomaticHelp(t *testing.T) {
 func TestProgram_ShowVersion(t *testing.T) {
 	Program = newProgram()
 
+	Program.Command("go-commander")
 	Program.Version("0.0.1").
 		Description("this is a test cli.")
 
@@ -34,7 +36,8 @@ func TestProgram_ShowVersion(t *testing.T) {
 func TestProgram_ErrorHandling(t *testing.T) {
 	Program = newProgram()
 
-	Program.Version("0.0.1").
+	Program.Command("go-commander").
+		Version("0.0.1").
 		Description("this is a test cli.")
 
 	Program.ErrorHandling(func(err error) {
@@ -103,6 +106,8 @@ func TestProgram_LineOption(t *testing.T) {
 func TestProgram_Aliases(t *testing.T) {
 	Program = newProgram()
 
+	Program.Command("go-commander")
+
 	Program.Command("-i --init")
 
 	Program.Command("-o").
@@ -123,6 +128,8 @@ func TestProgram_Aliases(t *testing.T) {
 func TestProgram_CommandDescription(t *testing.T) {
 	Program = newProgram()
 
+	Program.Command("go-commander")
+
 	Program.Command("-i --init").
 		Description("this is init flag")
 
@@ -137,9 +144,9 @@ func TestProgram_CommandDescription(t *testing.T) {
     go-commander -v|--version
 
   Options:
+    -h --help     output usage information
     -i --init     this is init flag
     -o --origin   this is origin flag
-    -h --help     output usage information
     -v --version  output the version number
 `)
 }

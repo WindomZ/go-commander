@@ -50,15 +50,13 @@ func TestCommand_HelpMessage(t *testing.T) {
 			"cmd cmd2 [-a|--about] [-t|--test]",
 			"cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]",
 		})
-	assert.Equal(t, c.OptionsString(),
-		[]string{
-			"-c --config   config description",
-			"-d --drop     drop description",
-			"-a --about    cmd2 about description",
-			"-t --test     cmd2 test description",
-			"-b=<kn> --bold=<kn>\n              cmd3 bold description",
-			"-c --count    cmd3 count description",
-		})
+	opts := c.OptionsString()
+	assert.Equal(t, opts["-c|--config"], "-c --config   config description")
+	assert.Equal(t, opts["-d|--drop"], "-d --drop     drop description")
+	assert.Equal(t, opts["-a|--about"], "-a --about    cmd2 about description")
+	assert.Equal(t, opts["-t|--test"], "-t --test     cmd2 test description")
+	assert.Equal(t, opts["-b|--bold"], "-b=<kn> --bold=<kn>\n              cmd3 bold description")
+	assert.Equal(t, opts["-c|--count"], "-c --count    cmd3 count description")
 
 	assert.Equal(t, c.HelpMessage(),
 		`  this is description
@@ -69,13 +67,13 @@ func TestCommand_HelpMessage(t *testing.T) {
     cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]
 
   Options:
-    -c --config   config description
-    -d --drop     drop description
     -a --about    cmd2 about description
-    -t --test     cmd2 test description
     -b=<kn> --bold=<kn>
                   cmd3 bold description
+    -c --config   config description
     -c --count    cmd3 count description
+    -d --drop     drop description
+    -t --test     cmd2 test description
 `)
 
 	c.Annotation("Example", []string{
@@ -92,13 +90,13 @@ func TestCommand_HelpMessage(t *testing.T) {
     cmd cmd3 [y] [-b=<kn>|--bold=<kn>] [-c|--count]
 
   Options:
-    -c --config   config description
-    -d --drop     drop description
     -a --about    cmd2 about description
-    -t --test     cmd2 test description
     -b=<kn> --bold=<kn>
                   cmd3 bold description
+    -c --config   config description
     -c --count    cmd3 count description
+    -d --drop     drop description
+    -t --test     cmd2 test description
 
   Example:
     cmd xxx -c
@@ -166,4 +164,22 @@ func TestCommand_ErrorHandling(t *testing.T) {
 	if _, err := c.Parse([]string{"go-commander", "test"}); err != nil {
 		assert.Error(t, err)
 	}
+}
+
+func TestCommand_Command(t *testing.T) {
+	c := newCommand(true)
+
+	assert.Empty(t, c.Name())
+
+	c.Command("go-commander")
+	c.Version("0.0.1")
+
+	c.Command("test")
+
+	c.Line("[opt]").Command("cmd")
+
+	defer func() {
+		assert.NotEmpty(t, recover())
+	}()
+	c.Command("")
 }

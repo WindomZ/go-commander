@@ -8,7 +8,7 @@ The solution for building command shell programs,
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander.js](https://github.com/tj/commander.js)>
 
-![v1.0.2](https://img.shields.io/badge/version-v1.0.2-blue.svg)
+![v1.1.2](https://img.shields.io/badge/version-v1.1.2-blue.svg)
 ![status](https://img.shields.io/badge/status-stable-green.svg)
 
 ## Features
@@ -272,6 +272,13 @@ $ calculator_example 1 + 2 '*' 3 / 4 - 5
 $ calculator_example sum 10 , 20 , 30 , 40
 # output: 100
 ```
+
+## UsingList
+
+- [gitclone](https://github.com/WindomZ/gitclone)
+- [gitinit](https://github.com/WindomZ/gitinit)
+- [gitdate](https://github.com/WindomZ/gitdate)
+- [gituser](https://github.com/WindomZ/gituser)
 
 ## License
 

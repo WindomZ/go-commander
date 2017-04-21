@@ -28,11 +28,9 @@ func TestOptions_OptionsString(t *testing.T) {
 		newOption("-c, --config", "config description"),
 		newOption("-d, --drop", "drop description"),
 	}
-	assert.Equal(t, o.OptionsString(),
-		[]string{
-			"-a --about    about description",
-			"-b=<kn> --bold=<kn>\n              bold description",
-			"-c --config   config description",
-			"-d --drop     drop description",
-		})
+	opts := o.OptionsString()
+	assert.Equal(t, opts["-a|--about"], "-a --about    about description")
+	assert.Equal(t, opts["-b|--bold"], "-b=<kn> --bold=<kn>\n              bold description")
+	assert.Equal(t, opts["-c|--config"], "-c --config   config description")
+	assert.Equal(t, opts["-d|--drop"], "-d --drop     drop description")
 }
