@@ -8,7 +8,7 @@ The solution for building command shell programs,
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander.js](https://github.com/tj/commander.js)>
 
-![v1.1.2](https://img.shields.io/badge/version-v1.1.2-blue.svg)
+![v1.2.0](https://img.shields.io/badge/version-v1.2.0-blue.svg)
 ![status](https://img.shields.io/badge/status-stable-green.svg)
 
 ## Features
