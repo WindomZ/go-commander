@@ -16,6 +16,7 @@ type _Program struct {
 	_Command
 	_Context
 	Format  Formatter
+	Exec    Execute
 	initial bool
 	version string // version if root command
 	errFunc func(error)
@@ -25,6 +26,7 @@ func newProgram() *_Program {
 	return &_Program{
 		_Command: *newCommand(true),
 		Format:   Format,
+		Exec:     Exec,
 		errFunc: func(err error) {
 			fmt.Println(err.Error())
 		},
