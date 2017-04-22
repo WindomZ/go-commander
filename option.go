@@ -133,7 +133,7 @@ func (o _Option) OptionString() (s string) {
 			return str
 		})
 	s = regexp.MustCompile(`(\s*[,|]\s*-)`).ReplaceAllString(s, " -")
-	s = FormatDescription(s, o.desc)
+	s = Format.Description(s, o.desc)
 	return
 }
 

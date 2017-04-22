@@ -289,7 +289,7 @@ func (c _Command) CommandsString(prefix string) (r []string) {
 			name = prefix + " " + name
 		}
 		if len(c.desc) != 0 {
-			r = append(r, FormatDescription(name, c.desc))
+			r = append(r, Format.Description(name, c.desc))
 		}
 	}
 	r = append(r, c.commands.CommandsString(name)...)

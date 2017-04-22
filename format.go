@@ -5,9 +5,33 @@ import (
 	"strconv"
 )
 
-// FormatDescription format a line description to symmetric string
+var Format Formatter = newDefaultFormat()
+
+type Formatter interface {
+	Description(title, desc string) string
+}
+
+type _Format struct {
+	MinSpace int
+	MaxSpace int
+	Line     bool
+}
+
+func newFormat(minSpace, maxSpace int, line bool) *_Format {
+	return &_Format{
+		MinSpace: minSpace,
+		MaxSpace: maxSpace,
+		Line:     line,
+	}
+}
+
+func newDefaultFormat() *_Format {
+	return newFormat(2, 14, true)
+}
+
+// Description format a line description to symmetric string
 // title and desc are shown the content by default format.
-func FormatDescription(title, desc string) string {
+func (f _Format) Description(title, desc string) string {
 	return formatDescription(title, desc, 2, 14, true)
 }
 

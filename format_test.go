@@ -5,6 +5,15 @@ import (
 	"testing"
 )
 
+func Test_Format_Description(t *testing.T) {
+	assert.Equal(t,
+		Format.Description("a", "desc..."),
+		"a             desc...")
+	assert.Equal(t,
+		Format.Description("abcdefghijklmn", "desc..."),
+		"abcdefghijklmn\n              desc...")
+}
+
 func TestFormat_DescriptionLine(t *testing.T) {
 	assert.Equal(t,
 		formatDescription("a", "desc...", 2, 5, false),
