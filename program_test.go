@@ -40,17 +40,22 @@ func TestProgram_ErrorHandling(t *testing.T) {
 		Version("0.0.1").
 		Description("this is a test cli.")
 
-	Program.ErrorHandling(func(err error) {
-		assert.Error(t, err)
-	})
-
 	Program.Command("test").Action(func() error {
 		return newError("this is a test error")
 	})
 
-	if _, err := Program.Parse([]string{"go-commander", "test"}); err == nil {
+	_, err := Program.Parse([]string{"go-commander", "test"})
+	assert.Error(t, err)
+
+	var handing bool = false
+	Program.ErrorHandling(func(err error) {
 		assert.Error(t, err)
-	}
+		handing = true
+	})
+
+	_, err = Program.Parse([]string{"go-commander", "test"})
+	assert.Error(t, err)
+	assert.True(t, handing)
 }
 
 func TestProgram_LineOption(t *testing.T) {
