@@ -6,56 +6,56 @@ import (
 	"testing"
 )
 
-func TestExec_ExecPipeCommand(t *testing.T) {
-	stdout, stderr, err := ExecPipeCommand("")
+func Test_Exec_ExecPipeCommand(t *testing.T) {
+	stdout, stderr, err := Exec.ExecPipeCommand("")
 	assert.Error(t, err)
 	assert.Empty(t, stderr)
 	assert.Empty(t, stdout)
 
-	stdout, stderr, err = ExecPipeCommand("xxx", "xxx")
+	stdout, stderr, err = Exec.ExecPipeCommand("xxx", "xxx")
 	assert.Error(t, err)
 	assert.Empty(t, stderr)
 	assert.Empty(t, stdout)
 
-	stdout, stderr, err = ExecPipeCommand("ls")
+	stdout, stderr, err = Exec.ExecPipeCommand("ls")
 	assert.NoError(t, err)
 	assert.Empty(t, stderr)
 	assert.NotEmpty(t, stdout)
 	assert.True(t, strings.Contains(stdout, ".go"))
 }
 
-func TestExec_ExecStdCommand(t *testing.T) {
-	stdout, err := ExecStdCommand("")
+func Test_Exec_ExecStdCommand(t *testing.T) {
+	stdout, err := Exec.ExecStdCommand("")
 	assert.Error(t, err)
 	assert.Empty(t, stdout)
 
-	stdout, err = ExecStdCommand("xxx", "xxx")
+	stdout, err = Exec.ExecStdCommand("xxx", "xxx")
 	assert.Error(t, err)
 	assert.Empty(t, stdout)
 
-	stdout, err = ExecStdCommand("ls", "-d")
+	stdout, err = Exec.ExecStdCommand("ls", "-d")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, stdout)
 	assert.True(t, strings.Contains(stdout, "."))
 }
 
-func TestExec_ExecPipeStatementCommand(t *testing.T) {
-	stdout, stderr, err := ExecPipeStatementCommand("ls -d")
+func Test_Exec_ExecPipeStatementCommand(t *testing.T) {
+	stdout, stderr, err := Exec.ExecPipeStatementCommand("ls -d")
 	assert.NoError(t, err)
 	assert.Empty(t, stderr)
 	assert.NotEmpty(t, stdout)
 	assert.True(t, strings.Contains(stdout, "."))
 }
 
-func TestExec_ExecStdStatementCommand(t *testing.T) {
-	stdout, err := ExecStdStatementCommand("ls -d")
+func Test_Exec_ExecStdStatementCommand(t *testing.T) {
+	stdout, err := Exec.ExecStdStatementCommand("ls -d")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, stdout)
 	assert.True(t, strings.Contains(stdout, "."))
 }
 
-func TestExec_SplitCommandStatement(t *testing.T) {
-	strs := SplitCommandStatement(`rm -rf "$HOME/user/Download"`)
+func Test_Exec_SplitCommandStatement(t *testing.T) {
+	strs := Exec.SplitCommandStatement(`rm -rf "$HOME/user/Download"`)
 	assert.Equal(t, strs, []string{
 		"rm",
 		"-rf",

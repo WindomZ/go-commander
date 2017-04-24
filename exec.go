@@ -9,7 +9,24 @@ import (
 	"strings"
 )
 
-func ExecPipeCommand(name string, arg ...string) (string, string, error) {
+var Exec Execute = newExec()
+
+type Execute interface {
+	ExecPipeCommand(name string, arg ...string) (string, string, error)
+	ExecStdCommand(name string, arg ...string) (string, error)
+	ExecPipeStatementCommand(statement string) (string, string, error)
+	ExecStdStatementCommand(statement string) (string, error)
+	SplitCommandStatement(statement string) (result []string)
+}
+
+type _Exec struct {
+}
+
+func newExec() *_Exec {
+	return &_Exec{}
+}
+
+func (e _Exec) ExecPipeCommand(name string, arg ...string) (string, string, error) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
@@ -26,8 +43,8 @@ func ExecPipeCommand(name string, arg ...string) (string, string, error) {
 	return stdout.String(), stderr.String(), nil
 }
 
-func ExecStdCommand(name string, arg ...string) (string, error) {
-	stdout, stderr, err := ExecPipeCommand(name, arg...)
+func (e _Exec) ExecStdCommand(name string, arg ...string) (string, error) {
+	stdout, stderr, err := e.ExecPipeCommand(name, arg...)
 	os.Stdout.WriteString(stdout)
 	os.Stderr.WriteString(stderr)
 	if err != nil {
@@ -39,23 +56,23 @@ func ExecStdCommand(name string, arg ...string) (string, error) {
 	return stdout, nil
 }
 
-func ExecPipeStatementCommand(statement string) (string, string, error) {
-	return ExecPipeCommand(
+func (e _Exec) ExecPipeStatementCommand(statement string) (string, string, error) {
+	return e.ExecPipeCommand(
 		"/bin/bash",
 		"-c",
 		statement,
 	)
 }
 
-func ExecStdStatementCommand(statement string) (string, error) {
-	return ExecStdCommand(
+func (e _Exec) ExecStdStatementCommand(statement string) (string, error) {
+	return e.ExecStdCommand(
 		"/bin/bash",
 		"-c",
 		statement,
 	)
 }
 
-func SplitCommandStatement(statement string) (result []string) {
+func (e _Exec) SplitCommandStatement(statement string) (result []string) {
 	result = regexp.MustCompile(`([^\\]"[\w\s\S]+?[^\\]")|([^\s\\]+)`).
 		FindAllString(statement, -1)
 	for i, str := range result {

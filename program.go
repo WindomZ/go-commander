@@ -15,6 +15,8 @@ var Program GoCommander = newProgram()
 type _Program struct {
 	_Command
 	_Context
+	Format  Formatter
+	Exec    Execute
 	initial bool
 	version string // version if root command
 	errFunc func(error)
@@ -23,7 +25,11 @@ type _Program struct {
 func newProgram() *_Program {
 	return &_Program{
 		_Command: *newCommand(true),
-		errFunc:  func(err error) { fmt.Println(err.Error()) },
+		Format:   Format,
+		Exec:     Exec,
+		errFunc: func(err error) {
+			fmt.Println(err.Error())
+		},
 	}
 }
 
