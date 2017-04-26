@@ -19,10 +19,16 @@
 </div>
 </body>
 <script>
+  if (typeof navigator.serviceWorker !== 'undefined') {
+    navigator.serviceWorker.register('sw.js')
+  }
+</script>
+<script>
   window.$docsify = {
-    name: '',
+    name: 'go-commander',
     coverpage: true,
     loadSidebar: true,
+    autoHeader: true,
     subMaxLevel: 2,
     repo: 'https://github.com/WindomZ/go-commander',
 
