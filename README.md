@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
 [![Coverage Status](https://coveralls.io/repos/github/WindomZ/go-commander/badge.svg?branch=master)](https://coveralls.io/github/WindomZ/go-commander?branch=master)
 
-The solution for building command shell programs, 
+> The solution for building command shell programs, 
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander.js](https://github.com/tj/commander.js)>
 
