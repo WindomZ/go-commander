@@ -226,8 +226,8 @@ func (c *_Command) Action(action interface{}, keys ...[]string) Commander {
 		switch obj := c.last.(type) {
 		//case *_Command:
 		case *_Option:
-			obj.actor.Action(action, keys...)
-			if c.hasAction() {
+			if c.clone || c.actor.hasAction() {
+				obj.actor.Action(action, keys...)
 				return c
 			}
 		}
