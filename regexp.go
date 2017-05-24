@@ -5,6 +5,11 @@ import (
 	"strings"
 )
 
+// defineCommand define commands
+func defineCommand(str string) string {
+	return regexp.MustCompile(`[A-Za-z0-9_-]+`).FindString(str)
+}
+
 // regexpCommand Regular screening out docopt commands
 func regexpCommand(str string) []string {
 	return regexp.MustCompile(`[A-Za-z0-9_-]+`).FindAllString(
