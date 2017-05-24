@@ -9,7 +9,7 @@
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander.js](https://github.com/tj/commander.js)>
 
-![v1.2.1](https://img.shields.io/badge/version-v1.2.1-blue.svg)
+![v1.2.2](https://img.shields.io/badge/version-v1.2.2-blue.svg)
 ![status](https://img.shields.io/badge/status-stable-green.svg)
 
 ## Features
