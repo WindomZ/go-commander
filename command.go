@@ -37,7 +37,7 @@ func (c *_Command) init() *_Command {
 		} else if dir, err := os.Getwd(); err == nil {
 			name = path.Base(dir)
 		}
-		if len(name) == 0 {
+		if name = defineCommand(name); len(name) == 0 {
 			panicError("root command should not be empty")
 		}
 		c.Usage(name)
