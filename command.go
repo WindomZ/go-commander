@@ -37,7 +37,7 @@ func (c *_Command) init() *_Command {
 		} else if dir, err := os.Getwd(); err == nil {
 			name = path.Base(dir)
 		}
-		if len(name) == 0 {
+		if name = defineCommand(name); len(name) == 0 {
 			panicError("root command should not be empty")
 		}
 		c.Usage(name)
@@ -226,8 +226,8 @@ func (c *_Command) Action(action interface{}, keys ...[]string) Commander {
 		switch obj := c.last.(type) {
 		//case *_Command:
 		case *_Option:
-			obj.actor.Action(action, keys...)
-			if c.hasAction() {
+			if c.clone || c.actor.hasAction() {
+				obj.actor.Action(action, keys...)
 				return c
 			}
 		}

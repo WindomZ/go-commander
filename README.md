@@ -1,14 +1,15 @@
 # go-commander
+
 [![Build Status](https://travis-ci.org/WindomZ/go-commander.svg?branch=master)](https://travis-ci.org/WindomZ/go-commander)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
 [![Coverage Status](https://coveralls.io/repos/github/WindomZ/go-commander/badge.svg?branch=master)](https://coveralls.io/github/WindomZ/go-commander?branch=master)
 
-The solution for building command shell programs, 
+> The solution for building command shell programs, 
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
 inspired by <[commander.js](https://github.com/tj/commander.js)>
 
-![v1.2.0](https://img.shields.io/badge/version-v1.2.0-blue.svg)
+![v1.2.2](https://img.shields.io/badge/version-v1.2.2-blue.svg)
 ![status](https://img.shields.io/badge/status-stable-green.svg)
 
 ## Features
@@ -280,6 +281,12 @@ $ calculator_example sum 10 , 20 , 30 , 40
 - [gitdate](https://github.com/WindomZ/gitdate)
 - [gituser](https://github.com/WindomZ/gituser)
 
+## Development
+
+I would **love** to hear what you think about `go-commander` on [issues page](https://github.com/WindomZ/go-commander/issues)
+
+Make pull requests, report bugs, suggest ideas and discuss `go-commander`.
+
 ## License
 
-The [MIT License](https://github.com/WindomZ/gitclone/blob/master/LICENSE)
+The [MIT License](https://github.com/WindomZ/go-commander/blob/master/LICENSE)
