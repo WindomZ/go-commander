@@ -1,9 +1,9 @@
 # go-commander
 
 [![Build Status](https://travis-ci.org/WindomZ/go-commander.svg?branch=master)](https://travis-ci.org/WindomZ/go-commander)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
 [![Coverage Status](https://coveralls.io/repos/github/WindomZ/go-commander/badge.svg?branch=master)](https://coveralls.io/github/WindomZ/go-commander?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/WindomZ/go-commander)](https://goreportcard.com/report/github.com/WindomZ/go-commander)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 > The solution for building command shell programs, 
 drive by <[docopt](https://github.com/docopt/docopt.go)>, 
@@ -21,7 +21,7 @@ inspired by <[commander.js](https://github.com/tj/commander.js)>
 - [x] Can customize the action function, better with context.
 - [x] Code colloquial use, from top to bottom.
 
-## Installation
+## Install
 
 To get the package, execute:
 
@@ -274,19 +274,20 @@ $ calculator_example sum 10 , 20 , 30 , 40
 # output: 100
 ```
 
-## UsingList
+## Used
 
 - [gitclone](https://github.com/WindomZ/gitclone)
 - [gitinit](https://github.com/WindomZ/gitinit)
 - [gitdate](https://github.com/WindomZ/gitdate)
 - [gituser](https://github.com/WindomZ/gituser)
 
-## Development
+## Contributing
 
-I would **love** to hear what you think about `go-commander` on [issues page](https://github.com/WindomZ/go-commander/issues)
+Welcome to pull requests, report bugs, suggest ideas and discuss **go-commander**, 
+i would love to hear what you think about **go-commander** on [issues page](https://github.com/WindomZ/go-commander/issues).
 
-Make pull requests, report bugs, suggest ideas and discuss `go-commander`.
+If you like it then you can put a :star: on it.
 
 ## License
 
-The [MIT License](https://github.com/WindomZ/go-commander/blob/master/LICENSE)
+[MIT](https://github.com/WindomZ/go-commander/blob/master/LICENSE)
