@@ -2,11 +2,12 @@ package commander
 
 import "strings"
 
-// _Argument Implementation of command line parameter
+// _Argument command line parameter implementation.
 type _Argument struct {
 	name string
 }
 
+// newArgument returns new instance of _Argument.
 func newArgument(name string) *_Argument {
 	return &_Argument{
 		name: strings.TrimSpace(name),

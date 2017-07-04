@@ -1,12 +1,14 @@
 package commander
 
-// _Arguments Implementation of command line parameters
+// _Arguments the collection of _Argument implementation.
 type _Arguments []*_Argument
 
+// IsEmpty returns true if this _Arguments is empty.
 func (a _Arguments) IsEmpty() bool {
 	return len(a) == 0
 }
 
+// Set append usage into this _Arguments.
 func (a *_Arguments) Set(usage string) {
 	*a = (*a)[:0]
 	if strs := regexpArgument(usage); len(strs) != 0 {
@@ -20,6 +22,7 @@ func (a *_Arguments) Set(usage string) {
 	}
 }
 
+// Get returns a slice contains all names of this _Arguments.
 func (a _Arguments) Get() (r []string) {
 	for _, arg := range a {
 		r = append(r, arg.name)

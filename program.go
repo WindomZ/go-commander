@@ -50,27 +50,33 @@ func (p *_Program) init() *_Program {
 	return p
 }
 
+// Version defines the version of this command.
+// Only valid under the root command.
 func (p *_Program) Version(ver string) Commander {
 	p._Command.Version(ver)
 	p.version = ver
 	return p
 }
 
+// ShowVersion display the version.
 func (p _Program) ShowVersion() string {
 	fmt.Println(p.version)
 	return p.version
 }
 
+// HelpMessage returns, as a string, all help messages that generated according to the docopt format.
 func (p *_Program) HelpMessage() string {
 	return p.init()._Command.HelpMessage()
 }
 
+// ShowHelpMessage display all help messages.
 func (p _Program) ShowHelpMessage() string {
 	s := p.HelpMessage()
 	fmt.Println(s)
 	return s
 }
 
+// Parse parse `argv` based on the command-line interface.
 func (p *_Program) Parse(args ...[]string) (Context, error) {
 	var argv []string = nil
 	if len(args) != 0 {
@@ -98,6 +104,7 @@ func (p *_Program) Parse(args ...[]string) (Context, error) {
 	return &p._Context, nil
 }
 
+// ErrorHandling defines the function f to handle the throwing error.
 func (p *_Program) ErrorHandling(f func(error)) Commander {
 	p.errFunc = f
 	return p

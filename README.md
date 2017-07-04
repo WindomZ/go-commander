@@ -21,7 +21,9 @@ inspired by <[commander.js](https://github.com/tj/commander.js)>
 - [x] Can customize the action function, better with context.
 - [x] Code colloquial use, from top to bottom.
 
-## Install
+## Usage
+
+[![GoDoc](https://godoc.org/github.com/WindomZ/go-commander?status.svg)](https://godoc.org/github.com/WindomZ/go-commander)
 
 To get the package, execute:
 

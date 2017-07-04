@@ -13,16 +13,17 @@ type _Command struct {
 	actor
 	usage      string              // api set usage
 	root       bool                // root command
-	clone      bool                // clone command for new help message line
+	shadow     bool                // shadow command for new help message line
 	desc       string              // description
 	annotation map[string][]string // annotation, like 'try', 'examples', etc.
 	arguments  _Arguments          // parse arguments from usage
 	commands   _Commands           // api set subcommands
 	options    _Options            // api set options
 	last       interface{}         // the last defined object
-	doc        string              // define help message
+	doc        string              // defines help message
 }
 
+// newCommand returns new instance of _Command.
 func newCommand(root bool) *_Command {
 	return &_Command{
 		root: root,
@@ -45,10 +46,14 @@ func (c *_Command) init() *_Command {
 	return c
 }
 
+// isRoot returns true if it is root command and not shadow.
 func (c _Command) isRoot() bool {
-	return c.root && !c.clone
+	return c.root && !c.shadow
 }
 
+// Usage the usage is defining this command usage and help message string.
+// First args is the description of this command.
+// Second args is setting the action to this command, but in a few cases will be used.
 func (c *_Command) Usage(usage string, args ...interface{}) Commander {
 	if len(usage) != 0 {
 		c.usage = strings.TrimSpace(usage)
@@ -72,10 +77,12 @@ func (c *_Command) regexpArguments() {
 	c.arguments.Set(c.usage)
 }
 
+// Valid returns true if this command is available.
 func (c _Command) Valid() bool {
 	return len(c.names) != 0 && len(c.usage) != 0
 }
 
+// Name returns, as a string, used to display the name of this command.
 func (c _Command) Name() string {
 	if len(c.names) == 0 {
 		return ""
@@ -87,19 +94,24 @@ func (c _Command) Name() string {
 	return name
 }
 
+// Doc replace the help message of this command with doc string directly.
 func (c *_Command) Doc(doc string) Commander {
 	c.doc = doc
 	return c.init()
 }
 
+// Version defines the version of this command.
+// Only valid under the root command.
 func (c *_Command) Version(ver string) Commander {
 	return c.init()
 }
 
+// ShowVersion display the version.
 func (c _Command) ShowVersion() string {
 	return ""
 }
 
+// Description defines the description of this command.
 func (c *_Command) Description(desc string) Commander {
 	if c.init().last != nil {
 		switch obj := c.last.(type) {
@@ -113,6 +125,8 @@ func (c *_Command) Description(desc string) Commander {
 	return c
 }
 
+// Annotation defines the annotation of this command.
+// Just display then shows the help messages.
 func (c *_Command) Annotation(title string, contents []string) Commander {
 	if c.annotation == nil {
 		c.annotation = make(map[string][]string)
@@ -134,6 +148,9 @@ func (c *_Command) addCommand(cmd *_Command) bool {
 	return false
 }
 
+// Command defines a new command as a subcommand via usage string.
+// Another important is as an independent usage line in the help messages.
+// This usage string can be a subcommand, options, and arguments.
 func (c *_Command) Command(usage string, args ...interface{}) (commander Commander) {
 	if param := firstParameter(usage); isArgument(param) {
 		commander = c.LineArgument(usage, args...)
@@ -141,7 +158,7 @@ func (c *_Command) Command(usage string, args ...interface{}) (commander Command
 	} else if isOption(param) {
 		commander = c.LineOption(usage, args...)
 		return
-	} else if c.clone {
+	} else if c.shadow {
 		usage = c.usage + " " + usage
 	} else if c.Valid() {
 		cmd := newCommand(false)
@@ -157,6 +174,7 @@ SetLast:
 	return
 }
 
+// Aliases aliases this command names.
 func (c *_Command) Aliases(aliases []string) Commander {
 	if c.init().last != nil {
 		switch obj := c.last.(type) {
@@ -183,6 +201,10 @@ func (c *_Command) addOption(line bool, usage string, args ...interface{}) (opt 
 	return opt
 }
 
+// Option create a new option of this command and defines the usage.
+// First args is the description of the option.
+// Second args is setting the action to the option.
+// Third args is setting the default values.
 func (c *_Command) Option(usage string, args ...interface{}) Commander {
 	if opt := c.addOption(false, usage, args...); !opt.Valid() {
 		panicError("option invalid format:", opt)
@@ -190,14 +212,21 @@ func (c *_Command) Option(usage string, args ...interface{}) Commander {
 	return c
 }
 
+// Line returns, as a shadow command which clone from this command.
+// First args is the description of the option.
+// Second args is setting the action to the option.
 func (c *_Command) Line(usage string, args ...interface{}) *_Command {
 	cmd := newCommand(c.root)
 	cmd.Usage(usage, args...)
-	cmd.clone = true
+	cmd.shadow = true
 	cmd.ignore = true
 	return cmd
 }
 
+// LineArgument create an argument command by usage string.
+// It display independent usage line in the help messages.
+// First args is the description of the option.
+// Second args is setting the action to the option.
 func (c *_Command) LineArgument(usage string, args ...interface{}) Commander {
 	usage = c.Name() + " " + usage
 	cmd := c.Line(usage, args...)
@@ -210,6 +239,11 @@ func (c *_Command) LineArgument(usage string, args ...interface{}) Commander {
 	return cmd
 }
 
+// LineOption create an option command by usage string.
+// It display independent usage line in the help messages.
+// First args is the description of the option.
+// Second args is setting the action to the option.
+// Third args is setting the default values.
 func (c *_Command) LineOption(usage string, args ...interface{}) Commander {
 	cmd := c.Line(c.usage, args...)
 	opt := cmd.addOption(true, usage, args...)
@@ -221,12 +255,14 @@ func (c *_Command) LineOption(usage string, args ...interface{}) Commander {
 	return cmd
 }
 
+// Action sets the action of this command, see 'action.go' for more help.
+// The keys provides more command triggers for the action, if one of keys match command argv.
 func (c *_Command) Action(action interface{}, keys ...[]string) Commander {
 	if c.init().last != nil {
 		switch obj := c.last.(type) {
 		//case *_Command:
 		case *_Option:
-			if c.clone || c.actor.hasAction() {
+			if c.shadow || c.actor.hasAction() {
 				obj.actor.Action(action, keys...)
 				return c
 			}
@@ -236,6 +272,7 @@ func (c *_Command) Action(action interface{}, keys ...[]string) Commander {
 	return c
 }
 
+// UsagesString returns, as a slice, the usage message of this command.
 func (c _Command) UsagesString() (r []string) {
 	if !c.Valid() {
 		return
@@ -248,7 +285,7 @@ func (c _Command) UsagesString() (r []string) {
 		}
 	}
 	name := c.Name()
-	if !(c.root || c.clone) || str != name {
+	if !(c.root || c.shadow) || str != name {
 		r = append(r, str)
 	}
 	name += " "
@@ -265,6 +302,8 @@ func (c _Command) UsagesString() (r []string) {
 	return
 }
 
+// OptionsString returns, as a map, the help messages of the all option commands in this command.
+// Key is the name of option, value is the description and usage of the option.
 func (c _Command) OptionsString() (r map[string]string) {
 	if !c.Valid() {
 		return
@@ -277,6 +316,8 @@ func (c _Command) OptionsString() (r map[string]string) {
 	return
 }
 
+// OptionsString returns, as a slice, the help messages of the all subcommands in this command.
+// Key is the name of subcommand, value is the description and usage of the subcommand.
 func (c _Command) CommandsString(prefix string) (r []string) {
 	if !c.Valid() {
 		return
@@ -296,7 +337,7 @@ func (c _Command) CommandsString(prefix string) (r []string) {
 	return
 }
 
-// HelpMessage get string of help message that generated according to the docopt format
+// HelpMessage returns, as a string, all help messages that generated according to the docopt format.
 func (c _Command) HelpMessage() string {
 	if len(c.doc) != 0 {
 		return c.doc
@@ -347,6 +388,7 @@ func (c _Command) HelpMessage() string {
 	return hm.String()
 }
 
+// ShowHelpMessage display all help messages.
 func (c _Command) ShowHelpMessage() string {
 	s := c.HelpMessage()
 	fmt.Println(s)
@@ -370,6 +412,7 @@ func (c _Command) run(context Context) _Result {
 	return nil
 }
 
+// ErrorHandling defines the function f to handle the throwing error.
 func (c *_Command) ErrorHandling(f func(error)) Commander {
 	return c
 }

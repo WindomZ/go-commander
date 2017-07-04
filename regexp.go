@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// defineCommand define commands
+// defineCommand defines commands
 func defineCommand(str string) string {
 	return regexp.MustCompile(`[A-Za-z0-9_-]+`).FindString(str)
 }
